@@ -1,0 +1,20 @@
+.idea/
+.vscode/
+venv/
+.venv/
+.DS_store
+*.pyc
+__pycache__/
+media*/
+docs/docs/site/
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+.coverage
+
+.env
+.python-version
+samurai/static/
+firebase_local_folders
