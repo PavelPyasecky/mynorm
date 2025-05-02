@@ -52,7 +52,7 @@ class SupervisionViewSet(RetrieveModelMixin, CreateModelMixin, ListModelMixin, G
     queryset = Supervision.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action in ('list', 'retrieve'):
             return serializers.SupervisionSerializer
         elif self.action == 'create':
             return serializers.SupervisionCreateSerializer
