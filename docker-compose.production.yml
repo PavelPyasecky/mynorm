@@ -1,0 +1,62 @@
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  production_traefik: {}
+  production_django_media: {}
+
+
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+
+    image: mynorm_production_django
+    volumes:
+      - production_django_media:/app/media
+    depends_on:
+      - postgres
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    command: /start
+    ports:
+      - '5000:5000'
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: mynorm_production_postgres
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data
+      - production_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.production/.postgres
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    image: mynorm_production_traefik
+    depends_on:
+      - django
+      - nginx
+    volumes:
+      - production_traefik:/etc/traefik/acme
+    ports:
+      - '80:80'
+      - '443:443'
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: mynorm_production_nginx
+    depends_on:
+      - django
+    volumes:
+      - production_django_media:/usr/share/nginx/media:ro
+    ports:
+      - '8080:8080'

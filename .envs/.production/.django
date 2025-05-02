@@ -1,0 +1,11 @@
+# General
+# ------------------------------------------------------------------------------
+# DJANGO_READ_DOT_ENV_FILE=True
+DJANGO_SETTINGS_MODULE=config.settings
+DJANGO_SECRET_KEY=Radknav84oXpiX7LAuaWxA60QzXUuj161xLQvXkLeQt7D0eoG2TUsqp2ct8UBOVa
+DJANGO_ADMIN_URL=admin/
+DJANGO_ALLOWED_HOSTS=*
+
+DJANGO_ADMIN_USERNAME=admin
+DJANGO_ADMIN_PASSWORD=passNOTword
+

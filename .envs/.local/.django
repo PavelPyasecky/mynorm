@@ -1,0 +1,8 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+
+DJANGO_SETTINGS_MODULE=config.settings.local
+DJANGO_ADMIN_USERNAME=admin
+DJANGO_ADMIN_PASSWORD=passNOTword

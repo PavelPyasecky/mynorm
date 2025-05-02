@@ -1,0 +1,61 @@
+log:
+  level: INFO
+
+entryPoints:
+  web:
+    address: ':80'
+
+
+http:
+  routers:
+    web-media-router:
+      rule: '(Host(`localhost`) || Host(`0.0.0.0`) || Host(`127.0.0.1`)) && PathPrefix(`/media/`)'
+      entryPoints:
+        - web
+      middlewares:
+        - csrf
+      service: django-media
+
+    web-fe-router:
+      rule: '(Host(`localhost`) || Host(`0.0.0.0`) || Host(`127.0.0.1`)) && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
+      entryPoints:
+        - web
+      service: nuxt
+
+    web-be-router:
+      rule: '(Host(`localhost`) || Host(`0.0.0.0`) ||  Host(`127.0.0.1`)) && !PathPrefix(`/media/`) && (PathPrefix(`/api/`) || PathPrefix(`/admin/`) || PathPrefix(`/static/`))'
+      entryPoints:
+        - web
+      middlewares:
+        - csrf
+      service: django
+
+
+  middlewares:
+    csrf:
+      # https://doc.traefik.io/traefik/master/middlewares/http/headers/#hostsproxyheaders
+      # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
+      headers:
+        hostsProxyHeaders: ['X-CSRFToken']
+
+  services:
+    django:
+      loadBalancer:
+        servers:
+          - url: http://django:5000
+
+    nuxt:
+      loadBalancer:
+        servers:
+          - url: http://nuxt:3000
+
+    django-media:
+      loadBalancer:
+        servers:
+          - url: http://nginx:80
+
+providers:
+  # https://doc.traefik.io/traefik/master/providers/file/
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true
