@@ -9,7 +9,7 @@ entryPoints:
 http:
   routers:
     web-media-router:
-      rule: '(Host(`localhost`) || Host(`0.0.0.0`) || Host(`127.0.0.1`)) && PathPrefix(`/media/`)'
+      rule: 'Host(`176.98.178.73`) && PathPrefix(`/media/`)'
       entryPoints:
         - web
       middlewares:
@@ -17,13 +17,13 @@ http:
       service: django-media
 
     web-fe-router:
-      rule: '(Host(`localhost`) || Host(`0.0.0.0`) || Host(`127.0.0.1`)) && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
+      rule: 'Host(`176.98.178.73`) && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
       entryPoints:
         - web
       service: nuxt
 
     web-be-router:
-      rule: '(Host(`localhost`) || Host(`0.0.0.0`) ||  Host(`127.0.0.1`)) && !PathPrefix(`/media/`) && (PathPrefix(`/api/`) || PathPrefix(`/admin/`) || PathPrefix(`/static/`))'
+      rule: 'Host(`176.98.178.73`) && !PathPrefix(`/media/`) && (PathPrefix(`/api/`) || PathPrefix(`/admin/`) || PathPrefix(`/static/`))'
       entryPoints:
         - web
       middlewares:
@@ -52,7 +52,7 @@ http:
     django-media:
       loadBalancer:
         servers:
-          - url: http://nginx:80
+          - url: http://nginx:8080
 
 providers:
   # https://doc.traefik.io/traefik/master/providers/file/
