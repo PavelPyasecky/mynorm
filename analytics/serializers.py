@@ -50,9 +50,11 @@ class SupervisionCreateSerializer(serializers.ModelSerializer):
             "name": {"required": False},
             "start_date": {"read_only": True},
             "end_date": {"read_only": True},
+            "user": {"read_only": True},
         }
 
     def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
         validated_data['created_by'] = self.context['request'].user
         validated_data['updated_by'] = self.context['request'].user
         return super().create(validated_data)
