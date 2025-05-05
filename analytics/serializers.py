@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from analytics.models import ActivityStatistics, Supervision
+from analytics.models import ActivityStatistics, Supervision, Comment, CommentImage, CommentFiles
 from core.models import Organization
 from users.models import User
 
@@ -17,13 +17,35 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'first_name', 'last_name', 'email')
 
 
+class CommentImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentImage
+        fields = ('id', 'image')
+
+
+class CommentFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentFiles
+        fields = ('id', 'file')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    images = CommentImageSerializer(many=True, read_only=True)
+    files = CommentFileSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'images', 'files')
+
+
 class SupervisionSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
     user = UserSerializer(read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Supervision
-        fields = ('id', 'name', 'worker', 'organization', 'user', 'start_date', 'end_date')
+        fields = ('id', 'name', 'worker', 'organization', 'user', 'start_date', 'end_date', 'comments')
         extra_kwargs = {
             "name": {"required": False},
             "start_date": {"read_only": True},

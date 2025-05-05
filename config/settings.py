@@ -50,11 +50,11 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
 
-    'analytics',
-    'layouts',
-    'users',
-    'core',
-    'gallery',
+    'analytics.apps.AnalyticsConfig',
+    'layouts.apps.LayoutsConfig',
+    'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
+    'gallery.apps.GalleryConfig',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -198,9 +199,13 @@ EMAIL_HOST = "pro.eu.turbo-smtp.com"
 
 AUTH_USER_MODEL = "users.User"
 
+
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
 }
 
 

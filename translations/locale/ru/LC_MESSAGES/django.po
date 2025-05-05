@@ -1,0 +1,251 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-05 19:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: analytics/admin.py:12 analytics/models.py:13 layouts/models.py:12
+#: users/models.py:11
+msgid "organization"
+msgstr "организация"
+
+#: analytics/admin.py:25
+msgid "last supervisions"
+msgstr "последние наблюдения"
+
+#: analytics/apps.py:8
+msgid "Analytics"
+msgstr "Аналитика"
+
+#: analytics/models.py:11 core/models.py:10 core/models.py:30
+#: gallery/models.py:8 layouts/models.py:11 layouts/models.py:43
+msgid "name"
+msgstr "наименование"
+
+#: analytics/models.py:12
+msgid "worker"
+msgstr "Работник"
+
+#: analytics/models.py:14
+msgid "supervisor"
+msgstr "Супервизор"
+
+#: analytics/models.py:18
+msgid "Supervision"
+msgstr "Наблюдение"
+
+#: analytics/models.py:19
+msgid "Supervisions"
+msgstr "Наблюдения"
+
+#: analytics/models.py:26
+msgid "activity"
+msgstr "вид деятельности"
+
+#: analytics/models.py:27 analytics/models.py:44
+msgid "supervision"
+msgstr "наблюдение"
+
+#: analytics/models.py:30 analytics/models.py:31
+msgid "Activity statistics"
+msgstr "Статистика видов деятельности"
+
+#: analytics/models.py:43
+msgid "text"
+msgstr "текст"
+
+#: analytics/models.py:47
+msgid "Comment"
+msgstr "Комментарий"
+
+#: analytics/models.py:48
+msgid "Comments"
+msgstr "Комментарии"
+
+#: analytics/models.py:52 gallery/models.py:9 layouts/models.py:28
+msgid "image"
+msgstr "изображение"
+
+#: analytics/models.py:53 analytics/models.py:62
+msgid "comment"
+msgstr "комментарий"
+
+#: analytics/models.py:56
+msgid "Comment Image"
+msgstr "Прикрепленное изображение"
+
+#: analytics/models.py:57
+msgid "Comment Images"
+msgstr "Прикрепленные изображения"
+
+#: analytics/models.py:61
+msgid "file"
+msgstr "файл"
+
+#: analytics/models.py:65
+msgid "Comment File"
+msgstr "Прикреплённый файл"
+
+#: analytics/models.py:66
+msgid "Comment Files"
+msgstr "Прикреплённые файлы"
+
+#: core/admin_mixins.py:51
+msgid "Gallery"
+msgstr "Галерея"
+
+#: core/admin_mixins.py:68 core/admin_mixins.py:85
+msgid "Preview"
+msgstr "Предварительный просмотр"
+
+#: core/apps.py:8
+msgid "core"
+msgstr "Основное"
+
+#: core/model_mixins.py:7
+msgid "created_date"
+msgstr "Дата создания"
+
+#: core/model_mixins.py:8
+msgid "updated_date"
+msgstr "Дата обновления"
+
+#: core/model_mixins.py:15
+msgid "created by"
+msgstr "создано"
+
+#: core/model_mixins.py:16
+msgid "updated by"
+msgstr "обновлено"
+
+#: core/model_mixins.py:28
+msgid "start date"
+msgstr "дата начала"
+
+#: core/model_mixins.py:29
+msgid "end date"
+msgstr "дата окончания"
+
+#: core/models.py:16
+msgid "Organization"
+msgstr "Организация"
+
+#: core/models.py:17
+msgid "Organizations"
+msgstr "Организации"
+
+#: core/models.py:29
+msgid "code"
+msgstr "кодировка"
+
+#: core/models.py:36
+msgid "Classifier"
+msgstr "Классификатор"
+
+#: core/models.py:37
+msgid "Classifiers"
+msgstr "классификаторы"
+
+#: gallery/apps.py:8
+msgid "gallery"
+msgstr "Галерея"
+
+#: gallery/models.py:12
+msgid "Image"
+msgstr "Изображение"
+
+#: gallery/models.py:13
+msgid "Images"
+msgstr "Изображения"
+
+#: layouts/apps.py:8
+msgid "layouts"
+msgstr "макет"
+
+#: layouts/models.py:13 users/models.py:10
+msgid "classifier"
+msgstr "классификатор"
+
+#: layouts/models.py:16
+msgid "Layout"
+msgstr "Макет"
+
+#: layouts/models.py:17
+msgid "Layouts"
+msgstr "Макеты"
+
+#: layouts/models.py:22
+msgid "Placement in the first column"
+msgstr "Размещение в первой колонке"
+
+#: layouts/models.py:23
+msgid "Placement in the second column"
+msgstr "Размещение во второй колонке"
+
+#: layouts/models.py:24
+msgid "Placement in the third column"
+msgstr "Размещение в третьей колонке"
+
+#: layouts/models.py:27
+msgid "layout"
+msgstr "макет"
+
+#: layouts/models.py:37
+msgid "Activity Group"
+msgstr "Группа видов деятельности"
+
+#: layouts/models.py:38
+msgid "Activity Groups"
+msgstr "Группы видов деятельности"
+
+#: layouts/models.py:44
+msgid "activity group"
+msgstr "группа видов деятельности"
+
+#: layouts/models.py:52
+msgid "Activity"
+msgstr "Вид деятельности"
+
+#: layouts/models.py:53
+msgid "Activities"
+msgstr "Виды деятельности"
+
+#: users/admin.py:12
+msgid "Personal info"
+msgstr "Личная информация"
+
+#: users/admin.py:14
+msgid "Permissions"
+msgstr "Разрешения"
+
+#: users/admin.py:25
+msgid "Important dates"
+msgstr "Важные даты:"
+
+#: users/admin.py:26
+msgid "Worker info"
+msgstr "Информация о работнике"
+
+#: users/models.py:32
+msgid "User"
+msgstr "Пользователь"
+
+#: users/models.py:33
+msgid "Users"
+msgstr "Пользователи"

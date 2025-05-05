@@ -15,4 +15,5 @@ class UserListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = User.objects.all()
 
     filter_backends = [filters.SearchFilter, UserFilter, DjangoFilterBackend]
+    filterset_fields = ('organization', 'classifier')
     search_fields = ['username', 'first_name', 'last_name']
