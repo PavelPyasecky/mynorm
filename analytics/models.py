@@ -12,7 +12,7 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
     worker = models.ForeignKey('users.User', verbose_name=_('worker'), on_delete=models.CASCADE, related_name='worker_supervisions')
     organization = models.ForeignKey(Organization, verbose_name=_('organization'), on_delete=models.CASCADE, related_name='organization_supervisions')
     user = models.ForeignKey('users.User', verbose_name=_('supervisor'), on_delete=models.CASCADE, related_name='user_supervisions')
-    valid = models.BooleanField(default=True)
+    valid = models.BooleanField(verbose_name=_('validity'), default=True)
 
     class Meta:
         verbose_name = _('Supervision')
@@ -20,6 +20,13 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
 
     def __str__(self):
         return self.name
+
+    @property
+    def delta(self):
+        if self.end_date and self.start_date:
+            return timedelta_to_time(self.end_date - self.start_date)
+
+    delta.fget.short_description = _('Duration')
 
 
 class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
@@ -37,6 +44,8 @@ class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
     def delta(self):
         if self.end_date and self.start_date:
             return timedelta_to_time(self.end_date - self.start_date)
+
+    delta.fget.short_description = _('Duration')
 
 
 class Comment(CreatedUpdatedMixin):

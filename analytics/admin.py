@@ -43,12 +43,6 @@ class ActivityStatisticsAdmin(admin.ModelAdmin):
     readonly_fields = ('delta',)
     list_filter = (ActivityStatisticsOrganizationFilter, ActivityStatisticsSupervisionFilter, 'activity',)
 
-    def delta(self, obj):
-        if obj.start_date and obj.end_date:
-            return obj.end_date - obj.start_date
-
-        return None
-
     def has_add_permission(self, request):
         return False
 
@@ -91,12 +85,6 @@ class SupervisionAdmin(NestedModelAdmin):
 
     def has_add_permission(self, request):
         return False
-
-    def delta(self, obj):
-        if obj.start_date and obj.end_date:
-            return obj.end_date - obj.start_date
-
-        return None
 
     def linked_activity_table(self, obj):
         rows = "".join(f"<tr><td>{item.activity.name}</td><td>{item.end_date - item.start_date}</td></tr>" for item in obj.statistics.all())
