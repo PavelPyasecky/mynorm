@@ -199,9 +199,13 @@ EMAIL_HOST = "pro.eu.turbo-smtp.com"
 
 AUTH_USER_MODEL = "users.User"
 
+
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
 }
 
 
