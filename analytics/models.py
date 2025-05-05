@@ -4,22 +4,31 @@ from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin
 from core.models import Organization
 from core.utils import timedelta_to_time
 from layouts.models import Activity
+from django.utils.translation import gettext_lazy as _
 
 
 class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
-    name = models.CharField(max_length=255, null=True)
-    worker = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='worker_supervisions')
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='organization_supervisions')
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='user_supervisions')
+    name = models.CharField(verbose_name=_('name'), max_length=255, null=True)
+    worker = models.ForeignKey('users.User', verbose_name=_('worker'), on_delete=models.CASCADE, related_name='worker_supervisions')
+    organization = models.ForeignKey(Organization, verbose_name=_('organization'), on_delete=models.CASCADE, related_name='organization_supervisions')
+    user = models.ForeignKey('users.User', verbose_name=_('supervisor'), on_delete=models.CASCADE, related_name='user_supervisions')
     valid = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name = _('Supervision')
+        verbose_name_plural = _('Supervisions')
+
     def __str__(self):
-        return self.name or f'Supervision {self.id}'
+        return self.name
 
 
 class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
-    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='statistics')
-    supervision = models.ForeignKey(Supervision, on_delete=models.CASCADE, related_name='statistics')
+    activity = models.ForeignKey(Activity, verbose_name=_('activity'), on_delete=models.CASCADE, related_name='statistics')
+    supervision = models.ForeignKey(Supervision, verbose_name=_('supervision'), on_delete=models.CASCADE, related_name='statistics')
+
+    class Meta:
+        verbose_name = _('Activity statistics')
+        verbose_name_plural = _('Activity statistics')
 
     def __str__(self):
         return f"Statistics for {self.activity.name}"
@@ -31,16 +40,27 @@ class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
 
 
 class Comment(CreatedUpdatedMixin):
-    text = models.TextField()
-    supervision = models.ForeignKey(Supervision, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField(verbose_name=_('text'),)
+    supervision = models.ForeignKey(Supervision, verbose_name=_('supervision'), on_delete=models.CASCADE, related_name='comments')
 
-    def __str__(self):
-        return f"Comment {self.id}"
+    class Meta:
+        verbose_name = _('Comment')
+        verbose_name_plural = _('Comments')
 
 
 class CommentImage(CreatedUpdatedMixin):
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(verbose_name=_('image'), upload_to="images/")
+    comment = models.ForeignKey(Comment, verbose_name=_('comment'), on_delete=models.CASCADE, related_name='images')
 
-    def __str__(self):
-        return f"Image {self.id}"
+    class Meta:
+        verbose_name = _('Comment Image')
+        verbose_name_plural = _('Comment Images')
+
+
+class CommentFiles(CreatedUpdatedMixin):
+    file = models.FileField(verbose_name=_('file'), upload_to="files/")
+    comment = models.ForeignKey(Comment, verbose_name=_('comment'), on_delete=models.CASCADE, related_name='files')
+
+    class Meta:
+        verbose_name = _('Comment File')
+        verbose_name_plural = _('Comment Files')

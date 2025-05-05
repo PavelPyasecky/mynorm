@@ -1,6 +1,14 @@
 from rest_framework import serializers
 
+from gallery.models import ImageGallery
 from layouts.models import Layout, ActivityGroup, Activity
+
+
+class ImageGallerySerializer(serializers.ModelSerializer):
+    url = serializers.ImageField(source='image', read_only=True)
+    class Meta:
+        model = ImageGallery
+        fields = ('url',)
 
 
 class ActivitySerializer(serializers.ModelSerializer):
@@ -11,9 +19,11 @@ class ActivitySerializer(serializers.ModelSerializer):
 
 class ActivityGroupSerializer(serializers.ModelSerializer):
     activities = ActivitySerializer(many=True)
+    image = ImageGallerySerializer(read_only=True)
+
     class Meta:
         model = ActivityGroup
-        fields = ('id', 'name', 'activities')
+        fields = ('id', 'name', 'image', 'activities')
 
 
 class LayoutSerializer(serializers.ModelSerializer):

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'layouts',
     'users',
     'core',
+    'gallery',
 ]
 
 MIDDLEWARE = [
