@@ -38,8 +38,8 @@ class ActivityInline(OrderedTabularInline):
 
 @admin.register(ActivityGroup)
 class ActivityGroupAdmin(SortableAdminMixin, OrderedInlineModelAdminMixin, admin_mixins.ImagePreviewAdminMixin):
-    list_display = ('name', 'layout', 'order',)
-    fields = ('name', 'layout', 'image') + admin_mixins.ImagePreviewAdminMixin.fields
+    list_display = ('name', 'layout', 'order', 'column_number')
+    fields = ('name', 'layout', 'column_number', 'image') + admin_mixins.ImagePreviewAdminMixin.fields
     list_filter = ('layout',)
     autocomplete_fields = ('layout', 'image')
     inlines = (ActivityInline,)

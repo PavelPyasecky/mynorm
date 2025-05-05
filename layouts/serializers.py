@@ -23,7 +23,7 @@ class ActivityGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActivityGroup
-        fields = ('id', 'name', 'image', 'activities')
+        fields = ('id', 'name', 'image', 'column_number', 'activities')
 
 
 class LayoutSerializer(serializers.ModelSerializer):

@@ -18,9 +18,15 @@ class Layout(OrderedModel, CreatedUpdatedMixin):
 
 
 class ActivityGroup(OrderedModel, CreatedUpdatedMixin):
+    class ColumnNumberChoice(models.IntegerChoices):
+        ONE = 1, _("Placement in the first column")
+        TWO = 2, _("Placement in the second column")
+        THREE = 3, _("Placement in the third column")
+
     name = models.CharField(max_length=255)
     layout = models.ForeignKey(Layout, verbose_name=_('layout'), on_delete=models.CASCADE, related_name='activity_groups')
     image = models.ForeignKey(ImageGallery, verbose_name=_('image'), on_delete=models.CASCADE, null=True, related_name='activity_group')
+    column_number = models.PositiveSmallIntegerField(choices=ColumnNumberChoice.choices, default=ColumnNumberChoice.ONE)
 
     order_with_respect_to = 'layout'
 
