@@ -50,11 +50,11 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
 
-    'analytics',
-    'layouts',
-    'users',
-    'core',
-    'gallery',
+    'analytics.apps.AnalyticsConfig',
+    'layouts.apps.LayoutsConfig',
+    'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
+    'gallery.apps.GalleryConfig',
 ]
 
 MIDDLEWARE = [

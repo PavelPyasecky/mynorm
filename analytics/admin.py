@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from nested_admin.nested import NestedTabularInline, NestedModelAdmin
-from analytics.models import ActivityStatistics, Supervision, Comment
+from analytics.models import ActivityStatistics, Supervision, Comment, CommentImage, CommentFiles
 from django.utils.translation import gettext_lazy as _
 
 from core import admin_mixins
@@ -53,9 +53,29 @@ class ActivityStatisticsAdmin(admin.ModelAdmin):
         return False
 
 
+class CommentImageInline(NestedTabularInline):
+    model = CommentImage
+    extra = 0
+    fields = ('image', ) + admin_mixins.ImagePreviewAdminMixin.fields
+    readonly_fields = admin_mixins.ImagePreviewAdminMixin.readonly_fields
+
+    def image_preview(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" height="100">')
+
+        return "[no image]"
+
+
+class CommentFileInline(NestedTabularInline):
+    model = CommentFiles
+    extra = 0
+    fields = ('file', )
+
+
 class CommentsAdminInline(NestedTabularInline):
     model = Comment
     extra = 0
+    inlines = (CommentImageInline, CommentFileInline)
     fields = ('text', 'created_date', 'updated_date') + admin_mixins.CreatedByUpdatedByAdminMixin.fields
     readonly_fields = ('created_date', 'updated_date') + admin_mixins.CreatedByUpdatedByAdminMixin.readonly_fields
 
