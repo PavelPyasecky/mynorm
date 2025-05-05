@@ -3,10 +3,10 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 
-class PreviewImageAdminMixin(admin.ModelAdmin):
-    list_display = ("list_preview_image_preview",)
-    fields = ("preview_image", "preview_image_preview", "image", "image_preview")
-    readonly_fields = ("image_preview", "preview_image_preview")
+class ImagePreviewAdminMixin(admin.ModelAdmin):
+    list_display = ("list_image_preview",)
+    fields = ("image_preview",)
+    readonly_fields = ("image_preview",)
 
     def image_preview(self, obj):
         if obj.image:
@@ -14,17 +14,10 @@ class PreviewImageAdminMixin(admin.ModelAdmin):
 
         return "[no image]"
 
-    def preview_image_preview(self, obj):
-        if obj.preview_image:
-            return mark_safe(f'<img src="{obj.preview_image.url}" height="300">')
-
-        return "[no image]"
-
-    def list_preview_image_preview(self, obj):
-        image = getattr(obj, "preview_image", None) or getattr(obj, "image", None)
+    def list_image_preview(self, obj):
+        image = getattr(obj, "image", None)
         if image:
             return mark_safe(f'<img src="{image.url}" height="100">')
-
         return "[no image]"
 
 

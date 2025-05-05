@@ -7,8 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
-    classifier = models.ForeignKey(Classifier, null=True, blank=True, on_delete=models.CASCADE, related_name='workers')
-    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE, related_name='workers')
+    classifier = models.ForeignKey(Classifier, verbose_name=_('classifier'), null=True, blank=True, on_delete=models.CASCADE, related_name='workers')
+    organization = models.ForeignKey(Organization, verbose_name=_('organization'), null=True, blank=True, on_delete=models.CASCADE, related_name='workers')
 
     class Meta:
         constraints = [
@@ -28,6 +28,9 @@ class User(AbstractUser):
                 condition=Q(classifier__isnull=False, organization__isnull=False)
             )
         ]
+
+        verbose_name = _('User')
+        verbose_name_plural = _('Users')
 
     def __str__(self):
         return self.username
