@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-05 19:03+0000\n"
+"POT-Creation-Date: 2025-05-05 19:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,6 +46,10 @@ msgstr "Работник"
 msgid "supervisor"
 msgstr "Супервизор"
 
+#: analytics/models.py:15
+msgid "validity"
+msgstr "валидность"
+
 #: analytics/models.py:18
 msgid "Supervision"
 msgstr "Наблюдение"
@@ -54,55 +58,59 @@ msgstr "Наблюдение"
 msgid "Supervisions"
 msgstr "Наблюдения"
 
-#: analytics/models.py:26
+#: analytics/models.py:29 analytics/models.py:48
+msgid "Duration"
+msgstr "Продолжительность"
+
+#: analytics/models.py:33
 msgid "activity"
 msgstr "вид деятельности"
 
-#: analytics/models.py:27 analytics/models.py:44
+#: analytics/models.py:34 analytics/models.py:53
 msgid "supervision"
 msgstr "наблюдение"
 
-#: analytics/models.py:30 analytics/models.py:31
+#: analytics/models.py:37 analytics/models.py:38
 msgid "Activity statistics"
 msgstr "Статистика видов деятельности"
 
-#: analytics/models.py:43
+#: analytics/models.py:52
 msgid "text"
 msgstr "текст"
 
-#: analytics/models.py:47
+#: analytics/models.py:56
 msgid "Comment"
 msgstr "Комментарий"
 
-#: analytics/models.py:48
+#: analytics/models.py:57
 msgid "Comments"
 msgstr "Комментарии"
 
-#: analytics/models.py:52 gallery/models.py:9 layouts/models.py:28
+#: analytics/models.py:61 gallery/models.py:9 layouts/models.py:28
 msgid "image"
 msgstr "изображение"
 
-#: analytics/models.py:53 analytics/models.py:62
+#: analytics/models.py:62 analytics/models.py:71
 msgid "comment"
 msgstr "комментарий"
 
-#: analytics/models.py:56
+#: analytics/models.py:65
 msgid "Comment Image"
 msgstr "Прикрепленное изображение"
 
-#: analytics/models.py:57
+#: analytics/models.py:66
 msgid "Comment Images"
 msgstr "Прикрепленные изображения"
 
-#: analytics/models.py:61
+#: analytics/models.py:70
 msgid "file"
 msgstr "файл"
 
-#: analytics/models.py:65
+#: analytics/models.py:74
 msgid "Comment File"
 msgstr "Прикреплённый файл"
 
-#: analytics/models.py:66
+#: analytics/models.py:75
 msgid "Comment Files"
 msgstr "Прикреплённые файлы"
 
@@ -241,6 +249,10 @@ msgstr "Важные даты:"
 #: users/admin.py:26
 msgid "Worker info"
 msgstr "Информация о работнике"
+
+#: users/apps.py:8
+msgid "users"
+msgstr "Пользователи"
 
 #: users/models.py:32
 msgid "User"
