@@ -19,12 +19,14 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
         verbose_name_plural = _('Supervisions')
 
     def __str__(self):
-        return self.name
+        return self.name or _("Supervision ") + f"{self.pk}"
 
     @property
     def delta(self):
         if self.end_date and self.start_date:
             return timedelta_to_time(self.end_date - self.start_date)
+
+        return "--:--"
 
     delta.fget.short_description = _('Duration')
 
@@ -38,12 +40,14 @@ class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
         verbose_name_plural = _('Activity statistics')
 
     def __str__(self):
-        return f"Statistics for {self.activity.name}"
+        return _("Statistics for ") + f"{self.activity.name}"
 
     @property
     def delta(self):
         if self.end_date and self.start_date:
             return timedelta_to_time(self.end_date - self.start_date)
+
+        return "--:--"
 
     delta.fget.short_description = _('Duration')
 

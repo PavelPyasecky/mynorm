@@ -213,7 +213,7 @@ SIMPLE_JWT = {
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = "ru"
-LOCALE_PATHS = [str(BASE_DIR / "translations" / "locale")]
+LOCALE_PATHS = [str(BASE_DIR / "translations" / "locale"),]
 
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
