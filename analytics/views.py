@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from analytics import serializers, exceptions
-from analytics.models import ActivityStatistics, Supervision
+from analytics.models import ActivityStatistics, Supervision, Comment, CommentFiles, CommentImage
 from analytics.utils import deactivate_activity, finish_supervision, deactivate_activities, \
     finish_supervision_with_failure
 from core.permissions import IsSupervisor
@@ -80,3 +80,37 @@ class SupervisionViewSet(RetrieveModelMixin, CreateModelMixin, ListModelMixin, G
         finish_supervision_with_failure(supervision)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class AnalyticsCommentView(CreateModelMixin, GenericViewSet):
+    permission_classes = (IsSupervisor,)
+    serializer_class = serializers.CommentCreateSerializer
+    queryset = Comment.objects.all()
+    lookup_field = 'analytics_id'
+
+    def perform_create(self, serializer):
+        activity_statistics_id = self.kwargs.get('analytics_id')
+
+        text = serializer.validated_data.get('text')
+        images = serializer.validated_data.get('images')
+        files = serializer.validated_data.get('files')
+
+        if text or images or files:
+            comment = Comment.objects.create(activity_statistics_id=activity_statistics_id, text=text,
+                                             created_by=self.request.user, updated_by=self.request.user)
+
+            if images:
+                image_objects = []
+                for image in images:
+                    comment_image = CommentImage(comment=comment, image=image)
+                    image_objects.append(comment_image)
+
+                CommentImage.objects.bulk_create(image_objects)
+
+            if files:
+                file_objects = []
+                for file in files:
+                    comment_file = CommentFiles(comment=comment, file=file)
+                    file_objects.append(comment_file)
+
+                CommentFiles.objects.bulk_create(file_objects)

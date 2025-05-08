@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.contrib import admin
+from django.utils import timezone
+from django.utils.formats import localize
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
@@ -92,3 +95,28 @@ class VideoAdminMixin(admin.ModelAdmin):
                 f"</video>",
             )
         return "No video uploaded"
+
+
+class LocalizedDateTimeAdminMixin:
+    def changelist_view(self, request, extra_context=None):
+        timezone.activate(settings.ADMIN_TIME_ZONE)
+        return super().changelist_view(request, extra_context)
+
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        timezone.activate(settings.ADMIN_TIME_ZONE)
+        return super().changeform_view(request, object_id, form_url, extra_context)
+
+    def get_list_display(self, request):
+        list_display = super().get_list_display(request)
+        return [self.localize_datetime_field(
+            field) if field in self.model._meta.get_fields() and field.get_internal_type() == 'DateTimeField' else field
+                for field in list_display]
+
+    def localize_datetime_field(self, field_name):
+        def wrapper(obj):
+            dt = getattr(obj, field_name)
+            return localize(timezone.localtime(dt)) if dt else ""
+
+        wrapper.short_description = field_name
+        wrapper.admin_order_field = field_name
+        return wrapper

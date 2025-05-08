@@ -12,7 +12,7 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
     worker = models.ForeignKey('users.User', verbose_name=_('worker'), on_delete=models.CASCADE, related_name='worker_supervisions')
     organization = models.ForeignKey(Organization, verbose_name=_('organization'), on_delete=models.CASCADE, related_name='organization_supervisions')
     user = models.ForeignKey('users.User', verbose_name=_('supervisor'), on_delete=models.CASCADE, related_name='user_supervisions')
-    valid = models.BooleanField(verbose_name=_('validity'), default=True)
+    validity = models.BooleanField(verbose_name=_('validity'), default=True)
 
     class Meta:
         verbose_name = _('Supervision')
@@ -54,7 +54,7 @@ class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
 
 class Comment(CreatedUpdatedMixin):
     text = models.TextField(verbose_name=_('text'),)
-    supervision = models.ForeignKey(Supervision, verbose_name=_('supervision'), on_delete=models.CASCADE, related_name='comments')
+    activity_statistics = models.ForeignKey(ActivityStatistics, verbose_name=_('activity statistics'), on_delete=models.CASCADE, related_name='comments')
 
     class Meta:
         verbose_name = _('Comment')
