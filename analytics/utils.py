@@ -20,5 +20,5 @@ def finish_supervision(supervision: Supervision) -> None:
 
 def finish_supervision_with_failure(supervision: Supervision) -> None:
     supervision.end_date = timezone.now()
-    supervision.valid = False
-    supervision.save(update_fields=['end_date', 'valid'])
+    supervision.validity = False
+    supervision.save(update_fields=['end_date', 'validity'])

@@ -38,6 +38,18 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'images', 'files')
 
 
+class CommentCreateSerializer(serializers.ModelSerializer):
+    images = serializers.ListField(child=serializers.ImageField(required=False), allow_empty=True, required=False)
+    files = serializers.ListField(child=serializers.FileField(required=False), allow_empty=True, required=False)
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'images', 'files')
+        extra_kwargs = {
+            'text': {'required': False},
+        }
+
+
 class SupervisionSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
     user = UserSerializer(read_only=True)
@@ -97,8 +109,9 @@ class ActivityStatisticsCreateSerializer(serializers.ModelSerializer):
         model = ActivityStatistics
         fields = ('id', 'activity', 'start_date', 'end_date')
         extra_kwargs = {
-            "start_date": {"read_only": True},
-            "end_date": {"read_only": True},
+            "start_date": {"required": False},
+            "end_date": {"required": False},
+            "comment": {"required": False},
         }
 
     def create(self, validated_data):

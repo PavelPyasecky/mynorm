@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-06 11:00+0000\n"
+"POT-Creation-Date: 2025-05-08 10:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,14 +20,18 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: analytics/admin.py:12 analytics/models.py:13 layouts/models.py:12
+#: analytics/admin.py:13 analytics/models.py:13 layouts/models.py:12
 #: users/models.py:11
 msgid "organization"
 msgstr "организация"
 
-#: analytics/admin.py:25
+#: analytics/admin.py:26
 msgid "last supervisions"
 msgstr "последние наблюдения"
+
+#: analytics/admin.py:99
+msgid "Absence of a system failure"
+msgstr "Отсутствие системного сбоя"
 
 #: analytics/apps.py:8
 msgid "Analytics"
@@ -70,7 +74,7 @@ msgstr "Продолжительность"
 msgid "activity"
 msgstr "вид деятельности"
 
-#: analytics/models.py:36 analytics/models.py:57
+#: analytics/models.py:36
 msgid "supervision"
 msgstr "наблюдение"
 
@@ -85,6 +89,10 @@ msgstr "Статистика вида деятельности: "
 #: analytics/models.py:56
 msgid "text"
 msgstr "текст"
+
+#: analytics/models.py:57
+msgid "activity statistics"
+msgstr "Статистика видов деятельности"
 
 #: analytics/models.py:60
 msgid "Comment"
@@ -122,11 +130,11 @@ msgstr "Прикреплённый файл"
 msgid "Comment Files"
 msgstr "Прикреплённые файлы"
 
-#: core/admin_mixins.py:51
+#: core/admin_mixins.py:54
 msgid "Gallery"
 msgstr "Галерея"
 
-#: core/admin_mixins.py:68 core/admin_mixins.py:85
+#: core/admin_mixins.py:71 core/admin_mixins.py:88
 msgid "Preview"
 msgstr "Предварительный просмотр"
 
