@@ -1,5 +1,7 @@
 from django.db import models
+from django.utils import timezone
 
+from core import model_mixins
 from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin
 from core.models import Organization
 from core.utils import timedelta_to_time
@@ -8,10 +10,12 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
-    name = models.CharField(verbose_name=_('name'), max_length=255, null=True)
-    worker = models.ForeignKey('users.User', verbose_name=_('worker'), on_delete=models.CASCADE, related_name='worker_supervisions')
-    organization = models.ForeignKey(Organization, verbose_name=_('organization'), on_delete=models.CASCADE, related_name='organization_supervisions')
-    user = models.ForeignKey('users.User', verbose_name=_('supervisor'), on_delete=models.CASCADE, related_name='user_supervisions')
+    worker = models.ForeignKey('users.User', verbose_name=_('worker'), on_delete=models.CASCADE,
+                               related_name='worker_supervisions')
+    organization = models.ForeignKey(Organization, verbose_name=_('organization'), on_delete=models.CASCADE,
+                                     related_name='organization_supervisions')
+    user = models.ForeignKey('users.User', verbose_name=_('supervisor'), on_delete=models.CASCADE,
+                             related_name='user_supervisions')
     validity = models.BooleanField(verbose_name=_('validity'), default=True)
 
     class Meta:
@@ -19,7 +23,7 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
         verbose_name_plural = _('Supervisions')
 
     def __str__(self):
-        return self.name or _("Supervision ") + f"{self.pk}"
+        return _("Supervision ") + f"{self.pk}"
 
     @property
     def delta(self):
@@ -32,8 +36,12 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
 
 
 class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
-    activity = models.ForeignKey(Activity, verbose_name=_('activity'), on_delete=models.CASCADE, related_name='statistics')
-    supervision = models.ForeignKey(Supervision, verbose_name=_('supervision'), on_delete=models.CASCADE, related_name='statistics')
+    activity = models.ForeignKey(Activity, verbose_name=_('activity'), on_delete=models.CASCADE,
+                                 related_name='statistics')
+    supervision = models.ForeignKey(Supervision, verbose_name=_('supervision'), on_delete=models.CASCADE,
+                                    related_name='statistics')
+    failure = models.ForeignKey('Failure', verbose_name=_('failure'), null=True, on_delete=models.CASCADE,
+                                related_name='statistics')
 
     class Meta:
         verbose_name = _('Activity statistics')
@@ -53,8 +61,9 @@ class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
 
 
 class Comment(CreatedUpdatedMixin):
-    text = models.TextField(verbose_name=_('text'),)
-    activity_statistics = models.ForeignKey(ActivityStatistics, verbose_name=_('activity statistics'), on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField(verbose_name=_('text'), )
+    activity_statistics = models.ForeignKey(ActivityStatistics, verbose_name=_('activity statistics'),
+                                            on_delete=models.CASCADE, related_name='comments')
 
     class Meta:
         verbose_name = _('Comment')
@@ -77,3 +86,26 @@ class CommentFiles(CreatedUpdatedMixin):
     class Meta:
         verbose_name = _('Comment File')
         verbose_name_plural = _('Comment Files')
+
+
+class Failure(model_mixins.StartEndDateMixin):
+    pass
+
+    @property
+    def is_finished(self):
+        return self.end_date
+
+    @property
+    def delta(self):
+        if self.end_date and self.start_date:
+            return timedelta_to_time(self.end_date - self.start_date)
+
+        elif self.start_date:
+            return timedelta_to_time(timezone.now() - self.start_date)
+
+        return "--:--"
+
+    delta.fget.short_description = _('Duration')
+
+    def __str__(self):
+        return _(f"Failure #{self.id} for {self.delta}")
