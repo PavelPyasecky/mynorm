@@ -91,6 +91,11 @@ class CommentFiles(CreatedUpdatedMixin):
 class Failure(model_mixins.StartEndDateMixin):
     pass
 
+    class Meta:
+        verbose_name = _('Failure')
+        verbose_name_plural = _('Failures')
+
+
     @property
     def is_finished(self):
         return self.end_date

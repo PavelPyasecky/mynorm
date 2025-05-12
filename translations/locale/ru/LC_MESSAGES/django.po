@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-12 12:50+0000\n"
+"POT-Creation-Date: 2025-05-12 12:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,7 +61,7 @@ msgstr "Наблюдения"
 msgid "Supervision "
 msgstr "Наблюдение №"
 
-#: analytics/models.py:35 analytics/models.py:60 analytics/models.py:108
+#: analytics/models.py:35 analytics/models.py:60 analytics/models.py:113
 msgid "Duration"
 msgstr "Продолжительность"
 
@@ -129,7 +129,19 @@ msgstr "Прикреплённый файл"
 msgid "Comment Files"
 msgstr "Прикреплённые файлы"
 
-#: analytics/models.py:111
+#: analytics/models.py:95
+#, fuzzy
+#| msgid "failure"
+msgid "Failure"
+msgstr "Сбой"
+
+#: analytics/models.py:96
+#, fuzzy
+#| msgid "failure"
+msgid "Failures"
+msgstr "Сбои"
+
+#: analytics/models.py:116
 #, python-brace-format
 msgid "Failure #{self.id} for {self.delta}"
 msgstr "Сбой #{self.id} продолжительностью {self.delta}"
