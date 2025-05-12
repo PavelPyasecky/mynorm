@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from analytics.models import ActivityStatistics, Supervision, Comment, CommentImage, CommentFiles
+from analytics.models import ActivityStatistics, Supervision, Comment, CommentImage, CommentFiles, Failure
 from core.models import Organization
 from users.models import User
 
@@ -57,9 +57,8 @@ class SupervisionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supervision
-        fields = ('id', 'name', 'worker', 'organization', 'user', 'start_date', 'end_date', 'comments')
+        fields = ('id', 'worker', 'organization', 'user', 'start_date', 'end_date', 'comments')
         extra_kwargs = {
-            "name": {"required": False},
             "start_date": {"read_only": True},
             "end_date": {"read_only": True},
         }
@@ -68,9 +67,8 @@ class SupervisionSerializer(serializers.ModelSerializer):
 class SupervisionLiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supervision
-        fields = ('id', 'name', 'worker', 'organization', 'user', 'start_date', 'end_date')
+        fields = ('id', 'worker', 'organization', 'user', 'start_date', 'end_date')
         extra_kwargs = {
-            "name": {"required": False},
             "start_date": {"read_only": True},
             "end_date": {"read_only": True},
         }
@@ -79,9 +77,8 @@ class SupervisionLiteSerializer(serializers.ModelSerializer):
 class SupervisionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supervision
-        fields = ('id', 'name', 'worker', 'organization', 'user', 'start_date', 'end_date')
+        fields = ('id', 'worker', 'organization', 'user', 'start_date', 'end_date')
         extra_kwargs = {
-            "name": {"required": False},
             "start_date": {"read_only": True},
             "end_date": {"read_only": True},
             "user": {"read_only": True},
@@ -118,3 +115,9 @@ class ActivityStatisticsCreateSerializer(serializers.ModelSerializer):
         validated_data['created_by'] = self.context['request'].user
         validated_data['updated_by'] = self.context['request'].user
         return super().create(validated_data)
+
+
+class FailureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Failure
+        fields = ('id', 'start_date', 'end_date')

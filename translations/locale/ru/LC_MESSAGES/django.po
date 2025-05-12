@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-08 10:56+0000\n"
+"POT-Creation-Date: 2025-05-12 12:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: analytics/admin.py:13 analytics/models.py:13 layouts/models.py:12
+#: analytics/admin.py:13 analytics/models.py:15 layouts/models.py:12
 #: users/models.py:11
 msgid "organization"
 msgstr "организация"
@@ -29,7 +29,7 @@ msgstr "организация"
 msgid "last supervisions"
 msgstr "последние наблюдения"
 
-#: analytics/admin.py:99
+#: analytics/admin.py:89 analytics/admin.py:109
 msgid "Absence of a system failure"
 msgstr "Отсутствие системного сбоя"
 
@@ -37,98 +37,102 @@ msgstr "Отсутствие системного сбоя"
 msgid "Analytics"
 msgstr "Аналитика"
 
-#: analytics/models.py:11 core/models.py:10 core/models.py:30
-#: gallery/models.py:8 layouts/models.py:11 layouts/models.py:43
-msgid "name"
-msgstr "наименование"
-
-#: analytics/models.py:12
+#: analytics/models.py:13
 msgid "worker"
 msgstr "Работник"
 
-#: analytics/models.py:14
+#: analytics/models.py:17
 msgid "supervisor"
 msgstr "Супервизор"
 
-#: analytics/models.py:15
+#: analytics/models.py:19
 msgid "validity"
 msgstr "валидность"
 
-#: analytics/models.py:18
+#: analytics/models.py:22
 msgid "Supervision"
 msgstr "Наблюдение"
 
-#: analytics/models.py:19
+#: analytics/models.py:23
 msgid "Supervisions"
 msgstr "Наблюдения"
 
-#: analytics/models.py:22
+#: analytics/models.py:26
 msgid "Supervision "
 msgstr "Наблюдение №"
 
-#: analytics/models.py:31 analytics/models.py:52
+#: analytics/models.py:35 analytics/models.py:60 analytics/models.py:108
 msgid "Duration"
 msgstr "Продолжительность"
 
-#: analytics/models.py:35
+#: analytics/models.py:39
 msgid "activity"
 msgstr "вид деятельности"
 
-#: analytics/models.py:36
+#: analytics/models.py:41
 msgid "supervision"
 msgstr "наблюдение"
 
-#: analytics/models.py:39 analytics/models.py:40
+#: analytics/models.py:43
+msgid "failure"
+msgstr "сбой"
+
+#: analytics/models.py:47 analytics/models.py:48
 msgid "Activity statistics"
 msgstr "Статистика видов деятельности"
 
-#: analytics/models.py:43
+#: analytics/models.py:51
 msgid "Statistics for "
 msgstr "Статистика вида деятельности: "
 
-#: analytics/models.py:56
+#: analytics/models.py:64
 msgid "text"
 msgstr "текст"
 
-#: analytics/models.py:57
+#: analytics/models.py:65
 msgid "activity statistics"
 msgstr "Статистика видов деятельности"
 
-#: analytics/models.py:60
+#: analytics/models.py:69
 msgid "Comment"
 msgstr "Комментарий"
 
-#: analytics/models.py:61
+#: analytics/models.py:70
 msgid "Comments"
 msgstr "Комментарии"
 
-#: analytics/models.py:65 gallery/models.py:9 layouts/models.py:28
+#: analytics/models.py:74 gallery/models.py:9 layouts/models.py:28
 msgid "image"
 msgstr "изображение"
 
-#: analytics/models.py:66 analytics/models.py:75
+#: analytics/models.py:75 analytics/models.py:84
 msgid "comment"
 msgstr "комментарий"
 
-#: analytics/models.py:69
+#: analytics/models.py:78
 msgid "Comment Image"
 msgstr "Прикрепленное изображение"
 
-#: analytics/models.py:70
+#: analytics/models.py:79
 msgid "Comment Images"
 msgstr "Прикрепленные изображения"
 
-#: analytics/models.py:74
+#: analytics/models.py:83
 msgid "file"
 msgstr "файл"
 
-#: analytics/models.py:78
+#: analytics/models.py:87
 msgid "Comment File"
 msgstr "Прикреплённый файл"
 
-#: analytics/models.py:79
+#: analytics/models.py:88
 msgid "Comment Files"
 msgstr "Прикреплённые файлы"
+
+#: analytics/models.py:111
+#, python-brace-format
+msgid "Failure #{self.id} for {self.delta}"
+msgstr "Сбой #{self.id} продолжительностью {self.delta}"
 
 #: core/admin_mixins.py:54
 msgid "Gallery"
@@ -165,6 +169,11 @@ msgstr "дата начала"
 #: core/model_mixins.py:29
 msgid "end date"
 msgstr "дата окончания"
+
+#: core/models.py:10 core/models.py:30 gallery/models.py:8 layouts/models.py:11
+#: layouts/models.py:43
+msgid "name"
+msgstr "наименование"
 
 #: core/models.py:16
 msgid "Organization"

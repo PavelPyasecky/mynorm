@@ -7,8 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from analytics import serializers, exceptions
 from analytics.models import ActivityStatistics, Supervision, Comment, CommentFiles, CommentImage
-from analytics.utils import deactivate_activity, finish_supervision, deactivate_activities, \
-    finish_supervision_with_failure
+from analytics.services import SupervisionService, FailureService, ActivityStatisticsService
 from core.permissions import IsSupervisor
 
 
@@ -29,21 +28,22 @@ class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
     serializer_class = serializers.ActivityStatisticsCreateSerializer
     queryset = ActivityStatistics.objects.all()
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         supervision_id = self.kwargs.get('pk')
         get_object_or_404(Supervision, id=supervision_id)
         serializer.validated_data['supervision_id'] = supervision_id
 
         previous_activity_statistic = ActivityStatistics.objects.filter(supervision_id=supervision_id,
                                                                         end_date__isnull=True).last()
-
-        if previous_activity_statistic:
-            if previous_activity_statistic.activity == serializer.validated_data['activity']:
-                raise exceptions.ActivityAlreadyActivatedException()
-
-            deactivate_activity(previous_activity_statistic)
-
-        super().perform_create(serializer)
+        new_activity = serializer.validated_data['activity']
+        activity_statistic = ActivityStatisticsService().start_activity(serializer.validated_data,
+                                                                        previous_activity_statistic,
+                                                                        new_activity)
+        serializer = self.get_serializer(activity_statistic)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class SupervisionViewSet(RetrieveModelMixin, CreateModelMixin, ListModelMixin, GenericViewSet):
@@ -59,25 +59,7 @@ class SupervisionViewSet(RetrieveModelMixin, CreateModelMixin, ListModelMixin, G
 
     def finish(self, request: Request, pk: int):
         supervision = get_object_or_404(Supervision.objects, pk=pk)
-
-        previous_activity_statistic = ActivityStatistics.objects.filter(supervision=supervision,
-                                                                        end_date__isnull=True).last()
-        if previous_activity_statistic:
-            deactivate_activity(previous_activity_statistic)
-
-        finish_supervision(supervision)
-
-        return Response(status=status.HTTP_200_OK)
-
-    def failure(self, request: Request, pk: int):
-        supervision = get_object_or_404(Supervision.objects, pk=pk)
-
-        previous_activities_statistic = ActivityStatistics.objects.filter(supervision=supervision,
-                                                                        end_date__isnull=True)
-        if previous_activities_statistic:
-            deactivate_activities(previous_activities_statistic)
-
-        finish_supervision_with_failure(supervision)
+        SupervisionService.finish_supervision(supervision)
 
         return Response(status=status.HTTP_200_OK)
 
@@ -114,3 +96,28 @@ class AnalyticsCommentView(CreateModelMixin, GenericViewSet):
                     file_objects.append(comment_file)
 
                 CommentFiles.objects.bulk_create(file_objects)
+
+
+class AnalyticsFailureView(GenericViewSet):
+    permission_classes = (IsSupervisor,)
+    serializer_class = serializers.FailureSerializer
+    queryset = Comment.objects.all()
+    lookup_field = 'analytics_id'
+
+    def start_failure(self, request, *args, **kwargs):
+        activity_statistics_id = self.kwargs.get('analytics_id')
+        activity_statistics = get_object_or_404(ActivityStatistics, id=activity_statistics_id)
+
+        failure = FailureService.create_failure(activity_statistics)
+
+        serializer = self.get_serializer(failure)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def finish_failure(self, request, *args, **kwargs):
+        activity_statistics_id = self.kwargs.get('analytics_id')
+        activity_statistics = get_object_or_404(ActivityStatistics, id=activity_statistics_id)
+
+        failure = FailureService.finish_failure(activity_statistics)
+
+        serializer = self.get_serializer(failure)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from nested_admin.nested import NestedTabularInline, NestedModelAdmin
-from analytics.models import ActivityStatistics, Supervision, Comment, CommentImage, CommentFiles
+from analytics.models import ActivityStatistics, Supervision, Comment, CommentImage, CommentFiles, Failure
 from django.utils.translation import gettext_lazy as _
 
 from core import admin_mixins
@@ -67,10 +67,11 @@ class CommentsAdminInline(NestedTabularInline):
 @admin.register(ActivityStatistics)
 class ActivityStatisticsAdmin(admin_mixins.LocalizedDateTimeAdminMixin, NestedModelAdmin):
     list_display = ('id', 'activity__name', 'activity__activity_group__name', 'supervision__organization__name',
-                    'start_date', 'end_date', 'delta',)
+                    'start_date', 'end_date', 'delta', 'is_valid')
     readonly_fields = (
     'supervision', 'activity', 'created_by', 'updated_by', 'created_date', 'updated_date', 'start_date', 'end_date',
-    'delta',)
+    'delta', 'is_valid', 'failure')
+    fields = ('activity', 'start_date', 'end_date', 'delta', 'failure')
     list_filter = (ActivityStatisticsOrganizationFilter, ActivityStatisticsSupervisionFilter, 'activity',)
 
     inlines = (CommentsAdminInline,)
@@ -78,15 +79,24 @@ class ActivityStatisticsAdmin(admin_mixins.LocalizedDateTimeAdminMixin, NestedMo
     def has_add_permission(self, request):
         return False
 
+    def is_valid(self, obj):
+        return format_html(
+            '<span style="color: {};">{}</span>',
+            'green' if not obj.failure else 'red',
+            '✓' if not obj.failure else '✗ Failure in system'
+        )
+
+    is_valid.short_description = _('Absence of a system failure')
+
 
 @admin.register(Supervision)
 class SupervisionAdmin(admin_mixins.LocalizedDateTimeAdminMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'organization', 'user', 'start_date', 'end_date', 'delta', 'is_valid')
+    list_display = ('id', 'organization', 'user', 'start_date', 'end_date', 'delta', 'is_valid')
     readonly_fields = (
                       'delta', 'start_date', 'end_date') + admin_mixins.CreatedByUpdatedByAdminMixin.readonly_fields + (
                           'updated_date', 'created_date', 'linked_activity_table')
     list_filter = ('organization',)
-    fields = ('name', 'organization', 'user', 'worker', 'start_date',
+    fields = ('organization', 'user', 'worker', 'start_date',
               'end_date') + admin_mixins.CreatedByUpdatedByAdminMixin.fields + ('linked_activity_table',)
 
     def is_valid(self, obj):
@@ -108,3 +118,8 @@ class SupervisionAdmin(admin_mixins.LocalizedDateTimeAdminMixin, admin.ModelAdmi
         return mark_safe(html)
 
     linked_activity_table.short_description = "Statistics"
+
+
+@admin.register(Failure)
+class FailureAdmin(admin_mixins.LocalizedDateTimeAdminMixin, admin.ModelAdmin):
+    readonly_fields = ('start_date', 'end_date')
