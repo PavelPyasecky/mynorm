@@ -130,14 +130,10 @@ msgid "Comment Files"
 msgstr "Прикреплённые файлы"
 
 #: analytics/models.py:95
-#, fuzzy
-#| msgid "failure"
 msgid "Failure"
 msgstr "Сбой"
 
 #: analytics/models.py:96
-#, fuzzy
-#| msgid "failure"
 msgid "Failures"
 msgstr "Сбои"
 
