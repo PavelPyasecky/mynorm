@@ -25,8 +25,28 @@ whitenoise = "^6.9.0"
 django-cors-headers = "^4.7.0"
 polib = "^1.2.0"
 translate = "^3.6.1"
+black = "^25.1.0"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 79
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+)/
+'''
