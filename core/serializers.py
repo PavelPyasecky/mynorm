@@ -6,10 +6,10 @@ from core.models import Organization, Classifier
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ('id', 'name')
+        fields = ("id", "name")
 
 
 class ClassifierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classifier
-        fields = ('id', 'code', 'name')
+        fields = ("id", "code", "name")

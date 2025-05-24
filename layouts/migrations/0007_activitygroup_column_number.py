@@ -6,13 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('layouts', '0006_alter_activity_options_alter_activitygroup_options_and_more'),
+        (
+            "layouts",
+            "0006_alter_activity_options_alter_activitygroup_options_and_more",
+        ),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='activitygroup',
-            name='column_number',
-            field=models.PositiveSmallIntegerField(choices=[(1, 'Placement in the first column'), (2, 'Placement in the second column'), (3, 'Placement in the third column')], default=1),
+            model_name="activitygroup",
+            name="column_number",
+            field=models.PositiveSmallIntegerField(
+                choices=[
+                    (1, "Placement in the first column"),
+                    (2, "Placement in the second column"),
+                    (3, "Placement in the third column"),
+                ],
+                default=1,
+            ),
         ),
     ]

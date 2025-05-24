@@ -7,23 +7,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_alter_classifier_options_alter_organization_options_and_more'),
-        ('users', '0007_alter_user_unique_together_and_more'),
+        (
+            "core",
+            "0005_alter_classifier_options_alter_organization_options_and_more",
+        ),
+        ("users", "0007_alter_user_unique_together_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='user',
-            options={'verbose_name': 'User', 'verbose_name_plural': 'Users'},
+            name="user",
+            options={"verbose_name": "User", "verbose_name_plural": "Users"},
         ),
         migrations.AlterField(
-            model_name='user',
-            name='classifier',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='workers', to='core.classifier', verbose_name='classifier'),
+            model_name="user",
+            name="classifier",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="workers",
+                to="core.classifier",
+                verbose_name="classifier",
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='organization',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='workers', to='core.organization', verbose_name='organization'),
+            model_name="user",
+            name="organization",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="workers",
+                to="core.organization",
+                verbose_name="organization",
+            ),
         ),
     ]

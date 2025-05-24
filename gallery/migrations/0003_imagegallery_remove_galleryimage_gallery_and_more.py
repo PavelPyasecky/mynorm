@@ -7,31 +7,45 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gallery', '0002_gallery_galleryimage_delete_imagegallery'),
+        ("gallery", "0002_gallery_galleryimage_delete_imagegallery"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ImageGallery',
+            name="ImageGallery",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('image', models.ImageField(upload_to='gallery/')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_date",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "updated_date",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                ("image", models.ImageField(upload_to="gallery/")),
             ],
             options={
-                'verbose_name': 'Image',
-                'verbose_name_plural': 'Images',
+                "verbose_name": "Image",
+                "verbose_name_plural": "Images",
             },
         ),
         migrations.RemoveField(
-            model_name='galleryimage',
-            name='gallery',
+            model_name="galleryimage",
+            name="gallery",
         ),
         migrations.DeleteModel(
-            name='Gallery',
+            name="Gallery",
         ),
         migrations.DeleteModel(
-            name='GalleryImage',
+            name="GalleryImage",
         ),
     ]

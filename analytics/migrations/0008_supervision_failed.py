@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('analytics', '0007_rename_url_commentimage_image'),
+        ("analytics", "0007_rename_url_commentimage_image"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='supervision',
-            name='failed',
+            model_name="supervision",
+            name="failed",
             field=models.BooleanField(default=False),
         ),
     ]

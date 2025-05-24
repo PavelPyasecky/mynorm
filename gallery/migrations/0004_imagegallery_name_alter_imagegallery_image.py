@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gallery', '0003_imagegallery_remove_galleryimage_gallery_and_more'),
+        ("gallery", "0003_imagegallery_remove_galleryimage_gallery_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='imagegallery',
-            name='name',
-            field=models.CharField(max_length=255, null=True, verbose_name='name'),
+            model_name="imagegallery",
+            name="name",
+            field=models.CharField(
+                max_length=255, null=True, verbose_name="name"
+            ),
         ),
         migrations.AlterField(
-            model_name='imagegallery',
-            name='image',
-            field=models.ImageField(upload_to='gallery/', verbose_name='image'),
+            model_name="imagegallery",
+            name="image",
+            field=models.ImageField(
+                upload_to="gallery/", verbose_name="image"
+            ),
         ),
     ]

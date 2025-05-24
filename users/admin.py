@@ -31,8 +31,16 @@ class UserAdmin(auth_admin.UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("username", "first_name", "last_name", "password1", "password2", "is_staff", "classifier",
-                           "organization"),
+                "fields": (
+                    "username",
+                    "first_name",
+                    "last_name",
+                    "password1",
+                    "password2",
+                    "is_staff",
+                    "classifier",
+                    "organization",
+                ),
             },
         ),
     )

@@ -7,30 +7,46 @@ from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
-    classifier = models.ForeignKey(Classifier, verbose_name=_('classifier'), null=True, blank=True, on_delete=models.CASCADE, related_name='workers')
-    organization = models.ForeignKey(Organization, verbose_name=_('organization'), null=True, blank=True, on_delete=models.CASCADE, related_name='workers')
+    classifier = models.ForeignKey(
+        Classifier,
+        verbose_name=_("classifier"),
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="workers",
+    )
+    organization = models.ForeignKey(
+        Organization,
+        verbose_name=_("organization"),
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="workers",
+    )
 
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=(Q(is_staff=True) & Q(organization__isnull=True)) |
-                      (Q(is_staff=False) & Q(organization__isnull=False)),
-                name='organization_required_only_for_workers'
+                check=(Q(is_staff=True) & Q(organization__isnull=True))
+                | (Q(is_staff=False) & Q(organization__isnull=False)),
+                name="organization_required_only_for_workers",
             ),
             models.CheckConstraint(
-                check=(Q(is_staff=True) & Q(classifier__isnull=True)) |
-                      (Q(is_staff=False) & Q(classifier__isnull=False)),
-                name='classifier_required_only_for_workers'
+                check=(Q(is_staff=True) & Q(classifier__isnull=True))
+                | (Q(is_staff=False) & Q(classifier__isnull=False)),
+                name="classifier_required_only_for_workers",
             ),
             models.UniqueConstraint(
-                fields=['classifier', 'organization'],
-                name='unique_classifier_organization_of_user_if_set',
-                condition=Q(classifier__isnull=False, organization__isnull=False)
-            )
+                fields=["classifier", "organization"],
+                name="unique_classifier_organization_of_user_if_set",
+                condition=Q(
+                    classifier__isnull=False, organization__isnull=False
+                ),
+            ),
         ]
 
-        verbose_name = _('User')
-        verbose_name_plural = _('Users')
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
 
     def __str__(self):
         return self.username

@@ -4,16 +4,34 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CreatedUpdatedDateMixin(models.Model):
-    created_date = models.DateTimeField(verbose_name=_('created_date'), default=timezone.now)
-    updated_date = models.DateTimeField(verbose_name=_('updated_date'), default=timezone.now)
+    created_date = models.DateTimeField(
+        verbose_name=_("created_date"), default=timezone.now
+    )
+    updated_date = models.DateTimeField(
+        verbose_name=_("updated_date"), default=timezone.now
+    )
 
     class Meta:
         abstract = True
 
 
 class CreatedUpdatedByMixin(models.Model):
-    created_by = models.ForeignKey('users.User', verbose_name=_('created by'), on_delete=models.SET_NULL, related_name="%(class)s_created", null=True, blank=True)
-    updated_by = models.ForeignKey('users.User', verbose_name=_('updated by'), on_delete=models.SET_NULL, related_name="%(class)s_updated", null=True, blank=True)
+    created_by = models.ForeignKey(
+        "users.User",
+        verbose_name=_("created by"),
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_created",
+        null=True,
+        blank=True,
+    )
+    updated_by = models.ForeignKey(
+        "users.User",
+        verbose_name=_("updated by"),
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_updated",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         abstract = True
@@ -25,8 +43,12 @@ class CreatedUpdatedMixin(CreatedUpdatedByMixin, CreatedUpdatedDateMixin):
 
 
 class StartEndDateMixin(models.Model):
-    start_date = models.DateTimeField(verbose_name=_('start date'), default=timezone.now)
-    end_date = models.DateTimeField(verbose_name=_('end date'), null=True, blank=True)
+    start_date = models.DateTimeField(
+        verbose_name=_("start date"), default=timezone.now
+    )
+    end_date = models.DateTimeField(
+        verbose_name=_("end date"), null=True, blank=True
+    )
 
     class Meta:
         abstract = True

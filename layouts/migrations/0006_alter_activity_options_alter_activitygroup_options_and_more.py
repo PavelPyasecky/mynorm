@@ -9,118 +9,215 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_alter_classifier_options_alter_organization_options_and_more'),
-        ('gallery', '0005_alter_imagegallery_created_date_and_more'),
-        ('layouts', '0005_activitygroup_image'),
+        (
+            "core",
+            "0005_alter_classifier_options_alter_organization_options_and_more",
+        ),
+        ("gallery", "0005_alter_imagegallery_created_date_and_more"),
+        ("layouts", "0005_activitygroup_image"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='activity',
-            options={'ordering': ('order',), 'verbose_name': 'Activity', 'verbose_name_plural': 'Activities'},
+            name="activity",
+            options={
+                "ordering": ("order",),
+                "verbose_name": "Activity",
+                "verbose_name_plural": "Activities",
+            },
         ),
         migrations.AlterModelOptions(
-            name='activitygroup',
-            options={'ordering': ('order',), 'verbose_name': 'Activity Group', 'verbose_name_plural': 'Activity Groups'},
+            name="activitygroup",
+            options={
+                "ordering": ("order",),
+                "verbose_name": "Activity Group",
+                "verbose_name_plural": "Activity Groups",
+            },
         ),
         migrations.AlterModelOptions(
-            name='layout',
-            options={'ordering': ('order',), 'verbose_name': 'Layout', 'verbose_name_plural': 'Layouts'},
+            name="layout",
+            options={
+                "ordering": ("order",),
+                "verbose_name": "Layout",
+                "verbose_name_plural": "Layouts",
+            },
         ),
         migrations.AddField(
-            model_name='layout',
-            name='name',
-            field=models.CharField(max_length=255, null=True, verbose_name='name'),
+            model_name="layout",
+            name="name",
+            field=models.CharField(
+                max_length=255, null=True, verbose_name="name"
+            ),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='activity_group',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='activities', to='layouts.activitygroup', verbose_name='activity group'),
+            model_name="activity",
+            name="activity_group",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="activities",
+                to="layouts.activitygroup",
+                verbose_name="activity group",
+            ),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_created', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="activity",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_created",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='created_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date'),
+            model_name="activity",
+            name="created_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='name',
-            field=models.CharField(max_length=255, verbose_name='name'),
+            model_name="activity",
+            name="name",
+            field=models.CharField(max_length=255, verbose_name="name"),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='updated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_updated', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            model_name="activity",
+            name="updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_updated",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="updated by",
+            ),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='updated_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date'),
+            model_name="activity",
+            name="updated_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="updated_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='activitygroup',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_created', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="activitygroup",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_created",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
         migrations.AlterField(
-            model_name='activitygroup',
-            name='created_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date'),
+            model_name="activitygroup",
+            name="created_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='activitygroup',
-            name='image',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='activity_group', to='gallery.imagegallery', verbose_name='image'),
+            model_name="activitygroup",
+            name="image",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="activity_group",
+                to="gallery.imagegallery",
+                verbose_name="image",
+            ),
         ),
         migrations.AlterField(
-            model_name='activitygroup',
-            name='layout',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='activity_groups', to='layouts.layout', verbose_name='layout'),
+            model_name="activitygroup",
+            name="layout",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="activity_groups",
+                to="layouts.layout",
+                verbose_name="layout",
+            ),
         ),
         migrations.AlterField(
-            model_name='activitygroup',
-            name='updated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_updated', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            model_name="activitygroup",
+            name="updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_updated",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="updated by",
+            ),
         ),
         migrations.AlterField(
-            model_name='activitygroup',
-            name='updated_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date'),
+            model_name="activitygroup",
+            name="updated_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="updated_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='layout',
-            name='classifier',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='layout', to='core.classifier', verbose_name='classifier'),
+            model_name="layout",
+            name="classifier",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="layout",
+                to="core.classifier",
+                verbose_name="classifier",
+            ),
         ),
         migrations.AlterField(
-            model_name='layout',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_created', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="layout",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_created",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
         migrations.AlterField(
-            model_name='layout',
-            name='created_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date'),
+            model_name="layout",
+            name="created_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='layout',
-            name='organization',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='layouts', to='core.organization', verbose_name='organization'),
+            model_name="layout",
+            name="organization",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="layouts",
+                to="core.organization",
+                verbose_name="organization",
+            ),
         ),
         migrations.AlterField(
-            model_name='layout',
-            name='updated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_updated', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            model_name="layout",
+            name="updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_updated",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="updated by",
+            ),
         ),
         migrations.AlterField(
-            model_name='layout',
-            name='updated_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date'),
+            model_name="layout",
+            name="updated_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="updated_date"
+            ),
         ),
     ]
