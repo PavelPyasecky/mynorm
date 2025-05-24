@@ -1,0 +1,1 @@
+MyNorm is a business process management project.
