@@ -25,6 +25,16 @@ jobs:
   test:
     needs: [lint]
     runs-on: ubuntu-latest
+    postgres:
+      image: postgres:13
+      env:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: test_mynorm
+      ports:
+        - 5432:5432
+      options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -35,5 +45,10 @@ jobs:
       - name: Install deps
         run: pip install poetry && poetry install
 
-      - name: Test
-        run: python manage.py test
+      - name: Run tests in parallel
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_mynorm
+          DJANGO_SETTINGS_MODULE: config.settings
+          DEBUG: "False"
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        run: python manage.py test --parallel --noinput
