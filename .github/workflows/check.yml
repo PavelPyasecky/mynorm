@@ -43,8 +43,23 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install deps
-        run: pip install poetry && poetry install
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            .venv
+            ~/.cache/pypoetry
+          key: venv-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
 
       - name: Run tests in parallel
         env:
@@ -52,4 +67,4 @@ jobs:
           DJANGO_SETTINGS_MODULE: config.settings
           DEBUG: "False"
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-        run: python manage.py test --parallel --noinput
+        run: poetry run python manage.py test --parallel --noinput
