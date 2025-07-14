@@ -4,31 +4,54 @@ log:
 entryPoints:
   web:
     address: ':80'
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ':443'
+
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: pavel.piasetski.web@gmail.com
+      storage: /etc/traefik/acme/acme.json
+      httpChallenge:
+        entryPoint: web
 
 
 http:
   routers:
     web-media-router:
-      rule: 'Host(`176.98.178.73`) && PathPrefix(`/media/`)'
+      rule: 'Host(`dev-314.ru`) && PathPrefix(`/media/`)'
       entryPoints:
-        - web
+        - websecure
       middlewares:
         - csrf
       service: django-media
+      tls:
+        certResolver: letsencrypt
 
     web-fe-router:
-      rule: 'Host(`176.98.178.73`) && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
+      rule: 'Host(`dev-314.ru`)  && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
       entryPoints:
-        - web
+        - websecure
       service: nuxt
+      tls:
+        certResolver: letsencrypt
 
     web-be-router:
-      rule: 'Host(`176.98.178.73`) && !PathPrefix(`/media/`) && (PathPrefix(`/api/`) || PathPrefix(`/admin/`) || PathPrefix(`/static/`))'
+      rule: 'Host(`dev-314.ru`) && !PathPrefix(`/media/`) && (PathPrefix(`/api/`) || PathPrefix(`/admin/`) || PathPrefix(`/static/`))'
       entryPoints:
-        - web
+        - websecure
       middlewares:
         - csrf
       service: django
+      tls:
+        certResolver: letsencrypt
 
 
   middlewares:
