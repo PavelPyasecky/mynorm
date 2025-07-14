@@ -30,6 +30,7 @@ SECRET_KEY = 'django-insecure-btd-hzul#rb@#x6=5^j8(5e)&((_%7cw*d65+@wjd0sjz*f)bo
 DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="*").split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", default="*").split(',')
 
 # Application definition
 
@@ -226,6 +227,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://127.0.0.1:8080",
     "http://127.0.0.1",
+    "https://dev-314.ru",
 ]
 
 CORS_ALLOW_METHODS = [
