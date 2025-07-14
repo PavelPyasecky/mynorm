@@ -27,10 +27,10 @@ env = environ.Env()
 SECRET_KEY = 'django-insecure-btd-hzul#rb@#x6=5^j8(5e)&((_%7cw*d65+@wjd0sjz*f)bo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DJANGO_DEBUG", False)
+
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="*").split(',')
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", default="*").split(',')
 
 # Application definition
 
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'ordered_model',
     'django_filters',
+    'django_redis',
     'corsheaders',
 
     'analytics.apps.AnalyticsConfig',
@@ -250,3 +251,5 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+
+REDIS_URL = env("REDIS_URL", default="redis://redis:6379/0")

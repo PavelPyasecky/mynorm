@@ -25,6 +25,7 @@ whitenoise = "^6.9.0"
 django-cors-headers = "^4.7.0"
 polib = "^1.2.0"
 translate = "^3.6.1"
+django-redis = "^6.0.0"
 
 
 [build-system]

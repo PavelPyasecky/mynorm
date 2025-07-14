@@ -298,6 +298,24 @@ files = [
 ]
 
 [[package]]
+name = "django-redis"
+version = "6.0.0"
+description = "Full featured redis cache backend for Django."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "django_redis-6.0.0-py3-none-any.whl", hash = "sha256:20bf0063a8abee567eb5f77f375143c32810c8700c0674ced34737f8de4e36c0"},
+    {file = "django_redis-6.0.0.tar.gz", hash = "sha256:2d9cb12a20424a4c4dde082c6122f486628bae2d9c2bee4c0126a4de7fda00dd"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+redis = ">=4.0.2"
+
+[package.extras]
+hiredis = ["redis[hiredis] (>=4.0.2)"]
+
+[[package]]
 name = "djangorestframework"
 version = "3.16.0"
 description = "Web APIs for Django, made easy."
@@ -695,6 +713,22 @@ files = [
 ]
 
 [[package]]
+name = "redis"
+version = "6.2.0"
+description = "Python client for Redis database and key-value store"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "redis-6.2.0-py3-none-any.whl", hash = "sha256:c8ddf316ee0aab65f04a11229e94a64b2618451dab7a67cb2f77eb799d872d5e"},
+    {file = "redis-6.2.0.tar.gz", hash = "sha256:e821f129b75dde6cb99dd35e5c76e8c49512a5a0d8dfdc560b2fbd44b85ca977"},
+]
+
+[package.extras]
+hiredis = ["hiredis (>=3.2.0)"]
+jwt = ["pyjwt (>=2.9.0)"]
+ocsp = ["cryptography (>=36.0.1)", "pyopenssl (>=20.0.1)", "requests (>=2.31.0)"]
+
+[[package]]
 name = "requests"
 version = "2.32.3"
 description = "Python HTTP for Humans."
@@ -792,4 +826,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "d9c67eaf84d6dcbc0f6e5611e7e6b1c61f3410d35dcc497ec2c662a14e16d4b4"
+content-hash = "1e1a159bcc28da26f3a11e1f6f9621b5b45f866a995121b865874c7f71771972"
