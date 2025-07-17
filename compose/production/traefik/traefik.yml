@@ -39,7 +39,7 @@ http:
       rule: 'Host(`dev-314.ru`)  && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
       entryPoints:
         - websecure
-      service: nuxt
+      service: front
       tls:
         certResolver: letsencrypt
 
