@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('analytics', '0008_supervision_failed'),
+        ("analytics", "0008_supervision_failed"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='supervision',
-            name='failed',
+            model_name="supervision",
+            name="failed",
         ),
         migrations.AddField(
-            model_name='supervision',
-            name='valid',
+            model_name="supervision",
+            name="valid",
             field=models.BooleanField(default=True),
         ),
     ]

@@ -9,26 +9,52 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('core', '0001_initial'),
+        ("core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('first_name', models.CharField(max_length=30)),
-                ('last_name', models.CharField(max_length=30)),
-                ('email', models.EmailField(blank=True, max_length=254, null=True)),
-                ('hashed_password', models.TextField()),
-                ('is_active', models.BooleanField(default=True)),
-                ('is_superuser', models.BooleanField(default=False)),
-                ('classifier', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='workers', to='core.classifier')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "password",
+                    models.CharField(max_length=128, verbose_name="password"),
+                ),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                ("first_name", models.CharField(max_length=30)),
+                ("last_name", models.CharField(max_length=30)),
+                (
+                    "email",
+                    models.EmailField(blank=True, max_length=254, null=True),
+                ),
+                ("hashed_password", models.TextField()),
+                ("is_active", models.BooleanField(default=True)),
+                ("is_superuser", models.BooleanField(default=False)),
+                (
+                    "classifier",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="workers",
+                        to="core.classifier",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

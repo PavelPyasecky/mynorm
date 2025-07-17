@@ -7,14 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('analytics', '0002_initial'),
+        ("analytics", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='activitystatistics',
-            name='supervision',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='statistics', to='analytics.supervision'),
+            model_name="activitystatistics",
+            name="supervision",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="statistics",
+                to="analytics.supervision",
+            ),
             preserve_default=False,
         ),
     ]

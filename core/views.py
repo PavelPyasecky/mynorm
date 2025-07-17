@@ -14,7 +14,7 @@ class OrganizationListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Organization.objects.all()
 
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
-    search_fields = ('name',)
+    search_fields = ("name",)
 
 
 class ClassifierListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -23,4 +23,7 @@ class ClassifierListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Classifier.objects.all()
 
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
-    search_fields = ('code', 'name',)
+    search_fields = (
+        "code",
+        "name",
+    )

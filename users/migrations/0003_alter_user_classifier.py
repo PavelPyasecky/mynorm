@@ -7,14 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_initial'),
-        ('users', '0002_alter_user_options_alter_user_managers_and_more'),
+        ("core", "0002_initial"),
+        ("users", "0002_alter_user_options_alter_user_managers_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='classifier',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='workers', to='core.classifier'),
+            model_name="user",
+            name="classifier",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="workers",
+                to="core.classifier",
+            ),
         ),
     ]

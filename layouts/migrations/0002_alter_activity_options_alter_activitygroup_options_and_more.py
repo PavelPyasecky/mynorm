@@ -6,46 +6,52 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('layouts', '0001_initial'),
+        ("layouts", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='activity',
-            options={'ordering': ('order',)},
+            name="activity",
+            options={"ordering": ("order",)},
         ),
         migrations.AlterModelOptions(
-            name='activitygroup',
-            options={'ordering': ('order',)},
+            name="activitygroup",
+            options={"ordering": ("order",)},
         ),
         migrations.AlterModelOptions(
-            name='layout',
-            options={'ordering': ('order',)},
+            name="layout",
+            options={"ordering": ("order",)},
         ),
         migrations.RemoveField(
-            model_name='activity',
-            name='order_number',
+            model_name="activity",
+            name="order_number",
         ),
         migrations.RemoveField(
-            model_name='activitygroup',
-            name='order_number',
+            model_name="activitygroup",
+            name="order_number",
         ),
         migrations.AddField(
-            model_name='activity',
-            name='order',
-            field=models.PositiveIntegerField(db_index=True, default=0, editable=False, verbose_name='order'),
+            model_name="activity",
+            name="order",
+            field=models.PositiveIntegerField(
+                db_index=True, default=0, editable=False, verbose_name="order"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='activitygroup',
-            name='order',
-            field=models.PositiveIntegerField(db_index=True, default=0, editable=False, verbose_name='order'),
+            model_name="activitygroup",
+            name="order",
+            field=models.PositiveIntegerField(
+                db_index=True, default=0, editable=False, verbose_name="order"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='layout',
-            name='order',
-            field=models.PositiveIntegerField(db_index=True, default=0, editable=False, verbose_name='order'),
+            model_name="layout",
+            name="order",
+            field=models.PositiveIntegerField(
+                db_index=True, default=0, editable=False, verbose_name="order"
+            ),
             preserve_default=False,
         ),
     ]

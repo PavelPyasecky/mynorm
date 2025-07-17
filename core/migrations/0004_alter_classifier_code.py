@@ -7,13 +7,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0003_classifier_code_alter_classifier_id'),
+        ("core", "0003_classifier_code_alter_classifier_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='classifier',
-            name='code',
-            field=models.CharField(max_length=18, unique=True, validators=[django.core.validators.RegexValidator('^\\d{18}$', 'Enter exactly 18 digits.')]),
+            model_name="classifier",
+            name="code",
+            field=models.CharField(
+                max_length=18,
+                unique=True,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        "^\\d{18}$", "Enter exactly 18 digits."
+                    )
+                ],
+            ),
         ),
     ]

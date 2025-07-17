@@ -67,10 +67,10 @@ http:
         servers:
           - url: http://django:5000
 
-    nuxt:
+    front:
       loadBalancer:
         servers:
-          - url: http://nuxt:3000
+          - url: http://front:3000
 
     django-media:
       loadBalancer:

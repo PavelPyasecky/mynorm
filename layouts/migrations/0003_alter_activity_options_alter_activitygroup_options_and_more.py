@@ -6,24 +6,27 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('layouts', '0002_alter_activity_options_alter_activitygroup_options_and_more'),
+        (
+            "layouts",
+            "0002_alter_activity_options_alter_activitygroup_options_and_more",
+        ),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='activity',
+            name="activity",
             options={},
         ),
         migrations.AlterModelOptions(
-            name='activitygroup',
+            name="activitygroup",
             options={},
         ),
         migrations.AlterOrderWithRespectTo(
-            name='activity',
-            order_with_respect_to='activity_group',
+            name="activity",
+            order_with_respect_to="activity_group",
         ),
         migrations.AlterOrderWithRespectTo(
-            name='activitygroup',
-            order_with_respect_to='layout',
+            name="activitygroup",
+            order_with_respect_to="layout",
         ),
     ]

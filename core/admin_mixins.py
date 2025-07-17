@@ -102,15 +102,25 @@ class LocalizedDateTimeAdminMixin:
         timezone.activate(settings.ADMIN_TIME_ZONE)
         return super().changelist_view(request, extra_context)
 
-    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+    def changeform_view(
+        self, request, object_id=None, form_url="", extra_context=None
+    ):
         timezone.activate(settings.ADMIN_TIME_ZONE)
-        return super().changeform_view(request, object_id, form_url, extra_context)
+        return super().changeform_view(
+            request, object_id, form_url, extra_context
+        )
 
     def get_list_display(self, request):
         list_display = super().get_list_display(request)
-        return [self.localize_datetime_field(
-            field) if field in self.model._meta.get_fields() and field.get_internal_type() == 'DateTimeField' else field
-                for field in list_display]
+        return [
+            (
+                self.localize_datetime_field(field)
+                if field in self.model._meta.get_fields()
+                and field.get_internal_type() == "DateTimeField"
+                else field
+            )
+            for field in list_display
+        ]
 
     def localize_datetime_field(self, field_name):
         def wrapper(obj):

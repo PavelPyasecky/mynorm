@@ -7,14 +7,14 @@ from core.model_mixins import CreatedUpdatedMixin
 
 
 class Organization(CreatedUpdatedMixin):
-    name = models.CharField(verbose_name=_('name'), max_length=255)
+    name = models.CharField(verbose_name=_("name"), max_length=255)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = _('Organization')
-        verbose_name_plural = _('Organizations')
+        verbose_name = _("Organization")
+        verbose_name_plural = _("Organizations")
 
 
 def validate_integer_string(value):
@@ -22,16 +22,25 @@ def validate_integer_string(value):
         raise ValidationError("This field must contain only digits.")
 
 
-validate_code_digits = RegexValidator(r'^\d{18}$', 'Enter exactly 18 digits.')
+validate_code_digits = RegexValidator(r"^\d{18}$", "Enter exactly 18 digits.")
 
 
 class Classifier(CreatedUpdatedMixin):
-    code = models.CharField(verbose_name=_('code'), max_length=18, unique=True, validators=[validate_code_digits,])
-    name = models.CharField(verbose_name=_('name'), max_length=255, null=True, blank=True)
+    code = models.CharField(
+        verbose_name=_("code"),
+        max_length=18,
+        unique=True,
+        validators=[
+            validate_code_digits,
+        ],
+    )
+    name = models.CharField(
+        verbose_name=_("name"), max_length=255, null=True, blank=True
+    )
 
     def __str__(self):
         return self.code
 
     class Meta:
-        verbose_name = _('Classifier')
-        verbose_name_plural = _('Classifiers')
+        verbose_name = _("Classifier")
+        verbose_name_plural = _("Classifiers")

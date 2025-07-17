@@ -20,7 +20,9 @@ def translate_po_file(input_file, output_file, target_lang="ru"):
             try:
                 translation = translator.translate(entry.msgid)
                 entry.msgstr = translation
-                logging.debug("Translated: %s -> %s", entry.msgid, entry.msgstr)
+                logging.debug(
+                    "Translated: %s -> %s", entry.msgid, entry.msgstr
+                )
             except Exception as e:
                 logging.debug("Error translating '%s': %s", entry.msgid, e)
 

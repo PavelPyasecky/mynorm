@@ -7,23 +7,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
-        ('core', '0002_initial'),
-        ('users', '0003_alter_user_classifier'),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("core", "0002_initial"),
+        ("users", "0003_alter_user_classifier"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='user',
+            name="user",
             options={},
         ),
         migrations.AddField(
-            model_name='user',
-            name='organization',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='workers', to='core.organization'),
+            model_name="user",
+            name="organization",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="workers",
+                to="core.organization",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='user',
-            constraint=models.CheckConstraint(condition=models.Q(models.Q(('is_staff', True), ('organization__isnull', True)), models.Q(('is_staff', False), ('organization__isnull', False)), _connector='OR'), name='organization_required_for_workers'),
+            model_name="user",
+            constraint=models.CheckConstraint(
+                condition=models.Q(
+                    models.Q(
+                        ("is_staff", True), ("organization__isnull", True)
+                    ),
+                    models.Q(
+                        ("is_staff", False), ("organization__isnull", False)
+                    ),
+                    _connector="OR",
+                ),
+                name="organization_required_for_workers",
+            ),
         ),
     ]

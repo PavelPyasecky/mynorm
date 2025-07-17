@@ -6,25 +6,18 @@ from core.models import Organization, Classifier
 
 @admin.register(Organization)
 class OrganizationAdmin(admin_mixins.CreatedByUpdatedByAdminMixin):
-    list_display = (
-        "name",
-    )
+    list_display = ("name",)
     search_fields = ("name",)
-    fields = (
-            ("name",)
-            + admin_mixins.CreatedByUpdatedByAdminMixin.fields
-    )
+    fields = ("name",) + admin_mixins.CreatedByUpdatedByAdminMixin.fields
     readonly_fields = admin_mixins.CreatedByUpdatedByAdminMixin.readonly_fields
 
 
 @admin.register(Classifier)
 class ClassifierAdmin(admin_mixins.CreatedByUpdatedByAdminMixin):
-    list_display = (
-        "code", "name"
-    )
+    list_display = ("code", "name")
     search_fields = ("code", "name")
     fields = (
-            ("code", "name",)
-            + admin_mixins.CreatedByUpdatedByAdminMixin.fields
-    )
+        "code",
+        "name",
+    ) + admin_mixins.CreatedByUpdatedByAdminMixin.fields
     readonly_fields = admin_mixins.CreatedByUpdatedByAdminMixin.readonly_fields

@@ -5,16 +5,17 @@ from layouts.models import Layout, ActivityGroup, Activity
 
 
 class ImageGallerySerializer(serializers.ModelSerializer):
-    url = serializers.ImageField(source='image', read_only=True)
+    url = serializers.ImageField(source="image", read_only=True)
+
     class Meta:
         model = ImageGallery
-        fields = ('url',)
+        fields = ("url",)
 
 
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ('id', 'name')
+        fields = ("id", "name")
 
 
 class ActivityGroupSerializer(serializers.ModelSerializer):
@@ -23,11 +24,12 @@ class ActivityGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActivityGroup
-        fields = ('id', 'name', 'image', 'column_number', 'activities')
+        fields = ("id", "name", "image", "column_number", "activities")
 
 
 class LayoutSerializer(serializers.ModelSerializer):
     activity_groups = ActivityGroupSerializer(many=True)
+
     class Meta:
         model = Layout
-        fields = ('id', 'organization', 'classifier', 'activity_groups')
+        fields = ("id", "organization", "classifier", "activity_groups")

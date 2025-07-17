@@ -9,193 +9,379 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('analytics', '0009_remove_supervision_failed_supervision_valid'),
-        ('core', '0005_alter_classifier_options_alter_organization_options_and_more'),
-        ('layouts', '0006_alter_activity_options_alter_activitygroup_options_and_more'),
+        ("analytics", "0009_remove_supervision_failed_supervision_valid"),
+        (
+            "core",
+            "0005_alter_classifier_options_alter_organization_options_and_more",
+        ),
+        (
+            "layouts",
+            "0006_alter_activity_options_alter_activitygroup_options_and_more",
+        ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='activitystatistics',
-            options={'verbose_name': 'Activity statistics', 'verbose_name_plural': 'Activity statistics'},
+            name="activitystatistics",
+            options={
+                "verbose_name": "Activity statistics",
+                "verbose_name_plural": "Activity statistics",
+            },
         ),
         migrations.AlterModelOptions(
-            name='comment',
-            options={'verbose_name': 'Comment', 'verbose_name_plural': 'Comments'},
+            name="comment",
+            options={
+                "verbose_name": "Comment",
+                "verbose_name_plural": "Comments",
+            },
         ),
         migrations.AlterModelOptions(
-            name='commentimage',
-            options={'verbose_name': 'Comment Image', 'verbose_name_plural': 'Comment Images'},
+            name="commentimage",
+            options={
+                "verbose_name": "Comment Image",
+                "verbose_name_plural": "Comment Images",
+            },
         ),
         migrations.AlterModelOptions(
-            name='supervision',
-            options={'verbose_name': 'Supervision', 'verbose_name_plural': 'Supervisions'},
+            name="supervision",
+            options={
+                "verbose_name": "Supervision",
+                "verbose_name_plural": "Supervisions",
+            },
         ),
         migrations.AlterField(
-            model_name='activitystatistics',
-            name='activity',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='statistics', to='layouts.activity', verbose_name='activity'),
+            model_name="activitystatistics",
+            name="activity",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="statistics",
+                to="layouts.activity",
+                verbose_name="activity",
+            ),
         ),
         migrations.AlterField(
-            model_name='activitystatistics',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_created', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="activitystatistics",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_created",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
         migrations.AlterField(
-            model_name='activitystatistics',
-            name='created_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date'),
+            model_name="activitystatistics",
+            name="created_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='activitystatistics',
-            name='end_date',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='end date'),
+            model_name="activitystatistics",
+            name="end_date",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="end date"
+            ),
         ),
         migrations.AlterField(
-            model_name='activitystatistics',
-            name='start_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='start date'),
+            model_name="activitystatistics",
+            name="start_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="start date"
+            ),
         ),
         migrations.AlterField(
-            model_name='activitystatistics',
-            name='supervision',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='statistics', to='analytics.supervision', verbose_name='supervision'),
+            model_name="activitystatistics",
+            name="supervision",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="statistics",
+                to="analytics.supervision",
+                verbose_name="supervision",
+            ),
         ),
         migrations.AlterField(
-            model_name='activitystatistics',
-            name='updated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_updated', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            model_name="activitystatistics",
+            name="updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_updated",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="updated by",
+            ),
         ),
         migrations.AlterField(
-            model_name='activitystatistics',
-            name='updated_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date'),
+            model_name="activitystatistics",
+            name="updated_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="updated_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_created', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="comment",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_created",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='created_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date'),
+            model_name="comment",
+            name="created_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='supervision',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='analytics.supervision', verbose_name='supervision'),
+            model_name="comment",
+            name="supervision",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="comments",
+                to="analytics.supervision",
+                verbose_name="supervision",
+            ),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='text',
-            field=models.TextField(verbose_name='text'),
+            model_name="comment",
+            name="text",
+            field=models.TextField(verbose_name="text"),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='updated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_updated', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            model_name="comment",
+            name="updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_updated",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="updated by",
+            ),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='updated_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date'),
+            model_name="comment",
+            name="updated_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="updated_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='commentimage',
-            name='comment',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='analytics.comment', verbose_name='comment'),
+            model_name="commentimage",
+            name="comment",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="images",
+                to="analytics.comment",
+                verbose_name="comment",
+            ),
         ),
         migrations.AlterField(
-            model_name='commentimage',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_created', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="commentimage",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_created",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
         migrations.AlterField(
-            model_name='commentimage',
-            name='created_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date'),
+            model_name="commentimage",
+            name="created_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='commentimage',
-            name='image',
-            field=models.ImageField(upload_to='images/', verbose_name='image'),
+            model_name="commentimage",
+            name="image",
+            field=models.ImageField(upload_to="images/", verbose_name="image"),
         ),
         migrations.AlterField(
-            model_name='commentimage',
-            name='updated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_updated', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            model_name="commentimage",
+            name="updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_updated",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="updated by",
+            ),
         ),
         migrations.AlterField(
-            model_name='commentimage',
-            name='updated_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date'),
+            model_name="commentimage",
+            name="updated_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="updated_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_created', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            model_name="supervision",
+            name="created_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_created",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="created by",
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='created_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date'),
+            model_name="supervision",
+            name="created_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='end_date',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='end date'),
+            model_name="supervision",
+            name="end_date",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="end date"
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='name',
-            field=models.CharField(max_length=255, null=True, verbose_name='name'),
+            model_name="supervision",
+            name="name",
+            field=models.CharField(
+                max_length=255, null=True, verbose_name="name"
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='organization',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='organization_supervisions', to='core.organization', verbose_name='organization'),
+            model_name="supervision",
+            name="organization",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="organization_supervisions",
+                to="core.organization",
+                verbose_name="organization",
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='start_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='start date'),
+            model_name="supervision",
+            name="start_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="start date"
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='updated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_updated', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            model_name="supervision",
+            name="updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="%(class)s_updated",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="updated by",
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='updated_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date'),
+            model_name="supervision",
+            name="updated_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="updated_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_supervisions', to=settings.AUTH_USER_MODEL, verbose_name='supervisor'),
+            model_name="supervision",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="user_supervisions",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="supervisor",
+            ),
         ),
         migrations.AlterField(
-            model_name='supervision',
-            name='worker',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='worker_supervisions', to=settings.AUTH_USER_MODEL, verbose_name='worker'),
+            model_name="supervision",
+            name="worker",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="worker_supervisions",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="worker",
+            ),
         ),
         migrations.CreateModel(
-            name='CommentFiles',
+            name="CommentFiles",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date')),
-                ('updated_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date')),
-                ('file', models.FileField(upload_to='files/', verbose_name='file')),
-                ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='files', to='analytics.comment', verbose_name='comment')),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_created', to=settings.AUTH_USER_MODEL, verbose_name='created by')),
-                ('updated_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)s_updated', to=settings.AUTH_USER_MODEL, verbose_name='updated by')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now,
+                        verbose_name="created_date",
+                    ),
+                ),
+                (
+                    "updated_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now,
+                        verbose_name="updated_date",
+                    ),
+                ),
+                (
+                    "file",
+                    models.FileField(upload_to="files/", verbose_name="file"),
+                ),
+                (
+                    "comment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="files",
+                        to="analytics.comment",
+                        verbose_name="comment",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="%(class)s_created",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="created by",
+                    ),
+                ),
+                (
+                    "updated_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="%(class)s_updated",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="updated by",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Comment File',
-                'verbose_name_plural': 'Comment Files',
+                "verbose_name": "Comment File",
+                "verbose_name_plural": "Comment Files",
             },
         ),
     ]

@@ -8,37 +8,72 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gallery', '0001_initial'),
+        ("gallery", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Gallery',
+            name="Gallery",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_date",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "updated_date",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                ("name", models.CharField(max_length=100)),
             ],
             options={
-                'verbose_name': 'Gallery',
+                "verbose_name": "Gallery",
             },
         ),
         migrations.CreateModel(
-            name='GalleryImage',
+            name="GalleryImage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('image', models.ImageField(upload_to='gallery/')),
-                ('caption', models.CharField(blank=True, max_length=200)),
-                ('gallery', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='gallery.gallery')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_date",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "updated_date",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                ("image", models.ImageField(upload_to="gallery/")),
+                ("caption", models.CharField(blank=True, max_length=200)),
+                (
+                    "gallery",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="gallery.gallery",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.DeleteModel(
-            name='ImageGallery',
+            name="ImageGallery",
         ),
     ]

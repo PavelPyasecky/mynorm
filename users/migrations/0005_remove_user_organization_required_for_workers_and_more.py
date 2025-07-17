@@ -6,22 +6,42 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
-        ('core', '0002_initial'),
-        ('users', '0004_alter_user_options_user_organization_and_more'),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("core", "0002_initial"),
+        ("users", "0004_alter_user_options_user_organization_and_more"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='user',
-            name='organization_required_for_workers',
+            model_name="user",
+            name="organization_required_for_workers",
         ),
         migrations.AddConstraint(
-            model_name='user',
-            constraint=models.CheckConstraint(condition=models.Q(models.Q(('is_staff', True), ('organization__isnull', True)), models.Q(('is_staff', False), ('organization__isnull', False)), _connector='OR'), name='organization_required_only_for_workers'),
+            model_name="user",
+            constraint=models.CheckConstraint(
+                condition=models.Q(
+                    models.Q(
+                        ("is_staff", True), ("organization__isnull", True)
+                    ),
+                    models.Q(
+                        ("is_staff", False), ("organization__isnull", False)
+                    ),
+                    _connector="OR",
+                ),
+                name="organization_required_only_for_workers",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='user',
-            constraint=models.CheckConstraint(condition=models.Q(models.Q(('is_staff', True), ('classifier__isnull', True)), models.Q(('is_staff', False), ('classifier__isnull', False)), _connector='OR'), name='classifier_required_only_for_workers'),
+            model_name="user",
+            constraint=models.CheckConstraint(
+                condition=models.Q(
+                    models.Q(("is_staff", True), ("classifier__isnull", True)),
+                    models.Q(
+                        ("is_staff", False), ("classifier__isnull", False)
+                    ),
+                    _connector="OR",
+                ),
+                name="classifier_required_only_for_workers",
+            ),
         ),
     ]

@@ -7,18 +7,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gallery', '0004_imagegallery_name_alter_imagegallery_image'),
+        ("gallery", "0004_imagegallery_name_alter_imagegallery_image"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='imagegallery',
-            name='created_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='created_date'),
+            model_name="imagegallery",
+            name="created_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="created_date"
+            ),
         ),
         migrations.AlterField(
-            model_name='imagegallery',
-            name='updated_date',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated_date'),
+            model_name="imagegallery",
+            name="updated_date",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="updated_date"
+            ),
         ),
     ]

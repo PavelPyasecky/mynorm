@@ -8,24 +8,52 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('analytics', '0011_remove_comment_supervision_remove_supervision_valid_and_more'),
+        (
+            "analytics",
+            "0011_remove_comment_supervision_remove_supervision_valid_and_more",
+        ),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Failure',
+            name="Failure",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='start date')),
-                ('end_date', models.DateTimeField(blank=True, null=True, verbose_name='end date')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "start_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now,
+                        verbose_name="start date",
+                    ),
+                ),
+                (
+                    "end_date",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="end date"
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.AddField(
-            model_name='activitystatistics',
-            name='failure',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='statistics', to='analytics.failure', verbose_name='failure'),
+            model_name="activitystatistics",
+            name="failure",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="statistics",
+                to="analytics.failure",
+                verbose_name="failure",
+            ),
         ),
     ]
