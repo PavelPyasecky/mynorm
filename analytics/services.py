@@ -23,6 +23,8 @@ class FailureService:
 
         if not failure:
             failure = self._get_last_failure(activity_statistics.supervision.pk)
+            activity_statistics.failure = failure
+            activity_statistics.save(update_fields=["failure"])
 
         failure.end_date = timezone.now()
         failure.save(update_fields=["end_date"])
