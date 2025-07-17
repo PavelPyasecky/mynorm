@@ -144,7 +144,7 @@ class AnalyticsFailureView(GenericViewSet):
             ActivityStatistics, id=activity_statistics_id
         )
 
-        failure = FailureService.finish_failure(activity_statistics)
+        failure = FailureService().finish_failure(activity_statistics)
 
         serializer = self.get_serializer(failure)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

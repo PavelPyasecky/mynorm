@@ -18,14 +18,26 @@ class FailureService:
 
         return failure
 
-    @staticmethod
-    def finish_failure(activity_statistics: ActivityStatistics) -> Failure:
+    def finish_failure(self, activity_statistics: ActivityStatistics) -> Failure:
         failure = activity_statistics.failure
+
+        if not failure:
+            failure = self._get_last_failure(activity_statistics.supervision.pk)
 
         failure.end_date = timezone.now()
         failure.save(update_fields=["end_date"])
 
         return failure
+
+    @staticmethod
+    def _get_last_failure(supervision_id: int) -> Failure:
+        activity_statistics = ActivityStatistics.objects.filter(
+            supervision_id=supervision_id, failure_id__isnull=False).order_by("-id").first()
+
+        if activity_statistics:
+            return activity_statistics.failure
+
+        raise exceptions.ActivityAlreadyActivatedException()
 
 
 class ActivityStatisticsService:
