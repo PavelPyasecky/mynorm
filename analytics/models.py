@@ -4,7 +4,7 @@ from django.utils import timezone
 from core import model_mixins
 from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin
 from core.models import Organization
-from core.utils import timedelta_to_time
+from core.utils import timedelta_to_str
 from layouts.models import Activity
 from django.utils.translation import gettext_lazy as _
 
@@ -40,7 +40,7 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
     @property
     def delta(self):
         if self.end_date and self.start_date:
-            return timedelta_to_time(self.end_date - self.start_date)
+            return timedelta_to_str(self.end_date - self.start_date)
 
         return "--:--"
 
@@ -78,7 +78,7 @@ class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
     @property
     def delta(self):
         if self.end_date and self.start_date:
-            return timedelta_to_time(self.end_date - self.start_date)
+            return timedelta_to_str(self.end_date - self.start_date)
 
         return "--:--"
 
@@ -143,10 +143,10 @@ class Failure(model_mixins.StartEndDateMixin):
     @property
     def delta(self):
         if self.end_date and self.start_date:
-            return timedelta_to_time(self.end_date - self.start_date)
+            return timedelta_to_str(self.end_date - self.start_date)
 
         elif self.start_date:
-            return timedelta_to_time(timezone.now() - self.start_date)
+            return timedelta_to_str(timezone.now() - self.start_date)
 
         return "--:--"
 

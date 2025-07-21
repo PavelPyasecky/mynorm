@@ -9,3 +9,8 @@ class ActivityAlreadyActivatedException(exceptions.APIException):
 class FailureIsNotStartedException(exceptions.APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "Failure is not started"
+
+
+class ActivityFailureException(exceptions.APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "All activities finished"

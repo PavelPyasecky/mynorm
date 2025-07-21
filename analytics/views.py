@@ -78,7 +78,7 @@ class SupervisionViewSet(
 
     def finish(self, request: Request, pk: int):
         supervision = get_object_or_404(Supervision.objects, pk=pk)
-        SupervisionService.finish_supervision(supervision)
+        SupervisionService().finish_supervision(supervision)
 
         return Response(status=status.HTTP_200_OK)
 
@@ -125,24 +125,27 @@ class AnalyticsFailureView(GenericViewSet):
     permission_classes = (IsSupervisor,)
     serializer_class = serializers.FailureSerializer
     queryset = Comment.objects.all()
-    lookup_field = "analytics_id"
+
+    def _get_activity_statistics(self) -> ActivityStatistics:
+        supervision_id = self.kwargs.get("supervision_id")
+        activity_id = self.kwargs.get("activity_id")
+        activity_statistics = ActivityStatistics.objects.filter(
+            supervision_id=supervision_id, activity_id=activity_id, end_date__isnull=True).order_by("-id").first()
+
+        if not activity_statistics:
+            raise exceptions.ActivityFailureException()
+
+        return activity_statistics
 
     def start_failure(self, request, *args, **kwargs):
-        activity_statistics_id = self.kwargs.get("analytics_id")
-        activity_statistics = get_object_or_404(
-            ActivityStatistics, id=activity_statistics_id
-        )
-
-        failure = FailureService.create_failure(activity_statistics)
+        activity_statistics = self._get_activity_statistics()
+        failure = FailureService().create_failure(activity_statistics)
 
         serializer = self.get_serializer(failure)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def finish_failure(self, request, *args, **kwargs):
-        activity_statistics_id = self.kwargs.get("analytics_id")
-        activity_statistics = get_object_or_404(
-            ActivityStatistics, id=activity_statistics_id
-        )
+        activity_statistics = self._get_activity_statistics()
 
         failure = FailureService().finish_failure(activity_statistics)
 

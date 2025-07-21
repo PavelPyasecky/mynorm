@@ -24,14 +24,14 @@ urlpatterns = [
         name="analytics_comment",
     ),
     path(
-        "analytics/<int:analytics_id>/start-failure/",
+        "<int:supervision_id>/activity/<int:activity_id>/start-failure/",
         views.AnalyticsFailureView.as_view({"post": "start_failure"}),
-        name="analytics_start_failure",
+        name="activity_start_failure",
     ),
     path(
-        "analytics/<int:analytics_id>/finish-failure/",
+        "<int:supervision_id>/activity/<int:activity_id>/finish-failure/",
         views.AnalyticsFailureView.as_view({"post": "finish_failure"}),
-        name="analytics_finish_failure",
+        name="activity_finish_failure",
     ),
     path(
         "<int:pk>/analytics/",
