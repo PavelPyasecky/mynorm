@@ -76,7 +76,7 @@ class SupervisionService:
 
             failure = last_activity_statistic.failure
             if failure and not failure.is_finished:
-                FailureService.finish_failure(failure)
+                FailureService().finish_failure(last_activity_statistic)
 
         supervision.end_date = timezone.now()
         supervision.save(update_fields=["end_date"])
