@@ -19,6 +19,11 @@ urlpatterns = [
         name="supervision_detail",
     ),
     path(
+        "analytics/<int:pk>/",
+        views.AnalyticsDetailsView.as_view({"get": "retrieve", "patch": "partial_update"}),
+        name="analytics_details",
+    ),
+    path(
         "analytics/<int:analytics_id>/comment/",
         views.AnalyticsCommentView.as_view({"post": "create"}),
         name="analytics_comment",

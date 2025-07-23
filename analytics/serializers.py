@@ -9,6 +9,7 @@ from analytics.models import (
     Failure,
 )
 from core.models import Organization
+from layouts.models import Activity
 from users.models import User
 
 
@@ -148,7 +149,7 @@ class AnalyticsSerializer(serializers.ModelSerializer):
         )
 
 
-class ActivityStatisticsCreateSerializer(serializers.ModelSerializer):
+class AnalyticsCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityStatistics
         fields = ("id", "activity", "start_date", "end_date")
@@ -167,4 +168,27 @@ class ActivityStatisticsCreateSerializer(serializers.ModelSerializer):
 class FailureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Failure
-        fields = ("id", "start_date", "end_date")
+        fields = ("id", "start_date", "end_date", "delta")
+        extra_kwargs = {
+            "delta": {"read_only": True},
+        }
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = ("id", "name")
+
+
+class AnalyticsDetailsSerializer(serializers.ModelSerializer):
+    activity = ActivitySerializer(read_only=True)
+    supervision = SupervisionSerializer(read_only=True)
+    failure = FailureSerializer(read_only=True)
+
+    class Meta:
+        model = ActivityStatistics
+        fields = ("id", "activity", "supervision", "failure")
+        extra_kwargs = {
+            "supervision": {"read_only": True},
+            "failure": {"read_only": True},
+        }
