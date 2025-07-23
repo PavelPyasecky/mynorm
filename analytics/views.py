@@ -3,7 +3,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
     ListModelMixin,
     CreateModelMixin,
-    RetrieveModelMixin,
+    RetrieveModelMixin, UpdateModelMixin,
 )
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -39,7 +39,7 @@ class AnalyticsListView(ListModelMixin, GenericViewSet):
 
 class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
     permission_classes = (IsSupervisor,)
-    serializer_class = serializers.ActivityStatisticsCreateSerializer
+    serializer_class = serializers.AnalyticsCreateSerializer
     queryset = ActivityStatistics.objects.all()
 
     def create(self, request, *args, **kwargs):
@@ -151,3 +151,10 @@ class AnalyticsFailureView(GenericViewSet):
 
         serializer = self.get_serializer(failure)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class AnalyticsDetailsView(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    permission_classes = (IsSupervisor,)
+    serializer_class = serializers.AnalyticsDetailsSerializer
+    queryset = ActivityStatistics.objects.all()
+    lookup_field = "pk"
