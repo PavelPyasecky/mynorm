@@ -9,6 +9,7 @@ from analytics.models import (
     Failure,
 )
 from core.models import Organization
+from core.serializers import ClassifierSerializer
 from layouts.models import Activity
 from users.models import User
 
@@ -20,9 +21,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    classifier = ClassifierSerializer(read_only=True)
+
     class Meta:
         model = User
-        fields = ("id", "username", "first_name", "last_name", "email")
+        fields = ("id", "username", "first_name", "last_name", "email", "classifier")
 
 
 class CommentImageSerializer(serializers.ModelSerializer):
@@ -70,6 +73,7 @@ class SupervisionSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
     user = UserSerializer(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
+    organization = OrganizationSerializer(read_only=True)
 
     class Meta:
         model = Supervision
@@ -80,6 +84,7 @@ class SupervisionSerializer(serializers.ModelSerializer):
             "user",
             "start_date",
             "end_date",
+            "delta",
             "comments",
         )
         extra_kwargs = {
@@ -177,18 +182,15 @@ class FailureSerializer(serializers.ModelSerializer):
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ("id", "name")
+        fields = ("id", "name",)
 
 
 class AnalyticsDetailsSerializer(serializers.ModelSerializer):
     activity = ActivitySerializer(read_only=True)
     supervision = SupervisionSerializer(read_only=True)
     failure = FailureSerializer(read_only=True)
+    delta = serializers.CharField(read_only=True)
 
     class Meta:
         model = ActivityStatistics
-        fields = ("id", "activity", "supervision", "failure")
-        extra_kwargs = {
-            "supervision": {"read_only": True},
-            "failure": {"read_only": True},
-        }
+        fields = ("id", "activity", "supervision", "failure", "start_date", "end_date", "delta")

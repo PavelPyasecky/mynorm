@@ -2,14 +2,14 @@ from django.db import models
 from django.utils import timezone
 
 from core import model_mixins
-from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin
+from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin
 from core.models import Organization
 from core.utils import timedelta_to_str
 from layouts.models import Activity
 from django.utils.translation import gettext_lazy as _
 
 
-class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
+class Supervision(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin):
     worker = models.ForeignKey(
         "users.User",
         verbose_name=_("worker"),
@@ -47,7 +47,7 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin):
     delta.fget.short_description = _("Duration")
 
 
-class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin):
+class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin):
     activity = models.ForeignKey(
         Activity,
         verbose_name=_("activity"),
