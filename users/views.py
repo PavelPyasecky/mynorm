@@ -17,3 +17,9 @@ class UserListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     filter_backends = [filters.SearchFilter, UserFilter, DjangoFilterBackend]
     filterset_fields = ("organization", "classifier")
     search_fields = ["username", "first_name", "last_name"]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return serializers.UserDetailsSerializer
+
+        return serializers.UserSerializer
