@@ -17,6 +17,7 @@ class UserAdmin(auth_admin.UserAdmin):
                     "is_active",
                     "is_staff",
                     "is_superuser",
+                    "enable_file_upload_only_from_camera",
                     "groups",
                     "user_permissions",
                 ),

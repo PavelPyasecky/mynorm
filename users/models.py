@@ -24,6 +24,10 @@ class User(AbstractUser):
         related_name="workers",
     )
 
+    enable_file_upload_only_from_camera = models.BooleanField(
+        default=False, verbose_name=_("enable file upload only from camera")
+    )
+
     class Meta:
         constraints = [
             models.CheckConstraint(
