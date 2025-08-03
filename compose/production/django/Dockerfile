@@ -20,6 +20,8 @@ RUN apt-get update && \
     python3-gdal \
     && rm -rf /var/lib/apt/lists/*
 
+# In your django/Dockerfile
+RUN find /usr -name "libgdal.so*" && echo "GDAL paths listed above"
 
 # Set GDAL environment variables
 ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
