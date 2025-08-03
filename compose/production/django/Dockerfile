@@ -17,6 +17,7 @@ RUN apt-get update && \
     libpq-dev \
     binutils \
     gdal-bin \
+    libgdal-dev \
     python3-gdal \
     && rm -rf /var/lib/apt/lists/*
 
@@ -72,11 +73,15 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # gdal
   binutils \
   gdal-bin \
+  libgdal-dev \
   python3-gdal \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
 
+# Set GDAL environment variables
+ENV GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
+ENV GEOS_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgeos_c.so
 
 # Copy installed packages from build stage
 COPY --from=python-build-stage /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
@@ -99,10 +104,6 @@ COPY --chown=django:django . ${APP_HOME}
 # make django owner of the WORKDIR directory as well.
 RUN chown  django:django ${APP_HOME}/media
 RUN chown  django:django ${APP_HOME}
-
-# Set GDAL environment variables
-ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
-ENV GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
 
 USER django
 
