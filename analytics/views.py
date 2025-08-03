@@ -1,4 +1,5 @@
-from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
     ListModelMixin,
@@ -22,6 +23,7 @@ from analytics.services import (
     FailureService,
     ActivityStatisticsService,
 )
+from core import paginators
 from core.permissions import IsSupervisor
 
 
@@ -69,12 +71,33 @@ class SupervisionViewSet(
     permission_classes = (IsSupervisor,)
     serializer_class = serializers.SupervisionSerializer
     queryset = Supervision.objects.all()
+    pagination_class = paginators.CustomPagination
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
+    filterset_fields = ('organization', 'worker', 'user', 'validity', 'verified')
+    search_fields = (
+        'id',
+        'organization__name',
+        'worker__first_name',
+        'worker__last_name',
+        'user__first_name',
+        'user__last_name',
+    )
 
     def get_serializer_class(self):
-        if self.action in ("list", "retrieve"):
+        if self.action == "list":
+            return serializers.SupervisionListSerializer
+        elif self.action == "retrieve":
             return serializers.SupervisionSerializer
         elif self.action == "create":
             return serializers.SupervisionCreateSerializer
+
+    def get_queryset(self):
+        qs = self.queryset
+
+        if self.action == "list":
+            qs = self.queryset.select_related("organization", "worker", "user").prefetch_related("statistics")
+
+        return qs
 
     def finish(self, request: Request, pk: int):
         supervision = get_object_or_404(Supervision.objects, pk=pk)

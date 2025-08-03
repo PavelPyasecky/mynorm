@@ -238,3 +238,30 @@ class AnalyticsDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityStatistics
         fields = ("id", "activity", "supervision", "failure", "comments", "start_date", "end_date", "delta")
+
+
+class SupervisionListSerializer(serializers.ModelSerializer):
+    worker = UserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+    organization = OrganizationSerializer(read_only=True)
+    analytics = AnalyticsDetailsSerializer(source="statistics", many=True, read_only=True)
+
+    class Meta:
+        model = Supervision
+        fields = (
+            "id",
+            "worker",
+            "organization",
+            "user",
+            "start_date",
+            "end_date",
+            "delta",
+            "validity",
+            "verified",
+            "verification_date",
+            "analytics",
+        )
+        extra_kwargs = {
+            "start_date": {"read_only": True},
+            "end_date": {"read_only": True},
+        }

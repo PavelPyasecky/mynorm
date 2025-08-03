@@ -22,7 +22,11 @@ class FailureService:
         failure = activity_statistics.failure
 
         if not failure:
-            failure = self._get_last_failure(activity_statistics.supervision.pk)
+            activity_statistics_with_last_failure = self._get_analytics_with_last_failure(
+                activity_statistics.supervision.pk)
+
+            self._mark_intermediate_activity_statistics_as_failed(
+                activity_statistics_with_last_failure, activity_statistics, failure)
 
         failure.end_date = timezone.now()
         failure.save(update_fields=["end_date"])
@@ -30,14 +34,21 @@ class FailureService:
         return failure
 
     @staticmethod
-    def _get_last_failure(supervision_id: int) -> Failure:
+    def _get_analytics_with_last_failure(supervision_id: int) -> ActivityStatistics:
         activity_statistics = ActivityStatistics.objects.filter(
             supervision_id=supervision_id, failure_id__isnull=False).order_by("-id").first()
 
         if activity_statistics:
-            return activity_statistics.failure
+            return activity_statistics
 
         raise exceptions.ActivityAlreadyActivatedException()
+
+    @staticmethod
+    def _mark_intermediate_activity_statistics_as_failed(first_analytics: ActivityStatistics,
+                                                         last_analytics: ActivityStatistics,
+                                                         failure: Failure) -> None:
+        ActivityStatistics.objects.filter(
+            id__gt=first_analytics, id__lt=last_analytics).update(failure=failure)
 
 
 class ActivityStatisticsService:
@@ -47,10 +58,10 @@ class ActivityStatisticsService:
         activity_statistics.save(update_fields=["end_date"])
 
     def start_activity(
-        self,
-        data: dict,
-        previous_activity_statistic: ActivityStatistics = None,
-        new_activity: Activity = None,
+            self,
+            data: dict,
+            previous_activity_statistic: ActivityStatistics = None,
+            new_activity: Activity = None,
     ) -> ActivityStatistics:
         if previous_activity_statistic:
             if previous_activity_statistic.activity == new_activity:
