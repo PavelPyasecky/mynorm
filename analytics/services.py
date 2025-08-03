@@ -80,3 +80,14 @@ class SupervisionService:
 
         supervision.end_date = timezone.now()
         supervision.save(update_fields=["end_date"])
+
+    def _change_verification(self, supervision: Supervision, verify: bool) -> None:
+        supervision.verified = verify
+        supervision.verification_date = timezone.now()
+        supervision.save(update_fields=["verified", "verification_date"])
+
+    def verify(self, supervision: Supervision):
+        self._change_verification(supervision, True)
+
+    def clear_verification(self, supervision: Supervision):
+        self._change_verification(supervision, False)

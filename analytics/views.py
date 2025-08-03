@@ -82,6 +82,18 @@ class SupervisionViewSet(
 
         return Response(status=status.HTTP_200_OK)
 
+    def verify(self, request: Request, pk: int):
+        supervision = get_object_or_404(Supervision.objects, pk=pk)
+        SupervisionService().verify(supervision)
+
+        return Response(status=status.HTTP_200_OK)
+
+    def clear_verification(self, request: Request, pk: int):
+        supervision = get_object_or_404(Supervision.objects, pk=pk)
+        SupervisionService().clear_verification(supervision)
+
+        return Response(status=status.HTTP_200_OK)
+
 
 class AnalyticsCommentView(CreateModelMixin, UpdateModelMixin, GenericViewSet):
     permission_classes = (IsSupervisor,)

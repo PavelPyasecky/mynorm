@@ -16,7 +16,17 @@ urlpatterns = [
     path(
         "<int:pk>/finish/",
         views.SupervisionViewSet.as_view({"post": "finish"}),
-        name="supervision_detail",
+        name="finish_supervision",
+    ),
+    path(
+        "<int:pk>/verify/",
+        views.SupervisionViewSet.as_view({"post": "verify"}),
+        name="verify_supervision",
+    ),
+    path(
+        "<int:pk>/clear-verification/",
+        views.SupervisionViewSet.as_view({"post": "clear_verification"}),
+        name="clear_verification_supervision",
     ),
     path(
         "analytics/<int:pk>/",
