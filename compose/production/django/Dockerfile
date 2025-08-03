@@ -15,16 +15,7 @@ RUN apt-get update && \
     build-essential \
     curl \
     libpq-dev \
-    binutils \
-    libproj-dev \
-    gdal-bin \
-    python3-gdal \
-    && rm -rf /var/lib/apt/lists/* \
-
-
-# Set environment variables for GDAL
-ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
-ENV GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
+    && rm -rf /var/lib/apt/lists/*
 
 
 # Install uv directly to /usr/local/bin (updated path)
