@@ -9,6 +9,11 @@ urlpatterns = [
         name="supervision",
     ),
     path(
+        "export/",
+        views.SupervisionViewSet.as_view({"get": "export",}),
+        name="supervision_list_export",
+    ),
+    path(
         "<int:pk>/",
         views.SupervisionViewSet.as_view({"get": "retrieve"}),
         name="supervision_detail",
