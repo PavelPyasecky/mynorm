@@ -1,4 +1,9 @@
+import json
+
+from django.contrib.gis.geos import Point
 from rest_framework import serializers
+from rest_framework_gis.fields import GeometryField
+from rest_framework_gis.serializers import GeoModelSerializer
 
 from analytics.models import (
     ActivityStatistics,
@@ -40,16 +45,37 @@ class CommentFileSerializer(serializers.ModelSerializer):
         fields = ("id", "file")
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(GeoModelSerializer):
     images = CommentImageSerializer(many=True, read_only=True)
     files = CommentFileSerializer(many=True, read_only=True)
+    coordinates = GeometryField()
 
     class Meta:
         model = Comment
-        fields = ("id", "text", "images", "files")
+        geo_field = 'coordinates'
+        fields = ("id", "text", "coordinates", "map_url", "images", "files")
+
+    def to_representation(self, instance):
+        """
+        Convert Point object to GeoJSON format
+        """
+        representation = super().to_representation(instance)
+
+        if isinstance(representation.get('coordinates'), dict):
+            return representation
+
+        if hasattr(instance, 'coordinates') and instance.coordinates:
+            representation['coordinates'] = {
+                'type': 'Point',
+                'coordinates': [
+                    instance.coordinates.x,
+                    instance.coordinates.y
+                ]
+            }
+        return representation
 
 
-class CommentCreateSerializer(serializers.ModelSerializer):
+class CommentCreateSerializer(CommentSerializer):
     images = serializers.ListField(
         child=serializers.ImageField(required=False),
         allow_empty=True,
@@ -63,16 +89,34 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("id", "text", "images", "files")
+        geo_field = 'coordinates'
+        fields = ("id", "text", "coordinates", "images", "files")
         extra_kwargs = {
             "text": {"required": False},
         }
+
+    def validate_coordinates(self, value):
+        """Ensure coordinates are properly formatted"""
+        if isinstance(value, str):
+            try:
+                value = json.loads(value)
+            except json.JSONDecodeError:
+                raise serializers.ValidationError("Invalid JSON string for coordinates")
+
+        if isinstance(value, list):
+            if len(value) != 2:
+                raise serializers.ValidationError("Coordinates must be an array of [longitude, latitude]")
+            value = {'type': 'Point', 'coordinates': value}
+
+        if not isinstance(value, Point) and (not isinstance(value, dict) or 'coordinates' not in value):
+            raise serializers.ValidationError("Coordinates must be in GeoJSON format")
+
+        return value
 
 
 class SupervisionSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
     user = UserSerializer(read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
     organization = OrganizationSerializer(read_only=True)
 
     class Meta:
@@ -85,7 +129,6 @@ class SupervisionSerializer(serializers.ModelSerializer):
             "start_date",
             "end_date",
             "delta",
-            "comments",
         )
         extra_kwargs = {
             "start_date": {"read_only": True},
@@ -190,7 +233,8 @@ class AnalyticsDetailsSerializer(serializers.ModelSerializer):
     supervision = SupervisionSerializer(read_only=True)
     failure = FailureSerializer(read_only=True)
     delta = serializers.CharField(read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = ActivityStatistics
-        fields = ("id", "activity", "supervision", "failure", "start_date", "end_date", "delta")
+        fields = ("id", "activity", "supervision", "failure", "comments", "start_date", "end_date", "delta")

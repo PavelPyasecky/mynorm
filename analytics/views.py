@@ -83,11 +83,10 @@ class SupervisionViewSet(
         return Response(status=status.HTTP_200_OK)
 
 
-class AnalyticsCommentView(CreateModelMixin, GenericViewSet):
+class AnalyticsCommentView(CreateModelMixin, UpdateModelMixin, GenericViewSet):
     permission_classes = (IsSupervisor,)
     serializer_class = serializers.CommentCreateSerializer
     queryset = Comment.objects.all()
-    lookup_field = "analytics_id"
 
     def perform_create(self, serializer):
         activity_statistics_id = self.kwargs.get("analytics_id")
@@ -95,11 +94,13 @@ class AnalyticsCommentView(CreateModelMixin, GenericViewSet):
         text = serializer.validated_data.get("text")
         images = serializer.validated_data.get("images")
         files = serializer.validated_data.get("files")
+        coordinates = serializer.validated_data.get("coordinates")
 
         if text or images or files:
             comment = Comment.objects.create(
                 activity_statistics_id=activity_statistics_id,
                 text=text,
+                coordinates=coordinates,
                 created_by=self.request.user,
                 updated_by=self.request.user,
             )
@@ -119,6 +120,18 @@ class AnalyticsCommentView(CreateModelMixin, GenericViewSet):
                     file_objects.append(comment_file)
 
                 CommentFiles.objects.bulk_create(file_objects)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        instance = self.perform_update(serializer)
+
+        return Response(serializers.CommentSerializer(instance).data)
+
+    def perform_update(self, serializer):
+        return serializer.save()
 
 
 class AnalyticsFailureView(GenericViewSet):
@@ -156,5 +169,5 @@ class AnalyticsFailureView(GenericViewSet):
 class AnalyticsDetailsView(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     permission_classes = (IsSupervisor,)
     serializer_class = serializers.AnalyticsDetailsSerializer
-    queryset = ActivityStatistics.objects.all()
+    queryset = ActivityStatistics.objects.prefetch_related("comments")
     lookup_field = "pk"

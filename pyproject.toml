@@ -26,6 +26,8 @@ django-cors-headers = "^4.7.0"
 polib = "^1.2.0"
 translate = "^3.6.1"
 django-redis = "^6.0.0"
+psycopg2-binary = "^2.9.10"
+djangorestframework-gis = "^1.2.0"
 
 
 [build-system]

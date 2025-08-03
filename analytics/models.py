@@ -1,6 +1,7 @@
-from django.db import models
+from django.contrib.gis.db import models
 from django.utils import timezone
 
+from analytics.utils import get_yandex_map_link
 from core import model_mixins
 from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin
 from core.models import Organization
@@ -95,6 +96,25 @@ class Comment(CreatedUpdatedMixin):
         on_delete=models.CASCADE,
         related_name="comments",
     )
+    coordinates = models.PointField(verbose_name=_("coordinates"), null=True, blank=True)
+
+    @property
+    def latitude(self):
+        return self.coordinates.y if self.coordinates else None
+
+    @property
+    def longitude(self):
+        return self.coordinates.x if self.coordinates else None
+
+    @property
+    def map_url(self):
+        if self.coordinates:
+            return get_yandex_map_link(self.latitude, self.longitude)
+
+        return None
+
+    def __str__(self):
+        return _("Comment") + " №" + str(self.pk)
 
     class Meta:
         verbose_name = _("Comment")

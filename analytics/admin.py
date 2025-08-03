@@ -1,4 +1,8 @@
+from django import forms
 from django.contrib import admin
+from django.contrib.gis.db.models import PointField
+from django.contrib.gis.forms import OSMWidget
+from django.db.models import TextField
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from nested_admin.nested import NestedTabularInline, NestedModelAdmin
@@ -70,9 +74,19 @@ class CommentFileInline(NestedTabularInline):
 
 class CommentsAdminInline(NestedTabularInline):
     model = Comment
+    formfield_overrides = {
+        PointField: {"widget": OSMWidget(attrs={
+            'map_width': 500,
+            'map_height': 300,
+            'default_zoom': 12,
+        })},
+        TextField: {'widget': forms.Textarea(attrs={
+            'style': 'height: 20em; width: 500px;'
+        })},
+    }
     extra = 0
     inlines = (CommentImageInline, CommentFileInline)
-    fields = ("text", "created_date", "created_by")
+    fields = ("text", "created_date", "created_by", "coordinates")
     readonly_fields = (
         "created_date",
         "updated_date",
@@ -94,6 +108,7 @@ class ActivityStatisticsAdmin(
         "is_valid",
     )
     readonly_fields = (
+        "id",
         "supervision",
         "activity",
         "created_by",
@@ -106,7 +121,7 @@ class ActivityStatisticsAdmin(
         "is_valid",
         "failure",
     )
-    fields = ("activity", "start_date", "end_date", "delta", "failure")
+    fields = ("id", "activity", "start_date", "end_date", "delta", "failure")
     list_filter = (
         ActivityStatisticsOrganizationFilter,
         ActivityStatisticsSupervisionFilter,

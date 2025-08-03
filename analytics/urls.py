@@ -29,6 +29,11 @@ urlpatterns = [
         name="analytics_comment",
     ),
     path(
+        "analytics/comment/<int:pk>/",
+        views.AnalyticsCommentView.as_view({"patch": "update"}),
+        name="analytics_comment",
+    ),
+    path(
         "<int:supervision_id>/activity/<int:activity_id>/start-failure/",
         views.AnalyticsFailureView.as_view({"post": "start_failure"}),
         name="activity_start_failure",
