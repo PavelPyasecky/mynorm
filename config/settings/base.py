@@ -286,3 +286,5 @@ LOGGING = {
 }
 
 YANDEX_MAP_BASE_URL = "https://yandex.com/maps/"
+
+GDAL_LIBRARY_PATH = os.getenv("GDAL_LIBRARY_PATH")
