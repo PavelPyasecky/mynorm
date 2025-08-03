@@ -18,7 +18,7 @@ RUN apt-get update && \
     binutils \
     libproj-dev \
     gdal-bin \
-    python3-gdal && \
+    python3-gdal \
     && rm -rf /var/lib/apt/lists/*
 
 
