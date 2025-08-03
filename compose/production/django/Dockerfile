@@ -20,13 +20,6 @@ RUN apt-get update && \
     python3-gdal \
     && rm -rf /var/lib/apt/lists/*
 
-# In your django/Dockerfile
-RUN find /usr -name "libgdal.so*" && echo "GDAL paths listed above"
-
-# Set GDAL environment variables
-ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
-ENV GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
-
 # Install uv directly to /usr/local/bin (updated path)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && mv /root/.local/bin/uv /usr/local/bin/uv
@@ -102,6 +95,10 @@ COPY --chown=django:django . ${APP_HOME}
 # make django owner of the WORKDIR directory as well.
 RUN chown  django:django ${APP_HOME}/media
 RUN chown  django:django ${APP_HOME}
+
+# Set GDAL environment variables
+ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
+ENV GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
 
 USER django
 
