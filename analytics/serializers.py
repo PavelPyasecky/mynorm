@@ -177,24 +177,38 @@ class SupervisionCreateSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class AnalyticsSerializer(serializers.ModelSerializer):
-    activity_id = serializers.CharField(source="activity.id", read_only=True)
-    activity_name = serializers.CharField(
-        source="activity.name", read_only=True
-    )
-    supervision = SupervisionLiteSerializer(read_only=True)
+class SupervisionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Supervision
+        fields = (
+            "id",
+            "worker",
+            "organization",
+            "user",
+            "start_date",
+            "end_date",
+        )
+        extra_kwargs = {
+            "worker": {"required": False},
+            "user": {"required": False},
+        }
 
+
+class AnalyticsUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityStatistics
         fields = (
             "id",
-            "activity_id",
-            "activity_name",
+            "activity",
             "supervision",
+            "failure",
             "start_date",
             "end_date",
             "delta",
         )
+        extra_kwargs = {
+            "delta": {"read_only": True},
+        }
 
 
 class AnalyticsCreateSerializer(serializers.ModelSerializer):

@@ -38,7 +38,7 @@ from core.utils import localize_datetime, timedelta_to_str
 
 class AnalyticsListView(ListModelMixin, GenericViewSet):
     permission_classes = (IsSupervisor,)
-    serializer_class = serializers.AnalyticsSerializer
+    serializer_class = serializers.AnalyticsDetailsSerializer
     queryset = ActivityStatistics.objects.all()
     ordering = ["start_date"]
 
@@ -75,7 +75,7 @@ class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
 
 
 class SupervisionViewSet(
-    RetrieveModelMixin, CreateModelMixin, ListModelMixin, GenericViewSet
+    RetrieveModelMixin, CreateModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet
 ):
     permission_classes = (IsSupervisor,)
     serializer_class = serializers.SupervisionSerializer
@@ -99,8 +99,10 @@ class SupervisionViewSet(
             return serializers.SupervisionListSerializer
         elif self.action == "retrieve":
             return serializers.SupervisionSerializer
-        elif self.action == "create":
+        elif self.action in ("create",):
             return serializers.SupervisionCreateSerializer
+        elif self.action in ("partial_update", "update"):
+            return serializers.SupervisionUpdateSerializer
 
     def get_queryset(self):
         qs = self.queryset
@@ -320,3 +322,10 @@ class AnalyticsDetailsView(RetrieveModelMixin, UpdateModelMixin, GenericViewSet)
     serializer_class = serializers.AnalyticsDetailsSerializer
     queryset = ActivityStatistics.objects.prefetch_related("comments")
     lookup_field = "pk"
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return serializers.AnalyticsDetailsSerializer
+
+        elif self.action in ("partial_update", "update"):
+            return serializers.AnalyticsUpdateSerializer
