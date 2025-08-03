@@ -48,7 +48,7 @@ class CommentFileSerializer(serializers.ModelSerializer):
 class CommentSerializer(GeoModelSerializer):
     images = CommentImageSerializer(many=True, read_only=True)
     files = CommentFileSerializer(many=True, read_only=True)
-    coordinates = GeometryField()
+    coordinates = GeometryField(required=False)
 
     class Meta:
         model = Comment
