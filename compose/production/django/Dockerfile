@@ -19,7 +19,12 @@ RUN apt-get update && \
     libproj-dev \
     gdal-bin \
     python3-gdal \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+
+
+# Set environment variables for GDAL
+ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
+ENV GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
 
 
 # Install uv directly to /usr/local/bin (updated path)
