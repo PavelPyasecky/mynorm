@@ -3,6 +3,11 @@ FROM docker.io/postgres:16
 # Install PostGIS and create the extension template
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    libpq-dev \
+    binutils \
+    gdal-bin \
+    python3-gdal \
+    postgis \
     postgresql-16-postgis-3 \
     postgresql-16-postgis-3-scripts \
     && rm -rf /var/lib/apt/lists/*
