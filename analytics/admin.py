@@ -1,4 +1,9 @@
+from django import forms
 from django.contrib import admin
+from django.contrib.gis.db.models import PointField
+from django.contrib.gis.forms import OSMWidget
+from django.db.models import TextField
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from nested_admin.nested import NestedTabularInline, NestedModelAdmin
@@ -70,9 +75,19 @@ class CommentFileInline(NestedTabularInline):
 
 class CommentsAdminInline(NestedTabularInline):
     model = Comment
+    formfield_overrides = {
+        PointField: {"widget": OSMWidget(attrs={
+            'map_width': 500,
+            'map_height': 300,
+            'default_zoom': 12,
+        })},
+        TextField: {'widget': forms.Textarea(attrs={
+            'style': 'height: 20em; width: 500px;'
+        })},
+    }
     extra = 0
     inlines = (CommentImageInline, CommentFileInline)
-    fields = ("text", "created_date", "created_by")
+    fields = ("text", "created_date", "created_by", "coordinates")
     readonly_fields = (
         "created_date",
         "updated_date",
@@ -94,6 +109,7 @@ class ActivityStatisticsAdmin(
         "is_valid",
     )
     readonly_fields = (
+        "id",
         "supervision",
         "activity",
         "created_by",
@@ -106,7 +122,7 @@ class ActivityStatisticsAdmin(
         "is_valid",
         "failure",
     )
-    fields = ("activity", "start_date", "end_date", "delta", "failure")
+    fields = ("id", "activity", "start_date", "end_date", "delta", "failure")
     list_filter = (
         ActivityStatisticsOrganizationFilter,
         ActivityStatisticsSupervisionFilter,
@@ -140,17 +156,18 @@ class SupervisionAdmin(
         "end_date",
         "delta",
         "is_valid",
+        "verified",
     )
     readonly_fields = (
         ("delta", "start_date", "end_date")
         + admin_mixins.CreatedByUpdatedByAdminMixin.readonly_fields
-        + ("updated_date", "created_date", "linked_activity_table")
+        + ("updated_date", "created_date", "linked_activity_table", "verification_date")
     )
     list_filter = ("organization",)
     fields = (
         ("organization", "user", "worker", "start_date", "end_date")
         + admin_mixins.CreatedByUpdatedByAdminMixin.fields
-        + ("linked_activity_table",)
+        + ("linked_activity_table", "verified", "verification_date")
     )
 
     def is_valid(self, obj):
@@ -174,6 +191,16 @@ class SupervisionAdmin(
         return mark_safe(html)
 
     linked_activity_table.short_description = "Statistics"
+
+    def save_model(self, request, obj, form, change):
+        monitor_field_name = "verified"
+
+        if change:  # Only for existing objects
+            original_obj = Supervision.objects.get(pk=obj.pk)
+            if getattr(obj, monitor_field_name) != getattr(original_obj, monitor_field_name):
+                obj.verification_date = timezone.now()
+
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Failure)

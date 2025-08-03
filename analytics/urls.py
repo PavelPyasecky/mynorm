@@ -9,14 +9,29 @@ urlpatterns = [
         name="supervision",
     ),
     path(
+        "export/",
+        views.SupervisionViewSet.as_view({"get": "export",}),
+        name="supervision_list_export",
+    ),
+    path(
         "<int:pk>/",
-        views.SupervisionViewSet.as_view({"get": "retrieve"}),
+        views.SupervisionViewSet.as_view({"get": "retrieve", "patch": "update"}),
         name="supervision_detail",
     ),
     path(
         "<int:pk>/finish/",
         views.SupervisionViewSet.as_view({"post": "finish"}),
-        name="supervision_detail",
+        name="finish_supervision",
+    ),
+    path(
+        "<int:pk>/verify/",
+        views.SupervisionViewSet.as_view({"post": "verify"}),
+        name="verify_supervision",
+    ),
+    path(
+        "<int:pk>/clear-verification/",
+        views.SupervisionViewSet.as_view({"post": "clear_verification"}),
+        name="clear_verification_supervision",
     ),
     path(
         "analytics/<int:pk>/",
@@ -26,6 +41,11 @@ urlpatterns = [
     path(
         "analytics/<int:analytics_id>/comment/",
         views.AnalyticsCommentView.as_view({"post": "create"}),
+        name="analytics_comment",
+    ),
+    path(
+        "analytics/comment/<int:pk>/",
+        views.AnalyticsCommentView.as_view({"patch": "update"}),
         name="analytics_comment",
     ),
     path(

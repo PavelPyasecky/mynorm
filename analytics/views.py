@@ -1,4 +1,13 @@
-from rest_framework import status
+import pandas as pd
+from io import BytesIO
+
+import pytz
+from django.db.models import Value, ExpressionWrapper, F, fields, Prefetch
+from django.db.models.functions import Concat
+from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, filters
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
     ListModelMixin,
@@ -22,12 +31,14 @@ from analytics.services import (
     FailureService,
     ActivityStatisticsService,
 )
+from core import paginators
 from core.permissions import IsSupervisor
+from core.utils import localize_datetime, timedelta_to_str
 
 
 class AnalyticsListView(ListModelMixin, GenericViewSet):
     permission_classes = (IsSupervisor,)
-    serializer_class = serializers.AnalyticsSerializer
+    serializer_class = serializers.AnalyticsDetailsSerializer
     queryset = ActivityStatistics.objects.all()
     ordering = ["start_date"]
 
@@ -64,17 +75,43 @@ class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
 
 
 class SupervisionViewSet(
-    RetrieveModelMixin, CreateModelMixin, ListModelMixin, GenericViewSet
+    RetrieveModelMixin, CreateModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet
 ):
     permission_classes = (IsSupervisor,)
     serializer_class = serializers.SupervisionSerializer
     queryset = Supervision.objects.all()
+    pagination_class = paginators.CustomPagination
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
+    filterset_fields = ('organization', 'worker', 'user', 'validity', 'verified')
+    search_fields = (
+        'id',
+        'organization__name',
+        'worker__first_name',
+        'worker__last_name',
+        'user__first_name',
+        'user__last_name',
+    )
+
+    EXPORT_FILE_NAME = 'Mera_Export_Supervision'
 
     def get_serializer_class(self):
-        if self.action in ("list", "retrieve"):
+        if self.action in ("list", "export"):
+            return serializers.SupervisionListSerializer
+        elif self.action == "retrieve":
             return serializers.SupervisionSerializer
-        elif self.action == "create":
+        elif self.action in ("create",):
             return serializers.SupervisionCreateSerializer
+        elif self.action in ("partial_update", "update"):
+            return serializers.SupervisionUpdateSerializer
+
+    def get_queryset(self):
+        qs = self.queryset
+
+        if self.action == "list":
+            qs = self.queryset.select_related("organization", "worker", "user").prefetch_related(
+                Prefetch("statistics", queryset=ActivityStatistics.objects.select_related("failure")), )
+
+        return qs
 
     def finish(self, request: Request, pk: int):
         supervision = get_object_or_404(Supervision.objects, pk=pk)
@@ -82,12 +119,125 @@ class SupervisionViewSet(
 
         return Response(status=status.HTTP_200_OK)
 
+    def verify(self, request: Request, pk: int):
+        supervision = get_object_or_404(Supervision.objects, pk=pk)
+        SupervisionService().verify(supervision)
 
-class AnalyticsCommentView(CreateModelMixin, GenericViewSet):
+        return Response(status=status.HTTP_200_OK)
+
+    def clear_verification(self, request: Request, pk: int):
+        supervision = get_object_or_404(Supervision.objects, pk=pk)
+        SupervisionService().clear_verification(supervision)
+
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'])
+    def export(self, request):
+        tz_param = request.query_params.get('timezone', 'Europe/Moscow')
+        target_tz = pytz.timezone(tz_param)
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        data = queryset.annotate(
+            worker_full_name=Concat('worker__first_name', Value(' '), 'worker__last_name'),
+            viewer_full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
+            duration=ExpressionWrapper(
+                F('end_date') - F('start_date'),
+                output_field=fields.DurationField()
+            ),
+            analytics_duration=ExpressionWrapper(
+                F('statistics__end_date') - F('statistics__start_date'),
+                output_field=fields.DurationField()
+            ),
+            analytics_failure_duration=ExpressionWrapper(
+                F('statistics__failure__end_date') - F('statistics__failure__start_date'),
+                output_field=fields.DurationField()
+            ),
+        ).values(
+            'id',
+            'organization__name',
+            'worker__classifier__name',
+            'worker__classifier__code',
+            'worker_full_name',
+            'viewer_full_name',
+            'validity',
+            'verified',
+            'start_date',
+            'end_date',
+            'duration',
+            'statistics__id',
+            'statistics__activity__name',
+            'statistics__failure__start_date',
+            'statistics__failure__end_date',
+            'analytics_failure_duration',
+            'statistics__start_date',
+            'statistics__end_date',
+            'analytics_duration',
+        ).order_by(
+            '-id',
+            '-statistics__id',
+        )
+
+        df = pd.DataFrame(data)
+
+        for field_name in df.columns:
+            if 'date' in field_name.split('_'):
+                df[field_name] = pd.to_datetime(df[field_name], errors='coerce')
+
+                df[field_name] = df[field_name].apply(
+                    lambda x: x.astimezone(target_tz).replace(tzinfo=None)
+                    if pd.notna(x) else None
+                )
+
+            if 'duration' in field_name.split('_'):
+                df[field_name] = [
+                    timedelta_to_str(td) if pd.notna(td) else '--:--:--'
+                    for td in df[field_name]
+                ]
+
+        df.rename(columns={
+            'id': 'ID Наблюдения',
+            'organization__name': 'Название организации',
+            'worker__classifier__name': "Название классификатора",
+            'worker__classifier__code': "Код классификатора",
+            'worker_full_name': "ФИО Работника",
+            'viewer_full_name': "ФИО Наблюдателя",
+            'validity': "Наличие сбоев",
+            'verified': "Проверенно",
+            'start_date': "Начало наблюдения",
+            'end_date': "Конец наблюдения",
+            'duration': "Длительность наблюдения",
+            'statistics__id': "ID аналитики",
+            'statistics__activity__name': "Название операции",
+            'statistics__start_date': "Начало операции",
+            'statistics__end_date': "Конец операции",
+            'analytics_duration': "Длительность операции",
+            'statistics__failure__start_date': "Начало сбоя операции",
+            'statistics__failure__end_date': "Конец сбоя операции",
+            'analytics_failure_duration': "Длительность сбоя суммарная",
+        }, inplace=True)
+
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, sheet_name='Supervisions', index=False)
+
+        converted_datetime = localize_datetime(timezone.now(), target_tz)
+        str_datetime = converted_datetime.strftime("%d_%m_%y__%H_%M_%S")
+        file_name = f'{self.EXPORT_FILE_NAME}__{str_datetime}'
+
+        response = Response(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = f'attachment; filename={file_name}.xlsx'
+        response.content = output.getvalue()
+
+        return response
+
+
+class AnalyticsCommentView(CreateModelMixin, UpdateModelMixin, GenericViewSet):
     permission_classes = (IsSupervisor,)
     serializer_class = serializers.CommentCreateSerializer
     queryset = Comment.objects.all()
-    lookup_field = "analytics_id"
 
     def perform_create(self, serializer):
         activity_statistics_id = self.kwargs.get("analytics_id")
@@ -95,11 +245,13 @@ class AnalyticsCommentView(CreateModelMixin, GenericViewSet):
         text = serializer.validated_data.get("text")
         images = serializer.validated_data.get("images")
         files = serializer.validated_data.get("files")
+        coordinates = serializer.validated_data.get("coordinates")
 
         if text or images or files:
             comment = Comment.objects.create(
                 activity_statistics_id=activity_statistics_id,
                 text=text,
+                coordinates=coordinates,
                 created_by=self.request.user,
                 updated_by=self.request.user,
             )
@@ -119,6 +271,18 @@ class AnalyticsCommentView(CreateModelMixin, GenericViewSet):
                     file_objects.append(comment_file)
 
                 CommentFiles.objects.bulk_create(file_objects)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        instance = self.perform_update(serializer)
+
+        return Response(serializers.CommentSerializer(instance).data)
+
+    def perform_update(self, serializer):
+        return serializer.save()
 
 
 class AnalyticsFailureView(GenericViewSet):
@@ -156,5 +320,12 @@ class AnalyticsFailureView(GenericViewSet):
 class AnalyticsDetailsView(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     permission_classes = (IsSupervisor,)
     serializer_class = serializers.AnalyticsDetailsSerializer
-    queryset = ActivityStatistics.objects.all()
+    queryset = ActivityStatistics.objects.prefetch_related("comments")
     lookup_field = "pk"
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return serializers.AnalyticsDetailsSerializer
+
+        elif self.action in ("partial_update", "update"):
+            return serializers.AnalyticsUpdateSerializer

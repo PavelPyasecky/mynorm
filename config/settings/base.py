@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.gis',
 
     'adminsortable2',
     'rest_framework',
@@ -108,6 +109,7 @@ DATABASES = {
     )
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+DATABASES["default"]["ENGINE"] = 'django.contrib.gis.db.backends.postgis'
 
 
 # Password validation
@@ -282,3 +284,5 @@ LOGGING = {
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
+
+YANDEX_MAP_BASE_URL = "https://yandex.com/maps/"

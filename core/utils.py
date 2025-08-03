@@ -1,4 +1,7 @@
-from datetime import time
+from datetime import time, datetime
+from typing import Union
+
+from django.conf import settings
 
 
 def timedelta_to_str(td):
@@ -10,3 +13,7 @@ def timedelta_to_str(td):
 
     microseconds = td.microseconds
     return time(hour=hours, minute=minutes, second=seconds, microsecond=microseconds).strftime("%H:%M:%S")
+
+
+def localize_datetime(datetime_, tz=settings.ADMIN_TIME_ZONE) -> Union[datetime, None]:
+    return datetime_.astimezone(tz)
