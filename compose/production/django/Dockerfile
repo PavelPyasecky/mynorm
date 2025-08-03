@@ -15,8 +15,15 @@ RUN apt-get update && \
     build-essential \
     curl \
     libpq-dev \
+    binutils \
+    gdal-bin \
+    python3-gdal \
     && rm -rf /var/lib/apt/lists/*
 
+
+# Set GDAL environment variables
+ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
+ENV GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
 
 # Install uv directly to /usr/local/bin (updated path)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
