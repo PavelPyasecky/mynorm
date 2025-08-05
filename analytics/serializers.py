@@ -85,6 +85,7 @@ class CommentCreateSerializer(CommentSerializer):
         child=serializers.FileField(required=False),
         allow_empty=True,
         required=False,
+
     )
 
     class Meta:
@@ -92,7 +93,7 @@ class CommentCreateSerializer(CommentSerializer):
         geo_field = 'coordinates'
         fields = ("id", "text", "coordinates", "images", "files")
         extra_kwargs = {
-            "text": {"required": False},
+            "text": {"default": "", "allow_null": False},
         }
 
     def validate_coordinates(self, value):
