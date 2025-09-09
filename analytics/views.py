@@ -19,6 +19,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from analytics import serializers, exceptions
+from analytics.exceptions import AnalyticsDoesNotExistException
 from analytics.models import (
     ActivityStatistics,
     Supervision,
@@ -241,6 +242,11 @@ class AnalyticsCommentView(CreateModelMixin, UpdateModelMixin, GenericViewSet):
 
     def perform_create(self, serializer):
         activity_statistics_id = self.kwargs.get("analytics_id")
+
+        activity_statistics = ActivityStatistics.objects.filter(id=activity_statistics_id).first()
+
+        if not activity_statistics:
+            raise AnalyticsDoesNotExistException()
 
         text = serializer.validated_data.get("text")
         images = serializer.validated_data.get("images")
