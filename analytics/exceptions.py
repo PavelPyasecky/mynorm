@@ -14,3 +14,8 @@ class FailureIsNotStartedException(exceptions.APIException):
 class ActivityFailureException(exceptions.APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "All activities finished"
+
+
+class AnalyticsDoesNotExistException(exceptions.APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "Analytics does not exist"
