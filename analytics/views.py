@@ -2,8 +2,9 @@ import pandas as pd
 from io import BytesIO
 
 import pytz
-from django.db.models import Value, ExpressionWrapper, F, fields, Prefetch
-from django.db.models.functions import Concat
+from django.db.models import Value, ExpressionWrapper, F, fields, Prefetch, Sum, DurationField, CharField, Case, When, \
+    Func
+from django.db.models.functions import Concat, Coalesce
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
@@ -82,8 +83,8 @@ class SupervisionViewSet(
     serializer_class = serializers.SupervisionSerializer
     queryset = Supervision.objects.all()
     pagination_class = paginators.CustomPagination
-    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    filterset_fields = ('organization', 'worker', 'user', 'validity', 'verified')
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter)
+    filterset_fields = ('id', 'organization', 'worker', 'user', 'verified')
     search_fields = (
         'id',
         'organization__name',
@@ -92,6 +93,8 @@ class SupervisionViewSet(
         'user__first_name',
         'user__last_name',
     )
+    ordering_fields = ('id', 'organization_id', 'worker_id', 'user_id', 'start_date', 'end_date', 'delta', 'verified')
+    ordering = ('-id',)
 
     EXPORT_FILE_NAME = 'Mera_Export_Supervision'
 
@@ -110,9 +113,32 @@ class SupervisionViewSet(
 
         if self.action == "list":
             qs = self.queryset.select_related("organization", "worker", "user").prefetch_related(
-                Prefetch("statistics", queryset=ActivityStatistics.objects.select_related("failure")), )
+                Prefetch("statistics", queryset=ActivityStatistics.objects.select_related("failure", "activity")),
+            ).annotate(
+                total_failure_delta=Sum(
+                    F('statistics__failure__end_date') - F('statistics__failure__start_date'),
+                    output_field=DurationField()
+                )
+            ).annotate(
+                display_total_failure_delta=Case(
+                    When(total_failure_delta__isnull=True, then=Value('--:--:--')),
+                    default=Func(
+                        F('total_failure_delta'),
+                        function='TO_CHAR',
+                        template="%(function)s(%(expressions)s, 'HH24:MI:SS')"
+                    ),
+                    output_field=CharField()
+                )
+            )
 
         return qs
+
+    def create(self, request, *args, **kwargs):
+        last_supervision = Supervision.objects.filter(user=request.user).order_by("-id").first()
+        if last_supervision.end_date is None:
+            raise exceptions.SupervisionIsNotFinishedException()
+
+        return super().create(request, *args, **kwargs)
 
     def finish(self, request: Request, pk: int):
         supervision = get_object_or_404(Supervision.objects, pk=pk)
@@ -139,7 +165,9 @@ class SupervisionViewSet(
 
         queryset = self.filter_queryset(self.get_queryset())
 
-        data = queryset.annotate(
+        data = queryset.filter(
+            verified=True
+        ).annotate(
             worker_full_name=Concat('worker__first_name', Value(' '), 'worker__last_name'),
             viewer_full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
             duration=ExpressionWrapper(
@@ -335,3 +363,15 @@ class AnalyticsDetailsView(RetrieveModelMixin, UpdateModelMixin, GenericViewSet)
 
         elif self.action in ("partial_update", "update"):
             return serializers.AnalyticsUpdateSerializer
+
+    def verify(self, request: Request, pk: int):
+        activity_statistics = get_object_or_404(ActivityStatistics.objects, pk=pk)
+        ActivityStatisticsService().verify(activity_statistics)
+
+        return Response(status=status.HTTP_200_OK)
+
+    def clear_verification(self, request: Request, pk: int):
+        activity_statistics = get_object_or_404(ActivityStatistics.objects, pk=pk)
+        ActivityStatisticsService().clear_verification(activity_statistics)
+
+        return Response(status=status.HTTP_200_OK)

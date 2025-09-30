@@ -240,7 +240,13 @@ class FailureSerializer(serializers.ModelSerializer):
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ("id", "name",)
+        fields = (
+            "id",
+            "name",
+            "planned_start_time",
+            "planned_end_time",
+            "planned_delta",
+        )
 
 
 class AnalyticsDetailsSerializer(serializers.ModelSerializer):
@@ -252,14 +258,33 @@ class AnalyticsDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActivityStatistics
-        fields = ("id", "activity", "supervision", "failure", "comments", "start_date", "end_date", "delta")
+        fields = (
+            "id",
+            "activity",
+            "supervision",
+            "failure",
+            "comments",
+            "start_date",
+            "end_date",
+            "delta",
+            "verified",
+            "verification_date",
+        )
+
+
+class AnalyticsDetailsLiteSerializer(AnalyticsDetailsSerializer):
+    supervision = SupervisionLiteSerializer(read_only=True)
+
+    class Meta(AnalyticsDetailsSerializer.Meta):
+        pass
 
 
 class SupervisionListSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
     user = UserSerializer(read_only=True)
     organization = OrganizationSerializer(read_only=True)
-    analytics = AnalyticsDetailsSerializer(source="statistics", many=True, read_only=True)
+    analytics = AnalyticsDetailsLiteSerializer(source="statistics", many=True, read_only=True)
+    display_total_failure_delta = serializers.CharField(read_only=True)
 
     class Meta:
         model = Supervision
@@ -270,7 +295,11 @@ class SupervisionListSerializer(serializers.ModelSerializer):
             "user",
             "start_date",
             "end_date",
+            "planned_start_time",
+            "planned_end_time",
             "delta",
+            "planned_delta",
+            "display_total_failure_delta",
             "validity",
             "verified",
             "verification_date",
