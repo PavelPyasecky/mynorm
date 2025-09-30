@@ -39,6 +39,16 @@ urlpatterns = [
         name="analytics_details",
     ),
     path(
+        "analytics/<int:pk>/verify/",
+        views.AnalyticsDetailsView.as_view({"post": "verify"}),
+        name="verify_analytics",
+    ),
+    path(
+        "analytics/<int:pk>/clear-verification/",
+        views.AnalyticsDetailsView.as_view({"post": "clear_verification"}),
+        name="clear_verification_analytics",
+    ),
+    path(
         "analytics/<int:analytics_id>/comment/",
         views.AnalyticsCommentView.as_view({"post": "create"}),
         name="analytics_comment",

@@ -1,7 +1,8 @@
-from datetime import time, datetime
+from datetime import time, datetime, timedelta
 from typing import Union
 
 from django.conf import settings
+from django.utils import timezone
 
 
 def timedelta_to_str(td):
@@ -17,3 +18,14 @@ def timedelta_to_str(td):
 
 def localize_datetime(datetime_, tz=settings.ADMIN_TIME_ZONE) -> Union[datetime, None]:
     return datetime_.astimezone(tz)
+
+
+def time_difference(start_time, end_time):
+    today = timezone.now().today()
+    start_dt = datetime.combine(today, start_time)
+    end_dt = datetime.combine(today, end_time)
+
+    if end_time < start_time:
+        end_dt += timedelta(days=1)
+
+    return end_dt - start_dt

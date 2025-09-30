@@ -54,6 +54,18 @@ class StartEndDateMixin(models.Model):
         abstract = True
 
 
+class PlannedStartEndTimeMixin(models.Model):
+    planned_start_time = models.TimeField(
+        verbose_name=_("planned start time"), null=True, blank=True
+    )
+    planned_end_time = models.TimeField(
+        verbose_name=_("planned end time"), null=True, blank=True
+    )
+
+    class Meta:
+        abstract = True
+
+
 class VerifiedMixin(models.Model):
     verified = models.BooleanField(
         verbose_name=_("verified"), default=False

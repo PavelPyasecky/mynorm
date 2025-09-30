@@ -165,7 +165,7 @@ class SupervisionAdmin(
     )
     list_filter = ("organization",)
     fields = (
-        ("organization", "user", "worker", "start_date", "end_date")
+        ("organization", "user", "worker", "start_date", "end_date", "planned_start_time", "planned_end_time")
         + admin_mixins.CreatedByUpdatedByAdminMixin.fields
         + ("linked_activity_table", "verified", "verification_date")
     )

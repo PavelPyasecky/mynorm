@@ -2,6 +2,7 @@ from django.utils import timezone
 
 from analytics import exceptions
 from analytics.models import Supervision, ActivityStatistics, Failure
+from core.model_mixins import VerifiedMixin
 from layouts.models import Activity
 
 
@@ -54,7 +55,20 @@ class FailureService:
             id__gt=first_analytics, id__lt=last_analytics).update(failure=failure)
 
 
-class ActivityStatisticsService:
+class VerifyMixin:
+    def _change_verification(self, entity: VerifiedMixin, verify: bool) -> None:
+        entity.verified = verify
+        entity.verification_date = timezone.now()
+        entity.save(update_fields=["verified", "verification_date"])
+
+    def verify(self, entity: VerifiedMixin):
+        self._change_verification(entity, True)
+
+    def clear_verification(self, entity: VerifiedMixin):
+        self._change_verification(entity, False)
+
+
+class ActivityStatisticsService(VerifyMixin):
     @staticmethod
     def finish_activity(activity_statistics: ActivityStatistics) -> None:
         activity_statistics.end_date = timezone.now()
@@ -78,7 +92,7 @@ class ActivityStatisticsService:
         return ActivityStatistics.objects.create(**data)
 
 
-class SupervisionService:
+class SupervisionService(VerifyMixin):
     @staticmethod
     def finish_supervision(supervision: Supervision):
         last_activity_statistic = supervision.statistics.filter(
@@ -94,14 +108,3 @@ class SupervisionService:
 
         supervision.end_date = timezone.now()
         supervision.save(update_fields=["end_date"])
-
-    def _change_verification(self, supervision: Supervision, verify: bool) -> None:
-        supervision.verified = verify
-        supervision.verification_date = timezone.now()
-        supervision.save(update_fields=["verified", "verification_date"])
-
-    def verify(self, supervision: Supervision):
-        self._change_verification(supervision, True)
-
-    def clear_verification(self, supervision: Supervision):
-        self._change_verification(supervision, False)

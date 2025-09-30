@@ -3,14 +3,14 @@ from django.utils import timezone
 
 from analytics.utils import get_yandex_map_link
 from core import model_mixins
-from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin
+from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin, PlannedStartEndTimeMixin
 from core.models import Organization
-from core.utils import timedelta_to_str
+from core.utils import timedelta_to_str, time_difference
 from layouts.models import Activity
 from django.utils.translation import gettext_lazy as _
 
 
-class Supervision(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin):
+class Supervision(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin, PlannedStartEndTimeMixin):
     worker = models.ForeignKey(
         "users.User",
         verbose_name=_("worker"),
@@ -46,6 +46,15 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin):
         return "--:--"
 
     delta.fget.short_description = _("Duration")
+
+    @property
+    def planned_delta(self):
+        if self.planned_end_time and self.planned_start_time:
+            return timedelta_to_str(time_difference(self.planned_start_time, self.planned_end_time))
+
+        return "--:--:--"
+
+    planned_delta.fget.short_description = _("Planned duration")
 
 
 class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin):
