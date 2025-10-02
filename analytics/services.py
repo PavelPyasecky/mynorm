@@ -4,6 +4,7 @@ from analytics import exceptions
 from analytics.models import Supervision, ActivityStatistics, Failure
 from core.model_mixins import VerifiedMixin
 from layouts.models import Activity
+from users.models import User
 
 
 class FailureService:
@@ -105,3 +106,12 @@ class SupervisionService(VerifyMixin):
 
         supervision.end_date = timezone.now()
         supervision.save(update_fields=["end_date"])
+
+    @staticmethod
+    def delete_not_verified_supervisions() -> tuple[int,dict[str, int]]:
+        deleted_entities_count, deleted_entities_dict = Supervision.objects.filter(verified=False).delete()
+        return deleted_entities_count, deleted_entities_dict
+
+    @staticmethod
+    def get_user_last_active_supervision(user: User) -> Supervision:
+        return Supervision.objects.filter(user=user, end_date__isnull=True).order_by("id").last()

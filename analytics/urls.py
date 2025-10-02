@@ -14,6 +14,16 @@ urlpatterns = [
         name="supervision_list_export",
     ),
     path(
+        "delete-not-verified/",
+        views.SupervisionViewSet.as_view({"post": "delete_not_verified", }),
+        name="delete_not_verified_supervisions",
+    ),
+    path(
+        "last-active-supervision/",
+        views.SupervisionViewSet.as_view({"get": "last_active_supervision", }),
+        name="user_last_active_supervision",
+    ),
+    path(
         "<int:pk>/",
         views.SupervisionViewSet.as_view({"get": "retrieve", "patch": "update"}),
         name="supervision_detail",
