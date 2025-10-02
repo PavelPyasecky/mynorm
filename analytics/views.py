@@ -3,8 +3,8 @@ from io import BytesIO
 
 import pytz
 from django.db.models import Value, ExpressionWrapper, F, fields, Prefetch, Sum, DurationField, CharField, Case, When, \
-    Func
-from django.db.models.functions import Concat, Coalesce
+    Func, Count, Q, OuterRef, Subquery, IntegerField
+from django.db.models.functions import Concat, Coalesce, Extract
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
@@ -112,6 +112,24 @@ class SupervisionViewSet(
         qs = self.queryset
 
         if self.action == "list":
+            activity_count_subquery = ActivityStatistics.objects.filter(
+                supervision=OuterRef('pk')
+            ).annotate(
+                actual_duration=Extract(F('end_date') - F('start_date'), 'epoch'),
+                planned_duration=Extract(
+                    F('activity__planned_end_time') - F('activity__planned_start_time'),
+                    'epoch'
+                )
+            ).filter(
+                actual_duration__gt=F('planned_duration'),
+                end_date__isnull=False,
+                start_date__isnull=False,
+                activity__planned_end_time__isnull=False,
+                activity__planned_start_time__isnull=False
+            ).values('supervision').annotate(
+                count=Count('id')
+            ).values('count')
+
             qs = self.queryset.select_related("organization", "worker", "user").prefetch_related(
                 Prefetch("statistics", queryset=ActivityStatistics.objects.select_related("failure", "activity")),
             ).annotate(
@@ -128,6 +146,11 @@ class SupervisionViewSet(
                         template="%(function)s(%(expressions)s, 'HH24:MI:SS')"
                     ),
                     output_field=CharField()
+                ),
+                overtime_activities_count=Coalesce(
+                    Subquery(activity_count_subquery),
+                    0,
+                    output_field=IntegerField()
                 )
             )
 
@@ -157,6 +180,21 @@ class SupervisionViewSet(
         SupervisionService().clear_verification(supervision)
 
         return Response(status=status.HTTP_200_OK)
+
+    def delete_not_verified(self, request):
+        deleted_entities_count, deleted_entities_dict = SupervisionService().delete_not_verified_supervisions()
+        data = {
+            "deleted_entities_count": deleted_entities_count,
+            "deleted_entities": deleted_entities_dict,
+        }
+        return Response(data=data, status=status.HTTP_200_OK)
+
+    def last_active_supervision(self, request):
+        supervision = SupervisionService().get_user_last_active_supervision(request.user)
+        if supervision:
+            serializer = self.serializer_class(supervision)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'])
     def export(self, request):

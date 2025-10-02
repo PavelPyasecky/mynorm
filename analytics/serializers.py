@@ -285,6 +285,7 @@ class SupervisionListSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)
     analytics = AnalyticsDetailsLiteSerializer(source="statistics", many=True, read_only=True)
     display_total_failure_delta = serializers.CharField(read_only=True)
+    overtime_activities_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Supervision
@@ -299,6 +300,7 @@ class SupervisionListSerializer(serializers.ModelSerializer):
             "planned_end_time",
             "delta",
             "planned_delta",
+            "overtime_activities_count",
             "display_total_failure_delta",
             "validity",
             "verified",
