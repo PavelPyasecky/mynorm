@@ -159,7 +159,7 @@ class SupervisionAdmin(
         "verified",
     )
     readonly_fields = (
-        ("delta", "start_date", "end_date")
+        ("delta", "start_date",)
         + admin_mixins.CreatedByUpdatedByAdminMixin.readonly_fields
         + ("updated_date", "created_date", "linked_activity_table", "verification_date")
     )
