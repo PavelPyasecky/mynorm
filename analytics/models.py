@@ -57,6 +57,25 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin, Planned
     planned_delta.fget.short_description = _("Planned duration")
 
 
+class SupervisionComment(CreatedUpdatedMixin):
+    text = models.TextField(
+        verbose_name=_("text"),
+    )
+    supervision = models.ForeignKey(
+        Supervision,
+        verbose_name=_("supervision"),
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+
+    def __str__(self):
+        return _("Comment") + " №" + str(self.pk)
+
+    class Meta:
+        verbose_name = _("Comment")
+        verbose_name_plural = _("Comments")
+
+
 class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin):
     activity = models.ForeignKey(
         Activity,

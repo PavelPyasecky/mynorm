@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-03 15:52+0000\n"
+"POT-Creation-Date: 2025-10-11 18:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,16 +20,16 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: analytics/admin.py:24 analytics/models.py:22 layouts/models.py:14
-#: users/models.py:20
+#: analytics/admin.py:25 analytics/models.py:22 layouts/models.py:15
+#: users/models.py:22
 msgid "organization"
 msgstr "организация"
 
-#: analytics/admin.py:37
+#: analytics/admin.py:38
 msgid "last supervisions"
 msgstr "последние наблюдения"
 
-#: analytics/admin.py:143 analytics/admin.py:178
+#: analytics/admin.py:144 analytics/admin.py:192
 msgid "Absence of a system failure"
 msgstr "Отсутствие системного сбоя"
 
@@ -61,83 +61,88 @@ msgstr "Наблюдения"
 msgid "Supervision "
 msgstr "Наблюдение №"
 
-#: analytics/models.py:48 analytics/models.py:86 analytics/models.py:173
+#: analytics/models.py:48 analytics/models.py:114 analytics/models.py:201
 msgid "Duration"
 msgstr "Продолжительность"
 
-#: analytics/models.py:54
-msgid "activity"
-msgstr "вид деятельности"
+#: analytics/models.py:57 layouts/models.py:91
+msgid "Planned duration"
+msgstr "Плановая длительность"
 
-#: analytics/models.py:60
-msgid "supervision"
-msgstr "наблюдение"
-
-#: analytics/models.py:66
-msgid "failure"
-msgstr "сбой"
-
-#: analytics/models.py:73 analytics/models.py:74
-msgid "Activity statistics"
-msgstr "Статистика видов деятельности"
-
-#: analytics/models.py:77
-msgid "Statistics for "
-msgstr "Статистика вида деятельности: "
-
-#: analytics/models.py:91
+#: analytics/models.py:62 analytics/models.py:119
 msgid "text"
 msgstr "текст"
 
-#: analytics/models.py:95
-msgid "activity statistics"
-msgstr "Статистика видов деятельности"
+#: analytics/models.py:66 analytics/models.py:88
+msgid "supervision"
+msgstr "наблюдение"
 
-#: analytics/models.py:99
-msgid "coordinates"
-msgstr "Координаты"
-
-#: analytics/models.py:117 analytics/models.py:120
+#: analytics/models.py:72 analytics/models.py:75 analytics/models.py:145
+#: analytics/models.py:148
 msgid "Comment"
 msgstr "Комментарий"
 
-#: analytics/models.py:121
+#: analytics/models.py:76 analytics/models.py:149
 msgid "Comments"
 msgstr "Комментарии"
 
-#: analytics/models.py:125 gallery/models.py:9 layouts/models.py:45
+#: analytics/models.py:82
+msgid "activity"
+msgstr "вид деятельности"
+
+#: analytics/models.py:94
+msgid "failure"
+msgstr "сбой"
+
+#: analytics/models.py:101 analytics/models.py:102
+msgid "Activity statistics"
+msgstr "Статистика видов деятельности"
+
+#: analytics/models.py:105
+msgid "Statistics for "
+msgstr "Статистика вида деятельности: "
+
+#: analytics/models.py:123
+msgid "activity statistics"
+msgstr "Статистика видов деятельности"
+
+#: analytics/models.py:127
+msgid "coordinates"
+msgstr "Координаты"
+
+#: analytics/models.py:153 gallery/models.py:9 layouts/models.py:46
 msgid "image"
 msgstr "изображение"
 
-#: analytics/models.py:128 analytics/models.py:142
+#: analytics/models.py:156 analytics/models.py:170
 msgid "comment"
 msgstr "комментарий"
 
-#: analytics/models.py:134
+#: analytics/models.py:162
 msgid "Comment Image"
 msgstr "Прикрепленное изображение"
 
-#: analytics/models.py:135
+#: analytics/models.py:163
 msgid "Comment Images"
 msgstr "Прикрепленные изображения"
 
-#: analytics/models.py:139
+#: analytics/models.py:167
 msgid "file"
 msgstr "файл"
 
-#: analytics/models.py:148
+#: analytics/models.py:176
 msgid "Comment File"
 msgstr "Прикреплённый файл"
 
-#: analytics/models.py:149
+#: analytics/models.py:177
 msgid "Comment Files"
 msgstr "Прикреплённые файлы"
 
-#: analytics/models.py:156 analytics/models.py:176
+#: analytics/models.py:184 analytics/models.py:204
 msgid "Failure"
 msgstr "Сбой"
 
-#: analytics/models.py:157
+#: analytics/models.py:185
 msgid "Failures"
 msgstr "Сбои"
 
@@ -178,15 +183,23 @@ msgid "end date"
 msgstr "дата окончания"
 
 #: core/model_mixins.py:59
+msgid "planned start time"
+msgstr "плановое время начала"
+
+#: core/model_mixins.py:62
+msgid "planned end time"
+msgstr "плановое время окончания"
+
+#: core/model_mixins.py:71
 msgid "verified"
 msgstr "Проверенно"
 
-#: core/model_mixins.py:62
+#: core/model_mixins.py:74
 msgid "verification_date"
 msgstr "Дата проверки"
 
-#: core/models.py:10 core/models.py:38 gallery/models.py:8 layouts/models.py:11
-#: layouts/models.py:66
+#: core/models.py:10 core/models.py:38 gallery/models.py:8 layouts/models.py:12
+#: layouts/models.py:67
 msgid "name"
 msgstr "наименование"
 
@@ -226,51 +239,51 @@ msgstr "Изображения"
 msgid "layouts"
 msgstr "макет"
 
-#: layouts/models.py:20 users/models.py:12
+#: layouts/models.py:21 users/models.py:14
 msgid "classifier"
 msgstr "классификатор"
 
-#: layouts/models.py:26
+#: layouts/models.py:27
 msgid "Layout"
 msgstr "Макет"
 
-#: layouts/models.py:27
+#: layouts/models.py:28
 msgid "Layouts"
 msgstr "Макеты"
 
-#: layouts/models.py:32
+#: layouts/models.py:33
 msgid "Placement in the first column"
 msgstr "Размещение в первой колонке"
 
-#: layouts/models.py:33
+#: layouts/models.py:34
 msgid "Placement in the second column"
 msgstr "Размещение во второй колонке"
 
-#: layouts/models.py:34
+#: layouts/models.py:35
 msgid "Placement in the third column"
 msgstr "Размещение в третьей колонке"
 
-#: layouts/models.py:39
+#: layouts/models.py:40
 msgid "layout"
 msgstr "макет"
 
-#: layouts/models.py:60
+#: layouts/models.py:61
 msgid "Activity Group"
 msgstr "Группа видов деятельности"
 
-#: layouts/models.py:61
+#: layouts/models.py:62
 msgid "Activity Groups"
 msgstr "Группы видов деятельности"
 
-#: layouts/models.py:69
+#: layouts/models.py:70
 msgid "activity group"
 msgstr "группа видов деятельности"
 
-#: layouts/models.py:80
+#: layouts/models.py:81
 msgid "Activity"
 msgstr "Вид деятельности"
 
-#: layouts/models.py:81
+#: layouts/models.py:82
 msgid "Activities"
 msgstr "Виды деятельности"
 
@@ -290,22 +303,21 @@ msgstr "Важные даты:"
 msgid "Worker info"
 msgstr "Информация о работнике"
 
-#: users/apps.py:8
+#: users/apps.py:9
 msgid "users"
 msgstr "Пользователи"
 
-#: users/models.py:28
+#: users/models.py:30
 msgid "enable file upload only from camera"
 msgstr "Разрешить загрузку файлов только с камеры"
 
-#: users/models.py:52
+#: users/models.py:54
 msgid "User"
 msgstr "Пользователь"
 
-#: users/models.py:53
+#: users/models.py:55
 msgid "Users"
 msgstr "Пользователи"
 
-#, python-brace-format
 msgid "Failure #{self.id} for {self.delta}"
 msgstr "Сбой #{self.id} продолжительностью {self.delta}"
