@@ -5,6 +5,8 @@ from django.db.models import Q
 from core.models import Classifier, Organization
 from django.utils.translation import gettext_lazy as _
 
+from users.signals import ConstantGroups
+
 
 class User(AbstractUser):
     classifier = models.ForeignKey(
@@ -57,8 +59,12 @@ class User(AbstractUser):
 
     @property
     def is_worker(self) -> bool:
-        return bool(self.classifier)
+        return self.groups.filter(name=ConstantGroups.WORKER).exists()
 
     @property
     def is_supervisor(self) -> bool:
-        return not bool(self.classifier)
+        return self.groups.filter(name=ConstantGroups.SUPERVISOR).exists()
+
+    @property
+    def is_admin(self) -> bool:
+        return self.groups.filter(name=ConstantGroups.ADMIN).exists() or self.is_staff or self.is_superuser

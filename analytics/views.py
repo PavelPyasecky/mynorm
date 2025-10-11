@@ -36,6 +36,7 @@ from analytics.services import (
 from core import paginators
 from core.permissions import IsSupervisor
 from core.utils import localize_datetime, timedelta_to_str
+from users.signals import ConstantGroups
 
 
 class AnalyticsListView(ListModelMixin, GenericViewSet):
@@ -130,8 +131,26 @@ class SupervisionViewSet(
                 count=Count('id')
             ).values('count')
 
-            qs = self.queryset.select_related("organization", "worker", "user").prefetch_related(
-                Prefetch("statistics", queryset=ActivityStatistics.objects.select_related("failure", "activity")),
+            qs = (self.queryset.select_related("organization", "worker", "user").prefetch_related(
+                Prefetch(
+                    "statistics",
+                    queryset=ActivityStatistics.objects.select_related("failure", "activity").prefetch_related(
+                        Prefetch(
+                            "comments",
+                            queryset=Comment.objects.select_related("created_by").prefetch_related("created_by__groups").filter(
+                                created_by__groups__name=ConstantGroups.SUPERVISOR
+                            )
+                        ),
+                        Prefetch(
+                            "comments",
+                            queryset=Comment.objects.select_related("created_by").prefetch_related(
+                                "created_by__groups").filter(
+                                created_by__groups__name=ConstantGroups.ADMIN
+                            ),
+                            to_attr="admin_comments"
+                        ),
+                    )
+                ),
             ).annotate(
                 total_failure_delta=Sum(
                     F('statistics__failure__end_date') - F('statistics__failure__start_date'),
@@ -152,7 +171,7 @@ class SupervisionViewSet(
                     0,
                     output_field=IntegerField()
                 )
-            )
+            ))
 
         return qs
 

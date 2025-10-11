@@ -13,7 +13,7 @@ from analytics.models import (
     Comment,
     CommentImage,
     CommentFiles,
-    Failure,
+    Failure, SupervisionComment,
 )
 from django.utils.translation import gettext_lazy as _
 
@@ -144,6 +144,16 @@ class ActivityStatisticsAdmin(
     is_valid.short_description = _("Absence of a system failure")
 
 
+class SupervisionCommentsAdminInline(NestedTabularInline):
+    model = SupervisionComment
+    extra = 0
+    fields = ("text", "created_date", "created_by",)
+    readonly_fields = (
+        "created_date",
+        "updated_date",
+    ) + admin_mixins.CreatedByUpdatedByAdminMixin.readonly_fields
+
+
 @admin.register(Supervision)
 class SupervisionAdmin(
     admin_mixins.LocalizedDateTimeAdminMixin, admin.ModelAdmin
@@ -159,7 +169,7 @@ class SupervisionAdmin(
         "verified",
     )
     readonly_fields = (
-        ("delta", "start_date", "end_date")
+        ("delta", "start_date",)
         + admin_mixins.CreatedByUpdatedByAdminMixin.readonly_fields
         + ("updated_date", "created_date", "linked_activity_table", "verification_date")
     )
@@ -169,6 +179,8 @@ class SupervisionAdmin(
         + admin_mixins.CreatedByUpdatedByAdminMixin.fields
         + ("linked_activity_table", "verified", "verification_date")
     )
+
+    inlines = (SupervisionCommentsAdminInline,)
 
     def is_valid(self, obj):
         return format_html(
