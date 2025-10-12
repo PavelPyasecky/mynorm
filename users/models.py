@@ -33,21 +33,10 @@ class User(AbstractUser):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=(Q(is_staff=True) & Q(organization__isnull=True))
-                | (Q(is_staff=False) & Q(organization__isnull=False)),
-                name="organization_required_only_for_workers",
-            ),
-            models.CheckConstraint(
-                check=(Q(is_staff=True) & Q(classifier__isnull=True))
-                | (Q(is_staff=False) & Q(classifier__isnull=False)),
-                name="classifier_required_only_for_workers",
-            ),
-            models.UniqueConstraint(
-                fields=["classifier", "organization"],
-                name="unique_classifier_organization_of_user_if_set",
-                condition=Q(
-                    classifier__isnull=False, organization__isnull=False
-                ),
+                check=(Q(classifier__isnull=True) & Q(organization__isnull=True))
+                | (Q(classifier__isnull=False) & Q(organization__isnull=False)),
+                name="classifier_and_organization_use_together",
+                violation_error_message=_("Classifier and Organization must be used|not used together"),
             ),
         ]
 
