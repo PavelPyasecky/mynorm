@@ -177,7 +177,7 @@ class SupervisionViewSet(
 
     def create(self, request, *args, **kwargs):
         last_supervision = Supervision.objects.filter(user=request.user).order_by("-id").first()
-        if last_supervision.end_date is None:
+        if last_supervision and last_supervision.end_date is None:
             raise exceptions.SupervisionIsNotFinishedException()
 
         return super().create(request, *args, **kwargs)
