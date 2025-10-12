@@ -36,7 +36,7 @@ class User(AbstractUser):
                 check=(Q(classifier__isnull=True) & Q(organization__isnull=True))
                 | (Q(classifier__isnull=False) & Q(organization__isnull=False)),
                 name="classifier_and_organization_use_together",
-                violation_error_message=_("Classifier and Organization must be used|not used together"),
+                violation_error_message=_("Classifier and Organization must be used | not used together"),
             ),
         ]
 

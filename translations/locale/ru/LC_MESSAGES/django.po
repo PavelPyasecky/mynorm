@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-11 18:39+0000\n"
+"POT-Creation-Date: 2025-10-12 15:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -311,13 +311,14 @@ msgstr "Пользователи"
 msgid "enable file upload only from camera"
 msgstr "Разрешить загрузку файлов только с камеры"
 
-#: users/models.py:54
+#: users/models.py:39
+msgid "Classifier and Organization must be used | not used together"
+msgstr "Классификатор и Организация должны использоваться | не использоваться одновременно"
+
+#: users/models.py:43
 msgid "User"
 msgstr "Пользователь"
 
-#: users/models.py:55
+#: users/models.py:44
 msgid "Users"
 msgstr "Пользователи"
-
-msgid "Failure #{self.id} for {self.delta}"
-msgstr "Сбой #{self.id} продолжительностью {self.delta}"
