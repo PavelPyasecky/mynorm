@@ -4,13 +4,13 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from analytics.models import Supervision
-from core.permissions import CustomDjangoObjectPermissions
+from core.permissions import CustomDjangoModelPermissions
 from layouts import serializers
 from layouts.models import Layout
 
 
 class LayoutViewSet(ListModelMixin, GenericViewSet):
-    permission_classes = (CustomDjangoObjectPermissions,)
+    permission_classes = (CustomDjangoModelPermissions,)
     serializer_class = serializers.LayoutSerializer
     queryset = Layout.objects.all().prefetch_related(
         "activity_groups", "activity_groups__activities"
