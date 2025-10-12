@@ -221,7 +221,7 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,  # Disable blacklisting for unexpirable tokens
     "UPDATE_LAST_LOGIN": True,
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": None,  # Will use SECRET_KEY
+    "SIGNING_KEY": SECRET_KEY,  # Use Django SECRET_KEY for signing
     "VERIFYING_KEY": None,
     "AUDIENCE": None,
     "ISSUER": None,
