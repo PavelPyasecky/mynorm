@@ -39,7 +39,7 @@ class Classifier(CreatedUpdatedMixin):
     )
 
     def __str__(self):
-        return self.code
+        return self.name or self.code
 
     class Meta:
         verbose_name = _("Classifier")

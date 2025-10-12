@@ -27,6 +27,9 @@ class Layout(OrderedModel, CreatedUpdatedMixin):
         verbose_name = _("Layout")
         verbose_name_plural = _("Layouts")
 
+    def __str__(self):
+        return self.name or _("Layout #") + self.id
+
 
 class ActivityGroup(OrderedModel, CreatedUpdatedMixin):
     class ColumnNumberChoice(models.IntegerChoices):
