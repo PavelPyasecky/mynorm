@@ -5,11 +5,11 @@ from rest_framework.viewsets import GenericViewSet
 
 from core import serializers
 from core.models import Organization, Classifier
-from core.permissions import IsSupervisor
+from core.permissions import IsSupervisor, IsSupervisorGroup, CustomDjangoObjectPermissions
 
 
 class OrganizationListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.OrganizationSerializer
     queryset = Organization.objects.all()
 
@@ -18,7 +18,7 @@ class OrganizationListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
 
 class ClassifierListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.ClassifierSerializer
     queryset = Classifier.objects.all()
 

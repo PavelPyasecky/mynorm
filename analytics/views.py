@@ -3,7 +3,7 @@ from io import BytesIO
 
 import pytz
 from django.db.models import Value, ExpressionWrapper, F, fields, Prefetch, Sum, DurationField, CharField, Case, When, \
-    Func, Count, Q, OuterRef, Subquery, IntegerField
+    Func, Count, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Concat, Coalesce, Extract
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
@@ -34,13 +34,13 @@ from analytics.services import (
     ActivityStatisticsService,
 )
 from core import paginators
-from core.permissions import IsSupervisor
+from core.permissions import CustomDjangoObjectPermissions
 from core.utils import localize_datetime, timedelta_to_str
 from users.signals import ConstantGroups
 
 
 class AnalyticsListView(ListModelMixin, GenericViewSet):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.AnalyticsDetailsSerializer
     queryset = ActivityStatistics.objects.all()
     ordering = ["start_date"]
@@ -52,7 +52,7 @@ class AnalyticsListView(ListModelMixin, GenericViewSet):
 
 
 class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.AnalyticsCreateSerializer
     queryset = ActivityStatistics.objects.all()
 
@@ -80,7 +80,7 @@ class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
 class SupervisionViewSet(
     RetrieveModelMixin, CreateModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet
 ):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.SupervisionSerializer
     queryset = Supervision.objects.all()
     pagination_class = paginators.CustomPagination
@@ -321,7 +321,7 @@ class SupervisionViewSet(
 
 
 class AnalyticsCommentView(CreateModelMixin, UpdateModelMixin, GenericViewSet):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.CommentCreateSerializer
     queryset = Comment.objects.all()
 
@@ -377,7 +377,7 @@ class AnalyticsCommentView(CreateModelMixin, UpdateModelMixin, GenericViewSet):
 
 
 class AnalyticsFailureView(GenericViewSet):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.FailureSerializer
     queryset = Comment.objects.all()
 
@@ -409,7 +409,7 @@ class AnalyticsFailureView(GenericViewSet):
 
 
 class AnalyticsDetailsView(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.AnalyticsDetailsSerializer
     queryset = ActivityStatistics.objects.prefetch_related("comments")
     lookup_field = "pk"

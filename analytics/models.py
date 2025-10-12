@@ -201,4 +201,4 @@ class Failure(model_mixins.StartEndDateMixin):
     delta.fget.short_description = _("Duration")
 
     def __str__(self):
-        return _(f"Failure") + f" #{self.id} - {self.delta}"
+        return _("Failure") + f" #{self.id} - {self.delta}"
