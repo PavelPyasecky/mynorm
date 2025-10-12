@@ -3,14 +3,14 @@ from rest_framework import filters
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from core.permissions import IsSupervisor
+from core.permissions import CustomDjangoObjectPermissions
 from users import serializers
 from users.filters import UserFilter
 from users.models import User
 
 
 class UserListView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    permission_classes = (IsSupervisor,)
+    permission_classes = (CustomDjangoObjectPermissions,)
     serializer_class = serializers.UserSerializer
     queryset = User.objects.all()
 
