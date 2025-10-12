@@ -138,7 +138,7 @@ class ActivityStatisticsAdmin(
         return format_html(
             '<span style="color: {};">{}</span>',
             "green" if not obj.failure else "red",
-            "✓" if not obj.failure else "✗ Failure in system",
+            "✓" if not obj.failure else _("✗ Failure in system"),
         )
 
     is_valid.short_description = _("Absence of a system failure")

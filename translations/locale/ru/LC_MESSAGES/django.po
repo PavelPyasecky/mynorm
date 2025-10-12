@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-12 15:47+0000\n"
+"POT-Creation-Date: 2025-10-12 18:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,6 +28,10 @@ msgstr "организация"
 #: analytics/admin.py:38
 msgid "last supervisions"
 msgstr "последние наблюдения"
+
+#: analytics/admin.py:141
+msgid "✗ Failure in system"
+msgstr "✗ Сбой в системе"
 
 #: analytics/admin.py:144 analytics/admin.py:192
 msgid "Absence of a system failure"
@@ -65,7 +69,7 @@ msgstr "Наблюдение №"
 msgid "Duration"
 msgstr "Продолжительность"
 
-#: analytics/models.py:57 layouts/models.py:91
+#: analytics/models.py:57 layouts/models.py:94
 msgid "Planned duration"
 msgstr "Плановая длительность"
 
@@ -110,7 +114,7 @@ msgstr "Статистика видов деятельности"
 msgid "coordinates"
 msgstr "Координаты"
 
-#: analytics/models.py:153 gallery/models.py:9 layouts/models.py:46
+#: analytics/models.py:153 gallery/models.py:9 layouts/models.py:49
 msgid "image"
 msgstr "изображение"
 
@@ -199,7 +203,7 @@ msgid "verification_date"
 msgstr "Дата проверки"
 
 #: core/models.py:10 core/models.py:38 gallery/models.py:8 layouts/models.py:12
-#: layouts/models.py:67
+#: layouts/models.py:70
 msgid "name"
 msgstr "наименование"
 
@@ -251,39 +255,44 @@ msgstr "Макет"
 msgid "Layouts"
 msgstr "Макеты"
 
-#: layouts/models.py:33
+#: layouts/models.py:31
+#, fuzzy
+msgid "Layout #"
+msgstr "Макет #"
+
+#: layouts/models.py:36
 msgid "Placement in the first column"
 msgstr "Размещение в первой колонке"
 
-#: layouts/models.py:34
+#: layouts/models.py:37
 msgid "Placement in the second column"
 msgstr "Размещение во второй колонке"
 
-#: layouts/models.py:35
+#: layouts/models.py:38
 msgid "Placement in the third column"
 msgstr "Размещение в третьей колонке"
 
-#: layouts/models.py:40
+#: layouts/models.py:43
 msgid "layout"
 msgstr "макет"
 
-#: layouts/models.py:61
+#: layouts/models.py:64
 msgid "Activity Group"
 msgstr "Группа видов деятельности"
 
-#: layouts/models.py:62
+#: layouts/models.py:65
 msgid "Activity Groups"
 msgstr "Группы видов деятельности"
 
-#: layouts/models.py:70
+#: layouts/models.py:73
 msgid "activity group"
 msgstr "группа видов деятельности"
 
-#: layouts/models.py:81
+#: layouts/models.py:84
 msgid "Activity"
 msgstr "Вид деятельности"
 
-#: layouts/models.py:82
+#: layouts/models.py:85
 msgid "Activities"
 msgstr "Виды деятельности"
 
@@ -313,7 +322,9 @@ msgstr "Разрешить загрузку файлов только с кам�
 
 #: users/models.py:39
 msgid "Classifier and Organization must be used | not used together"
-msgstr "Классификатор и Организация должны использоваться | не использоваться одновременно"
+msgstr ""
+"Классификатор и Организация должны использоваться | не использоваться "
+"одновременно"
 
 #: users/models.py:43
 msgid "User"
