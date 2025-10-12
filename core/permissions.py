@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission, IsAuthenticated, DjangoObjectPermissions
+from rest_framework.permissions import BasePermission, IsAuthenticated, DjangoObjectPermissions, DjangoModelPermissions
 
 from users.signals import ConstantGroups
 
@@ -37,7 +37,7 @@ class IsWorkerGroup(IsAuthenticated, BasePermission):
 
         return request.user.groups.filter(name=ConstantGroups.WORKER).exists()
 
-class CustomDjangoObjectPermissions(DjangoObjectPermissions):
+class CustomDjangoModelPermissions(DjangoModelPermissions):
     perms_map = {
         'GET': ['%(app_label)s.view_%(model_name)s'],
         'OPTIONS': [],
