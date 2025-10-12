@@ -186,7 +186,7 @@ class SupervisionAdmin(
         return format_html(
             '<span style="color: {};">{}</span>',
             "green" if obj.validity else "red",
-            "✓" if obj.validity else "✗ Failure in system",
+            "✓" if obj.validity else _("✗ Failure in system"),
         )
 
     is_valid.short_description = _("Absence of a system failure")
