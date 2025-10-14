@@ -9,14 +9,54 @@ urlpatterns = [
         name="supervision",
     ),
     path(
+        "export/",
+        views.SupervisionViewSet.as_view({"get": "export",}),
+        name="supervision_list_export",
+    ),
+    path(
+        "delete-not-verified/",
+        views.SupervisionViewSet.as_view({"post": "delete_not_verified", }),
+        name="delete_not_verified_supervisions",
+    ),
+    path(
+        "last-active-supervision/",
+        views.SupervisionViewSet.as_view({"get": "last_active_supervision", }),
+        name="user_last_active_supervision",
+    ),
+    path(
         "<int:pk>/",
-        views.SupervisionViewSet.as_view({"get": "retrieve"}),
+        views.SupervisionViewSet.as_view({"get": "retrieve", "patch": "update"}),
         name="supervision_detail",
     ),
     path(
         "<int:pk>/finish/",
         views.SupervisionViewSet.as_view({"post": "finish"}),
-        name="supervision_detail",
+        name="finish_supervision",
+    ),
+    path(
+        "<int:pk>/verify/",
+        views.SupervisionViewSet.as_view({"post": "verify"}),
+        name="verify_supervision",
+    ),
+    path(
+        "<int:pk>/clear-verification/",
+        views.SupervisionViewSet.as_view({"post": "clear_verification"}),
+        name="clear_verification_supervision",
+    ),
+    path(
+        "analytics/<int:pk>/",
+        views.AnalyticsDetailsView.as_view({"get": "retrieve", "patch": "partial_update"}),
+        name="analytics_details",
+    ),
+    path(
+        "analytics/<int:pk>/verify/",
+        views.AnalyticsDetailsView.as_view({"post": "verify"}),
+        name="verify_analytics",
+    ),
+    path(
+        "analytics/<int:pk>/clear-verification/",
+        views.AnalyticsDetailsView.as_view({"post": "clear_verification"}),
+        name="clear_verification_analytics",
     ),
     path(
         "analytics/<int:analytics_id>/comment/",
@@ -24,14 +64,19 @@ urlpatterns = [
         name="analytics_comment",
     ),
     path(
-        "analytics/<int:analytics_id>/start-failure/",
-        views.AnalyticsFailureView.as_view({"post": "start_failure"}),
-        name="analytics_start_failure",
+        "analytics/comment/<int:pk>/",
+        views.AnalyticsCommentView.as_view({"patch": "update"}),
+        name="analytics_comment",
     ),
     path(
-        "analytics/<int:analytics_id>/finish-failure/",
+        "<int:supervision_id>/activity/<int:activity_id>/start-failure/",
+        views.AnalyticsFailureView.as_view({"post": "start_failure"}),
+        name="activity_start_failure",
+    ),
+    path(
+        "<int:supervision_id>/activity/<int:activity_id>/finish-failure/",
         views.AnalyticsFailureView.as_view({"post": "finish_failure"}),
-        name="analytics_finish_failure",
+        name="activity_finish_failure",
     ),
     path(
         "<int:pk>/analytics/",

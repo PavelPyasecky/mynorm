@@ -1,4 +1,9 @@
+import json
+
+from django.contrib.gis.geos import Point
 from rest_framework import serializers
+from rest_framework_gis.fields import GeometryField
+from rest_framework_gis.serializers import GeoModelSerializer
 
 from analytics.models import (
     ActivityStatistics,
@@ -9,6 +14,8 @@ from analytics.models import (
     Failure,
 )
 from core.models import Organization
+from core.serializers import ClassifierSerializer
+from layouts.models import Activity
 from users.models import User
 
 
@@ -19,9 +26,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    classifier = ClassifierSerializer(read_only=True)
+
     class Meta:
         model = User
-        fields = ("id", "username", "first_name", "last_name", "email")
+        fields = ("id", "username", "first_name", "last_name", "email", "classifier")
 
 
 class CommentImageSerializer(serializers.ModelSerializer):
@@ -36,16 +45,37 @@ class CommentFileSerializer(serializers.ModelSerializer):
         fields = ("id", "file")
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(GeoModelSerializer):
     images = CommentImageSerializer(many=True, read_only=True)
     files = CommentFileSerializer(many=True, read_only=True)
+    coordinates = GeometryField(required=False)
 
     class Meta:
         model = Comment
-        fields = ("id", "text", "images", "files")
+        geo_field = 'coordinates'
+        fields = ("id", "text", "coordinates", "map_url", "images", "files")
+
+    def to_representation(self, instance):
+        """
+        Convert Point object to GeoJSON format
+        """
+        representation = super().to_representation(instance)
+
+        if isinstance(representation.get('coordinates'), dict):
+            return representation
+
+        if hasattr(instance, 'coordinates') and instance.coordinates:
+            representation['coordinates'] = {
+                'type': 'Point',
+                'coordinates': [
+                    instance.coordinates.x,
+                    instance.coordinates.y
+                ]
+            }
+        return representation
 
 
-class CommentCreateSerializer(serializers.ModelSerializer):
+class CommentCreateSerializer(CommentSerializer):
     images = serializers.ListField(
         child=serializers.ImageField(required=False),
         allow_empty=True,
@@ -55,20 +85,40 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         child=serializers.FileField(required=False),
         allow_empty=True,
         required=False,
+
     )
 
     class Meta:
         model = Comment
-        fields = ("id", "text", "images", "files")
+        geo_field = 'coordinates'
+        fields = ("id", "text", "coordinates", "images", "files")
         extra_kwargs = {
-            "text": {"required": False},
+            "text": {"default": "", "allow_null": False},
         }
+
+    def validate_coordinates(self, value):
+        """Ensure coordinates are properly formatted"""
+        if isinstance(value, str):
+            try:
+                value = json.loads(value)
+            except json.JSONDecodeError:
+                raise serializers.ValidationError("Invalid JSON string for coordinates")
+
+        if isinstance(value, list):
+            if len(value) != 2:
+                raise serializers.ValidationError("Coordinates must be an array of [longitude, latitude]")
+            value = {'type': 'Point', 'coordinates': value}
+
+        if not isinstance(value, Point) and (not isinstance(value, dict) or 'coordinates' not in value):
+            raise serializers.ValidationError("Coordinates must be in GeoJSON format")
+
+        return value
 
 
 class SupervisionSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
     user = UserSerializer(read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
+    organization = OrganizationSerializer(read_only=True)
 
     class Meta:
         model = Supervision
@@ -79,7 +129,7 @@ class SupervisionSerializer(serializers.ModelSerializer):
             "user",
             "start_date",
             "end_date",
-            "comments",
+            "delta",
         )
         extra_kwargs = {
             "start_date": {"read_only": True},
@@ -128,27 +178,41 @@ class SupervisionCreateSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class AnalyticsSerializer(serializers.ModelSerializer):
-    activity_id = serializers.CharField(source="activity.id", read_only=True)
-    activity_name = serializers.CharField(
-        source="activity.name", read_only=True
-    )
-    supervision = SupervisionLiteSerializer(read_only=True)
+class SupervisionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Supervision
+        fields = (
+            "id",
+            "worker",
+            "organization",
+            "user",
+            "start_date",
+            "end_date",
+        )
+        extra_kwargs = {
+            "worker": {"required": False},
+            "user": {"required": False},
+        }
 
+
+class AnalyticsUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityStatistics
         fields = (
             "id",
-            "activity_id",
-            "activity_name",
+            "activity",
             "supervision",
+            "failure",
             "start_date",
             "end_date",
             "delta",
         )
+        extra_kwargs = {
+            "delta": {"read_only": True},
+        }
 
 
-class ActivityStatisticsCreateSerializer(serializers.ModelSerializer):
+class AnalyticsCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityStatistics
         fields = ("id", "activity", "start_date", "end_date")
@@ -167,4 +231,87 @@ class ActivityStatisticsCreateSerializer(serializers.ModelSerializer):
 class FailureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Failure
-        fields = ("id", "start_date", "end_date")
+        fields = ("id", "start_date", "end_date", "delta")
+        extra_kwargs = {
+            "delta": {"read_only": True},
+        }
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = (
+            "id",
+            "name",
+            "planned_start_time",
+            "planned_end_time",
+            "planned_delta",
+        )
+
+
+class AnalyticsDetailsSerializer(serializers.ModelSerializer):
+    activity = ActivitySerializer(read_only=True)
+    supervision = SupervisionSerializer(read_only=True)
+    failure = FailureSerializer(read_only=True)
+    delta = serializers.CharField(read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
+    admin_comments = CommentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ActivityStatistics
+        fields = (
+            "id",
+            "activity",
+            "supervision",
+            "failure",
+            "comments",
+            "admin_comments",
+            "start_date",
+            "end_date",
+            "delta",
+            "verified",
+            "verification_date",
+        )
+
+
+class AnalyticsDetailsLiteSerializer(AnalyticsDetailsSerializer):
+    supervision = SupervisionLiteSerializer(read_only=True)
+
+    class Meta(AnalyticsDetailsSerializer.Meta):
+        pass
+
+
+class SupervisionListSerializer(serializers.ModelSerializer):
+    worker = UserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+    organization = OrganizationSerializer(read_only=True)
+    analytics = AnalyticsDetailsLiteSerializer(source="statistics", many=True, read_only=True)
+    display_total_failure_delta = serializers.CharField(read_only=True)
+    overtime_activities_count = serializers.IntegerField(read_only=True)
+    admin_comments = CommentSerializer(source="comments", many=True, read_only=True)
+
+    class Meta:
+        model = Supervision
+        fields = (
+            "id",
+            "worker",
+            "organization",
+            "user",
+            "start_date",
+            "end_date",
+            "planned_start_time",
+            "planned_end_time",
+            "delta",
+            "planned_delta",
+            "overtime_activities_count",
+            "display_total_failure_delta",
+            "validity",
+            "verified",
+            "verification_date",
+            "admin_comments",
+            "analytics",
+        )
+        extra_kwargs = {
+            "start_date": {"read_only": True},
+            "end_date": {"read_only": True},
+        }

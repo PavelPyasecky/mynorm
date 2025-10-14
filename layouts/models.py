@@ -1,8 +1,9 @@
 from django.db import models
 from ordered_model.models import OrderedModel
 
-from core.model_mixins import CreatedUpdatedMixin
+from core.model_mixins import CreatedUpdatedMixin, StartEndDateMixin, PlannedStartEndTimeMixin
 from core.models import Organization, Classifier
+from core.utils import timedelta_to_str, time_difference
 from gallery.models import ImageGallery
 from django.utils.translation import gettext_lazy as _
 
@@ -25,6 +26,9 @@ class Layout(OrderedModel, CreatedUpdatedMixin):
     class Meta(OrderedModel.Meta):
         verbose_name = _("Layout")
         verbose_name_plural = _("Layouts")
+
+    def __str__(self):
+        return self.name or _("Layout #") + self.id
 
 
 class ActivityGroup(OrderedModel, CreatedUpdatedMixin):
@@ -62,7 +66,7 @@ class ActivityGroup(OrderedModel, CreatedUpdatedMixin):
         ordering = ("order",)
 
 
-class Activity(OrderedModel, CreatedUpdatedMixin):
+class Activity(OrderedModel, CreatedUpdatedMixin, PlannedStartEndTimeMixin):
     name = models.CharField(verbose_name=_("name"), max_length=255)
     activity_group = models.ForeignKey(
         ActivityGroup,
@@ -79,3 +83,12 @@ class Activity(OrderedModel, CreatedUpdatedMixin):
     class Meta(OrderedModel.Meta):
         verbose_name = _("Activity")
         verbose_name_plural = _("Activities")
+
+    @property
+    def planned_delta(self):
+        if self.planned_end_time and self.planned_start_time:
+            return timedelta_to_str(time_difference(self.planned_start_time, self.planned_end_time))
+
+        return "--:--:--"
+
+    planned_delta.fget.short_description = _("Planned duration")

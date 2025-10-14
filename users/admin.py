@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "email")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
         (
             _("Permissions"),
             {
@@ -17,6 +17,7 @@ class UserAdmin(auth_admin.UserAdmin):
                     "is_active",
                     "is_staff",
                     "is_superuser",
+                    "enable_file_upload_only_from_camera",
                     "groups",
                     "user_permissions",
                 ),

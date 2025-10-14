@@ -46,6 +46,8 @@ class ActivityInline(OrderedTabularInline):
     extra = 0
     fields = (
         "name",
+        "planned_start_time",
+        "planned_end_time",
         "order",
         "move_up_down_links",
     )

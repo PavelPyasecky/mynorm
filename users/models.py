@@ -5,6 +5,8 @@ from django.db.models import Q
 from core.models import Classifier, Organization
 from django.utils.translation import gettext_lazy as _
 
+from users.signals import ConstantGroups
+
 
 class User(AbstractUser):
     classifier = models.ForeignKey(
@@ -24,24 +26,17 @@ class User(AbstractUser):
         related_name="workers",
     )
 
+    enable_file_upload_only_from_camera = models.BooleanField(
+        default=False, verbose_name=_("enable file upload only from camera")
+    )
+
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=(Q(is_staff=True) & Q(organization__isnull=True))
-                | (Q(is_staff=False) & Q(organization__isnull=False)),
-                name="organization_required_only_for_workers",
-            ),
-            models.CheckConstraint(
-                check=(Q(is_staff=True) & Q(classifier__isnull=True))
-                | (Q(is_staff=False) & Q(classifier__isnull=False)),
-                name="classifier_required_only_for_workers",
-            ),
-            models.UniqueConstraint(
-                fields=["classifier", "organization"],
-                name="unique_classifier_organization_of_user_if_set",
-                condition=Q(
-                    classifier__isnull=False, organization__isnull=False
-                ),
+                check=(Q(classifier__isnull=True) & Q(organization__isnull=True))
+                | (Q(classifier__isnull=False) & Q(organization__isnull=False)),
+                name="classifier_and_organization_use_together",
+                violation_error_message=_("Classifier and Organization must be used | not used together"),
             ),
         ]
 
@@ -53,8 +48,12 @@ class User(AbstractUser):
 
     @property
     def is_worker(self) -> bool:
-        return bool(self.classifier)
+        return self.groups.filter(name=ConstantGroups.WORKER).exists()
 
     @property
     def is_supervisor(self) -> bool:
-        return not bool(self.classifier)
+        return self.groups.filter(name=ConstantGroups.SUPERVISOR).exists()
+
+    @property
+    def is_admin(self) -> bool:
+        return self.groups.filter(name=ConstantGroups.ADMIN).exists() or self.is_staff or self.is_superuser
