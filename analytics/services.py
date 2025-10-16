@@ -24,6 +24,9 @@ class FailureService:
         failure = activity_statistics.failure
 
         if not failure:
+            activity_statistics.failure = failure
+            activity_statistics.save(update_fields=["failure"])
+
             activity_statistics_with_last_failure = self._get_analytics_with_last_failure(
                 activity_statistics.supervision.pk)
 

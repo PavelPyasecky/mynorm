@@ -18,29 +18,34 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from config.auth_views import (
+    CustomTokenObtainPairView,
+    CustomTokenRefreshView,
+    CustomTokenVerifyView,
 )
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("neste_admin/", include("nested_admin.urls")),
-    # path('api/auth/', include('dj_rest_auth.urls')),
-    # path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
     path(
-        "api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"
+        "api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"
     ),
     path(
-        "api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
+        "api/token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"
     ),
-    path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path("api/token/verify/", CustomTokenVerifyView.as_view(), name="token_verify"),
     path("api/layouts/", include("layouts.urls")),
     path("api/supervisions/", include("analytics.urls")),
     path("api/users/", include("users.urls")),
     path("api/core/", include("core.urls")),
+    path("api/app-settings/", include("app_settings.urls")),
+    
+    # API Documentation
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
 if settings.DEBUG:
