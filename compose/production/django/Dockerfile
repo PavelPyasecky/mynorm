@@ -93,6 +93,6 @@ RUN chown -R django:django ${APP_HOME}
 
 # Final verification as django user
 USER django
-RUN python -c "import drf_spectacular; print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)"
+RUN /venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)"
 
 ENTRYPOINT ["/entrypoint"]
