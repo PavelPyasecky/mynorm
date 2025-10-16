@@ -4,8 +4,8 @@
 DJANGO_SETTINGS_MODULE=config.settings.production
 DJANGO_SECRET_KEY=Radknav84oXpiX7LAuaWxA60QzXUuj161xLQvXkLeQt7D0eoG2TUsqp2ct8UBOVa
 DJANGO_ADMIN_URL=admin/
-DJANGO_ALLOWED_HOSTS=dev-314.ru,www.dev-314.ru,localhost,127.0.0.1,5.129.242.174
-CSRF_TRUSTED_ORIGINS=https://dev-314.ru,https://www.dev-314.ru
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,77.95.206.75,merame.ru,www.merame.ru
+CSRF_TRUSTED_ORIGINS=https://77.95.206.75,https://merame.ru,https://www.merame.ru
 
 DJANGO_ADMIN_USERNAME=admin
 DJANGO_ADMIN_PASSWORD=passNOTword

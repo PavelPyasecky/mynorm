@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',
     'ordered_model',
     'django_filters',
     'django_redis',
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'gallery.apps.GalleryConfig',
+    'app_settings.apps.AppSettingsConfig',
 ]
 
 MIDDLEWARE = [
@@ -185,6 +187,38 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# SPECTACULAR settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Mera API",
+    "DESCRIPTION": "API for Mera application - supervision and analytics platform",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "COMPONENT_NO_READ_ONLY_REQUIRED": True,
+    "SCHEMA_PATH_PREFIX": "/api/",
+    "TAGS": [
+        {"name": "Authentication", "description": "Authentication endpoints"},
+        {"name": "Users", "description": "User management"},
+        {"name": "Analytics", "description": "Analytics and supervision data"},
+        {"name": "Layouts", "description": "Layout management"},
+        {"name": "Core", "description": "Core functionality"},
+        {"name": "App Settings", "description": "Application settings"},
+        {"name": "Gallery", "description": "Gallery management"},
+    ],
+    "SERVERS": [
+        {"url": "https://merame.ru", "description": "Production server"},
+        {"url": "http://localhost:8000", "description": "Development server"},
+    ],
+    "SECURITY": [
+        {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    ],
 }
 
 SITE_ID = 1
@@ -260,6 +294,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080",
     "http://127.0.0.1",
     "https://dev-314.ru",
+    "https://merame.ru",
 ]
 
 CORS_ALLOW_METHODS = [
