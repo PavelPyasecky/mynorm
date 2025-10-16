@@ -26,7 +26,7 @@ certificatesResolvers:
 http:
   routers:
     web-media-router:
-      rule: 'Host(`merame.ru`) && PathPrefix(`/media/`)'
+      rule: 'Host(`dev-314.ru`) && PathPrefix(`/media/`)'
       entryPoints:
         - websecure
       middlewares:
@@ -36,7 +36,7 @@ http:
         certResolver: letsencrypt
 
     web-fe-router:
-      rule: 'Host(`merame.ru`)  && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
+      rule: 'Host(`dev-314.ru`)  && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
       entryPoints:
         - websecure
       service: front
@@ -44,7 +44,7 @@ http:
         certResolver: letsencrypt
 
     web-be-router:
-      rule: 'Host(`merame.ru`) && !PathPrefix(`/media/`) && (PathPrefix(`/api/`) || PathPrefix(`/admin/`) || PathPrefix(`/static/`))'
+      rule: 'Host(`dev-314.ru`) && !PathPrefix(`/media/`) && (PathPrefix(`/api/`) || PathPrefix(`/admin/`) || PathPrefix(`/static/`))'
       entryPoints:
         - websecure
       middlewares:
@@ -55,7 +55,7 @@ http:
 
     # API Documentation routes
     api-docs-router:
-      rule: 'Host(`merame.ru`) && (PathPrefix(`/api/docs/`) || PathPrefix(`/api/redoc/`) || PathPrefix(`/api/schema/`))'
+      rule: 'Host(`dev-314.ru`) && (PathPrefix(`/api/docs/`) || PathPrefix(`/api/redoc/`) || PathPrefix(`/api/schema/`))'
       entryPoints:
         - websecure
       middlewares:

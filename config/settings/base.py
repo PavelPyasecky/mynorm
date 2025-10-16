@@ -209,7 +209,7 @@ SPECTACULAR_SETTINGS = {
         {"name": "Gallery", "description": "Gallery management"},
     ],
     "SERVERS": [
-        {"url": "https://merame.ru", "description": "Production server"},
+        {"url": "https://dev-314.ru", "description": "Production server"},
         {"url": "http://localhost:8000", "description": "Development server"},
     ],
     "SECURITY": [
@@ -294,7 +294,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080",
     "http://127.0.0.1",
     "https://dev-314.ru",
-    "https://merame.ru",
+    "https://dev-314.ru",
 ]
 
 CORS_ALLOW_METHODS = [
