@@ -37,8 +37,16 @@ COPY pyproject.toml poetry.lock ./
 # Create virtual environment and install dependencies
 RUN python -m venv /venv && \
     . /venv/bin/activate && \
+    echo "Poetry version:" && \
+    poetry --version && \
+    echo "Exporting requirements..." && \
     poetry export -f requirements.txt --output requirements.txt --without-hashes && \
-    uv pip install --no-cache-dir -r requirements.txt --python /venv/bin/python
+    echo "Generated requirements.txt:" && \
+    cat requirements.txt && \
+    echo "Installing dependencies with uv..." && \
+    uv pip install --no-cache-dir -r requirements.txt --python /venv/bin/python && \
+    echo "Verifying drf-spectacular installation..." && \
+    /venv/bin/python -c "import drf_spectacular; print('drf_spectacular version:', drf_spectacular.__version__)"
 
 
 # Python 'run' stage
