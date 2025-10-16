@@ -92,7 +92,7 @@ msgstr "Комментарии"
 
 #: analytics/models.py:82
 msgid "activity"
-msgstr "вид деятельности"
+msgstr "Трудовая операция"
 
 #: analytics/models.py:94
 msgid "failure"
@@ -100,15 +100,15 @@ msgstr "сбой"
 
 #: analytics/models.py:101 analytics/models.py:102
 msgid "Activity statistics"
-msgstr "Статистика видов деятельности"
+msgstr "Статистика трудовых операций"
 
 #: analytics/models.py:105
 msgid "Statistics for "
-msgstr "Статистика вида деятельности: "
+msgstr "Статистика для "
 
 #: analytics/models.py:123
 msgid "activity statistics"
-msgstr "Статистика видов деятельности"
+msgstr "статистика трудовых операций"
 
 #: analytics/models.py:127
 msgid "coordinates"
@@ -278,23 +278,23 @@ msgstr "макет"
 
 #: layouts/models.py:64
 msgid "Activity Group"
-msgstr "Группа видов деятельности"
+msgstr "Группа трудовых операций"
 
 #: layouts/models.py:65
 msgid "Activity Groups"
-msgstr "Группы видов деятельности"
+msgstr "Группы трудовых операций"
 
 #: layouts/models.py:73
 msgid "activity group"
-msgstr "группа видов деятельности"
+msgstr "группа трудовых операций"
 
 #: layouts/models.py:84
 msgid "Activity"
-msgstr "Вид деятельности"
+msgstr "Трудовая операция"
 
 #: layouts/models.py:85
 msgid "Activities"
-msgstr "Виды деятельности"
+msgstr "Трудовые операции"
 
 #: users/admin.py:12
 msgid "Personal info"
