@@ -1,4 +1,3 @@
-
 # define an alias for the specific python version used in this file.
 FROM python:3.12.9-slim-bookworm AS python
 
@@ -7,7 +6,6 @@ FROM python AS python-build-stage
 
 ARG BUILD_ENVIRONMENT=production
 ARG APP_HOME=/app
-
 
 # Install apt packages
 RUN apt-get update && \
@@ -21,33 +19,22 @@ RUN apt-get update && \
     python3-gdal \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv directly to /usr/local/bin (updated path)
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && mv /root/.local/bin/uv /usr/local/bin/uv
-
-
-# Install Poetry with export plugin
-RUN pip install --no-cache-dir poetry poetry-plugin-export gunicorn
-
-
 WORKDIR ${APP_HOME}
 
 COPY pyproject.toml poetry.lock ./
 
-# Create virtual environment and install dependencies
-RUN python -m venv /venv && \
-    . /venv/bin/activate && \
-    echo "Poetry version:" && \
-    poetry --version && \
-    echo "Exporting requirements..." && \
-    poetry export -f requirements.txt --output requirements.txt --without-hashes && \
-    echo "Generated requirements.txt:" && \
-    cat requirements.txt && \
-    echo "Installing dependencies with uv..." && \
-    uv pip install --no-cache-dir -r requirements.txt --python /venv/bin/python && \
-    echo "Verifying drf-spectacular installation..." && \
-    /venv/bin/python -c "import drf_spectacular; print('drf_spectacular version:', drf_spectacular.__version__)"
+# Install dependencies directly using pip (simpler approach)
+RUN pip install --no-cache-dir poetry
+RUN python -m venv /venv
 
+# Use the virtual environment's pip to install dependencies
+RUN /venv/bin/pip install --upgrade pip
+RUN /venv/bin/pip install --no-cache-dir gunicorn
+RUN /venv/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
+RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# Verify installation in build stage
+RUN /venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular installed, version:', drf_spectacular.__version__)"
 
 # Python 'run' stage
 FROM python AS python-run-stage
@@ -58,48 +45,20 @@ ARG APP_HOME=/app
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV BUILD_ENV=${BUILD_ENVIRONMENT}
+ENV VIRTUAL_ENV=/venv
 ENV PATH="/venv/bin:$PATH"
-
 
 WORKDIR ${APP_HOME}
 
-# Copy virtual environment from build stage
-COPY --from=python-build-stage /venv /venv
-
-# Copy requirements.txt from build stage
-COPY --from=python-build-stage /app/requirements.txt /tmp/requirements.txt
-
-# Verify virtual environment and dependencies
-RUN /venv/bin/python -c "import sys; print('Python path:', sys.path)" && \
-    /venv/bin/python -c "import subprocess; result = subprocess.run(['/venv/bin/pip', 'list'], capture_output=True, text=True); print('Installed packages:'); [print(f'  {line}') for line in result.stdout.split('\n') if 'drf' in line.lower() or 'spectacular' in line.lower()]"
-
-# Reinstall dependencies if needed (fallback)
-RUN if ! /venv/bin/python -c "import drf_spectacular" 2>/dev/null; then \
-        echo "drf_spectacular not found, reinstalling dependencies..." && \
-        /venv/bin/pip install --no-cache-dir -r /tmp/requirements.txt; \
-    fi
-
-RUN addgroup --system django \
-  && adduser --system --ingroup django django
-
-# Ensure django user owns the virtual environment
-RUN chown -R django:django /venv
-
-
-# Install required system dependencies
+# Install runtime system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  # psycopg dependencies
-  libpq-dev \
-  # Translations dependencies
+  libpq5 \
   gettext \
-  # entrypoint
   wait-for-it \
-  # gdal
   binutils \
   gdal-bin \
   libgdal-dev \
   python3-gdal \
-  # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
@@ -107,14 +66,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 ENV GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
 ENV GEOS_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgeos_c.so
 
-# Copy installed packages from build stage
-COPY --from=python-build-stage /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
-COPY --from=python-build-stage /usr/local/bin/uv /usr/local/bin/uv
+# Copy virtual environment from build stage
+COPY --from=python-build-stage /venv /venv
 
-# Ensure all dependencies are installed and accessible
-RUN chown -R django:django /venv && \
-    chmod -R 755 /venv
+# Create django user
+RUN addgroup --system django \
+  && adduser --system --ingroup django django
 
+# Copy entrypoint scripts
 COPY --chown=django:django ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
@@ -127,12 +86,11 @@ RUN chmod +x /start
 COPY --chown=django:django . ${APP_HOME}
 
 # make django owner of the WORKDIR directory as well.
-RUN chown  django:django ${APP_HOME}/media
-RUN chown  django:django ${APP_HOME}
-
+RUN chown -R django:django ${APP_HOME}
 
 # Final verification as django user
 USER django
-RUN /venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)"
+RUN python -c "import drf_spectacular; print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)"
+RUN python -c "import sys; print('Python path:', sys.path)"
 
 ENTRYPOINT ["/entrypoint"]
