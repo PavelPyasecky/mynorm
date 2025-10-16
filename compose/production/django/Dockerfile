@@ -111,6 +111,9 @@ ENV GEOS_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgeos_c.so
 COPY --from=python-build-stage /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=python-build-stage /usr/local/bin/uv /usr/local/bin/uv
 
+# Ensure all dependencies are installed and accessible
+RUN chown -R django:django /venv && \
+    chmod -R 755 /venv
 
 COPY --chown=django:django ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
@@ -127,9 +130,6 @@ COPY --chown=django:django . ${APP_HOME}
 RUN chown  django:django ${APP_HOME}/media
 RUN chown  django:django ${APP_HOME}
 
-# Ensure all dependencies are installed and accessible
-RUN chown -R django:django /venv && \
-    chmod -R 755 /venv
 
 # Final verification as django user
 USER django
