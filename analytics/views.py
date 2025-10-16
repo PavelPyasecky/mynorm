@@ -18,6 +18,8 @@ from rest_framework.mixins import (
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 
 from analytics import serializers, exceptions
 from analytics.exceptions import AnalyticsDoesNotExistException
@@ -77,9 +79,107 @@ class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List supervisions",
+        description="Retrieve a paginated list of supervisions with filtering, searching, and ordering options.",
+        tags=["Analytics"],
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Search supervisions by ID, organization name, worker name, or user name"
+            ),
+            OpenApiParameter(
+                name="organization",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="Filter by organization ID"
+            ),
+            OpenApiParameter(
+                name="worker",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="Filter by worker ID"
+            ),
+            OpenApiParameter(
+                name="user",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="Filter by user ID"
+            ),
+            OpenApiParameter(
+                name="verified",
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.QUERY,
+                description="Filter by verification status"
+            ),
+            OpenApiParameter(
+                name="ordering",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Order results by field (prefix with - for descending)"
+            )
+        ],
+        responses={
+            200: serializers.SupervisionListSerializer(many=True),
+            403: {"description": "Permission denied"}
+        }
+    ),
+    retrieve=extend_schema(
+        summary="Get supervision",
+        description="Retrieve a specific supervision by ID with detailed information.",
+        tags=["Analytics"],
+        responses={
+            200: serializers.SupervisionSerializer,
+            404: {"description": "Supervision not found"},
+            403: {"description": "Permission denied"}
+        }
+    ),
+    create=extend_schema(
+        summary="Create supervision",
+        description="Create a new supervision session.",
+        tags=["Analytics"],
+        request=serializers.SupervisionCreateSerializer,
+        responses={
+            201: serializers.SupervisionSerializer,
+            400: {"description": "Bad request - validation errors"},
+            403: {"description": "Permission denied"}
+        }
+    ),
+    update=extend_schema(
+        summary="Update supervision",
+        description="Update a supervision session.",
+        tags=["Analytics"],
+        request=serializers.SupervisionUpdateSerializer,
+        responses={
+            200: serializers.SupervisionSerializer,
+            400: {"description": "Bad request - validation errors"},
+            404: {"description": "Supervision not found"},
+            403: {"description": "Permission denied"}
+        }
+    ),
+    partial_update=extend_schema(
+        summary="Partially update supervision",
+        description="Partially update a supervision session.",
+        tags=["Analytics"],
+        request=serializers.SupervisionUpdateSerializer,
+        responses={
+            200: serializers.SupervisionSerializer,
+            400: {"description": "Bad request - validation errors"},
+            404: {"description": "Supervision not found"},
+            403: {"description": "Permission denied"}
+        }
+    )
+)
 class SupervisionViewSet(
     RetrieveModelMixin, CreateModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet
 ):
+    """
+    ViewSet for managing supervision sessions.
+    Provides CRUD operations for Supervision model with advanced filtering and export capabilities.
+    """
     permission_classes = (CustomDjangoModelPermissions,)
     serializer_class = serializers.SupervisionSerializer
     queryset = Supervision.objects.all()
@@ -215,6 +315,31 @@ class SupervisionViewSet(
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(
+        summary="Export supervisions",
+        description="Export verified supervisions to Excel format with detailed analytics data.",
+        tags=["Analytics"],
+        parameters=[
+            OpenApiParameter(
+                name="timezone",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Timezone for date formatting (default: Europe/Moscow)",
+                default="Europe/Moscow"
+            )
+        ],
+        responses={
+            200: {
+                "description": "Excel file with supervision data",
+                "content": {
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                        "schema": {"type": "string", "format": "binary"}
+                    }
+                }
+            },
+            403: {"description": "Permission denied"}
+        }
+    )
     @action(detail=False, methods=['get'])
     def export(self, request):
         tz_param = request.query_params.get('timezone', 'Europe/Moscow')
