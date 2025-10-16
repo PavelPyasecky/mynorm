@@ -24,6 +24,7 @@ from config.auth_views import (
     CustomTokenRefreshView,
     CustomTokenVerifyView,
 )
+from config.health_views import health_check, docs_health_check
 
 
 urlpatterns = [
@@ -41,6 +42,10 @@ urlpatterns = [
     path("api/users/", include("users.urls")),
     path("api/core/", include("core.urls")),
     path("api/app-settings/", include("app_settings.urls")),
+    
+    # Health checks
+    path("api/health/", health_check, name="health_check"),
+    path("api/docs/health/", docs_health_check, name="docs_health_check"),
     
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

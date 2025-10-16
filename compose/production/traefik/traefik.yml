@@ -53,6 +53,17 @@ http:
       tls:
         certResolver: letsencrypt
 
+    # API Documentation routes
+    api-docs-router:
+      rule: 'Host(`merame.ru`) && (PathPrefix(`/api/docs/`) || PathPrefix(`/api/redoc/`) || PathPrefix(`/api/schema/`))'
+      entryPoints:
+        - websecure
+      middlewares:
+        - api-docs-headers
+      service: django
+      tls:
+        certResolver: letsencrypt
+
 
   middlewares:
     csrf:
@@ -60,6 +71,17 @@ http:
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
       headers:
         hostsProxyHeaders: ['X-CSRFToken']
+    
+    api-docs-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+        customResponseHeaders:
+          X-Frame-Options: "SAMEORIGIN"
+          X-Content-Type-Options: "nosniff"
+          Cache-Control: "no-cache, no-store, must-revalidate"
+          Pragma: "no-cache"
+          Expires: "0"
 
   services:
     django:
