@@ -71,7 +71,7 @@ COPY --from=python-build-stage /app/requirements.txt /tmp/requirements.txt
 
 # Verify virtual environment and dependencies
 RUN /venv/bin/python -c "import sys; print('Python path:', sys.path)" && \
-    /venv/bin/python -c "import pkg_resources; print('Installed packages:'); [print(f'  {pkg.project_name}=={pkg.version}') for pkg in pkg_resources.working_set if 'drf' in pkg.project_name.lower() or 'spectacular' in pkg.project_name.lower()]"
+    /venv/bin/python -c "import subprocess; result = subprocess.run(['/venv/bin/pip', 'list'], capture_output=True, text=True); print('Installed packages:'); [print(f'  {line}') for line in result.stdout.split('\n') if 'drf' in line.lower() or 'spectacular' in line.lower()]"
 
 # Reinstall dependencies if needed (fallback)
 RUN if ! /venv/bin/python -c "import drf_spectacular" 2>/dev/null; then \
