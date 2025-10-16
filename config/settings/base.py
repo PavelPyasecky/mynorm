@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'gallery.apps.GalleryConfig',
+    'app_settings.apps.AppSettingsConfig',
 ]
 
 MIDDLEWARE = [

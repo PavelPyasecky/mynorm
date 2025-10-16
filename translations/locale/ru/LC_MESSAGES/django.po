@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-12 18:49+0000\n"
+"POT-Creation-Date: 2025-10-16 07:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -149,6 +149,47 @@ msgstr "Сбой"
 #: analytics/models.py:185
 msgid "Failures"
 msgstr "Сбои"
+
+#: app_settings/admin.py:20
+msgid "Button Settings"
+msgstr "Кнопка Настроек"
+
+#: app_settings/admin.py:22
+msgid "Configure which buttons should be hidden in the application."
+msgstr "Настройка скрытия кнопок в приложении."
+
+#: app_settings/admin.py:30
+msgid "Edit"
+msgstr "Редактировать"
+
+#: app_settings/admin.py:34
+msgid "Actions"
+msgstr "Действия"
+
+#: app_settings/admin.py:54 app_settings/apps.py:8 app_settings/models.py:22
+#: app_settings/models.py:23
+msgid "Application Settings"
+msgstr "Настройки Приложения"
+
+#: app_settings/admin.py:55
+msgid "Manage global application settings"
+msgstr "Управление глобальными настройками приложения"
+
+#: app_settings/models.py:12
+msgid "hide failure button"
+msgstr "скрыть кнопку `Сбой`"
+
+#: app_settings/models.py:13
+msgid "Hide failure button display"
+msgstr "Убрать отображение кнопки `Сбой`"
+
+#: app_settings/models.py:17
+msgid "hide info button"
+msgstr "скрыть кнопку `Информация`"
+
+#: app_settings/models.py:18
+msgid "Hide info button display"
+msgstr "Убрать отображение кнопки `Информация`"
 
 #: core/admin_mixins.py:54
 msgid "Gallery"

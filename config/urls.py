@@ -41,6 +41,7 @@ urlpatterns = [
     path("api/supervisions/", include("analytics.urls")),
     path("api/users/", include("users.urls")),
     path("api/core/", include("core.urls")),
+    path("api/app-settings/", include("app_settings.urls")),
 ]
 
 if settings.DEBUG:
