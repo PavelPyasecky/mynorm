@@ -66,6 +66,19 @@ WORKDIR ${APP_HOME}
 # Copy virtual environment from build stage
 COPY --from=python-build-stage /venv /venv
 
+# Copy requirements.txt from build stage
+COPY --from=python-build-stage /app/requirements.txt /tmp/requirements.txt
+
+# Verify virtual environment and dependencies
+RUN /venv/bin/python -c "import sys; print('Python path:', sys.path)" && \
+    /venv/bin/python -c "import pkg_resources; print('Installed packages:'); [print(f'  {pkg.project_name}=={pkg.version}') for pkg in pkg_resources.working_set if 'drf' in pkg.project_name.lower() or 'spectacular' in pkg.project_name.lower()]"
+
+# Reinstall dependencies if needed (fallback)
+RUN if ! /venv/bin/python -c "import drf_spectacular" 2>/dev/null; then \
+        echo "drf_spectacular not found, reinstalling dependencies..." && \
+        /venv/bin/pip install --no-cache-dir -r /tmp/requirements.txt; \
+    fi
+
 RUN addgroup --system django \
   && adduser --system --ingroup django django
 
@@ -118,6 +131,15 @@ RUN chown  django:django ${APP_HOME}
 RUN chown -R django:django /venv && \
     chmod -R 755 /venv
 
+# Final verification as django user
 USER django
+RUN /venv/bin/python -c "
+try:
+    import drf_spectacular
+    print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)
+except ImportError as e:
+    print('❌ drf_spectacular not accessible:', e)
+    exit(1)
+"
 
 ENTRYPOINT ["/entrypoint"]
