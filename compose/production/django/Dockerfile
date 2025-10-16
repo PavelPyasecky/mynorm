@@ -38,7 +38,7 @@ COPY pyproject.toml poetry.lock ./
 RUN python -m venv /venv && \
     . /venv/bin/activate && \
     poetry export -f requirements.txt --output requirements.txt --without-hashes && \
-    uv pip install -r requirements.txt --python /venv/bin/python
+    uv pip install --no-cache-dir -r requirements.txt --python /venv/bin/python
 
 
 # Python 'run' stage
@@ -80,7 +80,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   python3-gdal \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/lib/apt/lists/*
 
 # Set GDAL environment variables
 ENV GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
@@ -98,11 +98,6 @@ RUN chmod +x /entrypoint
 COPY --chown=django:django ./compose/production/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
-
-COPY --chown=django:django ./compose/production/django/install-deps /install-deps
-RUN sed -i 's/\r$//g' /install-deps
-RUN chmod +x /install-deps
-
 
 # copy application code to WORKDIR
 COPY --chown=django:django . ${APP_HOME}
