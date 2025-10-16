@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-12 18:49+0000\n"
+"POT-Creation-Date: 2025-10-12 19:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr "организация"
 msgid "last supervisions"
 msgstr "последние наблюдения"
 
-#: analytics/admin.py:141
+#: analytics/admin.py:141 analytics/admin.py:189
 msgid "✗ Failure in system"
 msgstr "✗ Сбой в системе"
 
@@ -333,3 +333,17 @@ msgstr "Пользователь"
 #: users/models.py:44
 msgid "Users"
 msgstr "Пользователи"
+
+#: users/signals.py:16
+msgid "Administrator"
+msgstr "Администратор"
+
+#: users/signals.py:17
+#, fuzzy
+msgid "Supervisor"
+msgstr "Супервизор"
+
+#: users/signals.py:18
+#, fuzzy
+msgid "Worker"
+msgstr "Работник"

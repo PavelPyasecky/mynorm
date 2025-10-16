@@ -1,6 +1,7 @@
 from django.db.models.signals import post_migrate
 from django.contrib.auth.models import Group, Permission
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 
 
 class ConstantGroups:
@@ -10,6 +11,12 @@ class ConstantGroups:
     WORKER = "Worker"
 
     ALL_GROUPS = [ADMIN, SUPERVISOR, WORKER]
+    
+    TRANSLATED_NAMES = {
+        ADMIN: _("Administrator"),
+        SUPERVISOR: _("Supervisor"),
+        WORKER: _("Worker"),
+    }
 
 
 @receiver(post_migrate)
