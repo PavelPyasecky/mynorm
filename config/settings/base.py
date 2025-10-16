@@ -320,6 +320,17 @@ CORS_ALLOW_HEADERS = [
 
 REDIS_URL = env("REDIS_URL", default="redis://redis:6379/0")
 
+# Cache configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
 
 LOGGING = {
     "version": 1,

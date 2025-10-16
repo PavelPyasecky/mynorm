@@ -10,3 +10,6 @@ CSRF_TRUSTED_ORIGINS=https://77.95.206.75,https://merame.ru,https://www.merame.r
 DJANGO_ADMIN_USERNAME=admin
 DJANGO_ADMIN_PASSWORD=passNOTword
 
+# Redis Configuration
+REDIS_URL=redis://redis:6379/0
+

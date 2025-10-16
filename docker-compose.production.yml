@@ -4,6 +4,7 @@ volumes:
   production_traefik: {}
   production_django_media: {}
   production_django_venv: {}
+  production_redis_data: {}
 
 
 
@@ -19,9 +20,11 @@ services:
       - production_django_venv:/venv
     depends_on:
       - postgres
+      - redis
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
+      - ./.envs/.production/.redis
     command: /start
     ports:
       - '5000:5000'
@@ -38,6 +41,14 @@ services:
       - ./.envs/.production/.postgres
     ports:
       - '5432:5432'
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - production_redis_data:/data
+    command: redis-server --appendonly yes
+    ports:
+      - '6379:6379'
 
   traefik:
     build:

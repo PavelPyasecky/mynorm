@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# Script to install Python dependencies with proper permissions
+# Script to install Python dependencies with proper permissions using uv
 set -e
 
-echo "Installing Python dependencies..."
+echo "Installing Python dependencies using uv..."
 
 # Activate virtual environment
 source /venv/bin/activate
 
-# Install dependencies with proper permissions
-pip install --no-cache-dir -r requirements.txt
+# Install dependencies using uv with proper permissions
+uv pip install --no-cache-dir -r requirements.txt --python /venv/bin/python
 
 # Ensure django user owns the virtual environment
 chown -R django:django /venv
 chmod -R 755 /venv
 
-echo "Dependencies installed successfully!"
+echo "Dependencies installed successfully with uv!"

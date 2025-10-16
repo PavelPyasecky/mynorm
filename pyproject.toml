@@ -30,6 +30,8 @@ psycopg2-binary = "^2.9.10"
 djangorestframework-gis = "^1.2.0"
 pandas = "^2.3.1"
 openpyxl = "^3.1.5"
+drf-spectacular = "^0.27.2"
+redis = "^5.0.0"
 
 
 [build-system]
