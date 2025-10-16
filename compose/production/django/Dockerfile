@@ -61,6 +61,9 @@ COPY --from=python-build-stage /venv /venv
 RUN addgroup --system django \
   && adduser --system --ingroup django django
 
+# Ensure django user owns the virtual environment
+RUN chown -R django:django /venv
+
 
 # Install required system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -92,10 +95,13 @@ COPY --chown=django:django ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 
-
 COPY --chown=django:django ./compose/production/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
+
+COPY --chown=django:django ./compose/production/django/install-deps /install-deps
+RUN sed -i 's/\r$//g' /install-deps
+RUN chmod +x /install-deps
 
 
 # copy application code to WORKDIR
@@ -104,6 +110,10 @@ COPY --chown=django:django . ${APP_HOME}
 # make django owner of the WORKDIR directory as well.
 RUN chown  django:django ${APP_HOME}/media
 RUN chown  django:django ${APP_HOME}
+
+# Ensure all dependencies are installed and accessible
+RUN chown -R django:django /venv && \
+    chmod -R 755 /venv
 
 USER django
 
