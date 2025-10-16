@@ -23,14 +23,17 @@ WORKDIR ${APP_HOME}
 
 COPY pyproject.toml poetry.lock ./
 
-# Install dependencies directly using pip (simpler approach)
-RUN pip install --no-cache-dir poetry
+# Install Poetry with the export plugin
+RUN pip install --no-cache-dir poetry poetry-plugin-export
+
+# Create virtual environment
 RUN python -m venv /venv
 
-# Use the virtual environment's pip to install dependencies
+# Export requirements using Poetry with export plugin
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+# Install dependencies into virtual environment
 RUN /venv/bin/pip install --upgrade pip
-RUN /venv/bin/pip install --no-cache-dir gunicorn
-RUN /venv/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # Verify installation in build stage
@@ -91,6 +94,5 @@ RUN chown -R django:django ${APP_HOME}
 # Final verification as django user
 USER django
 RUN python -c "import drf_spectacular; print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)"
-RUN python -c "import sys; print('Python path:', sys.path)"
 
 ENTRYPOINT ["/entrypoint"]
