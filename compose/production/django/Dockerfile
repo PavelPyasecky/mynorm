@@ -133,13 +133,6 @@ RUN chown -R django:django /venv && \
 
 # Final verification as django user
 USER django
-RUN /venv/bin/python -c "
-try:
-    import drf_spectacular
-    print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)
-except ImportError as e:
-    print('❌ drf_spectacular not accessible:', e)
-    exit(1)
-"
+RUN /venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)"
 
 ENTRYPOINT ["/entrypoint"]
