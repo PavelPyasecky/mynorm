@@ -100,7 +100,7 @@ class SupervisionViewSet(
     EXPORT_FILE_NAME = 'Mera_Export_Supervision'
 
     def get_serializer_class(self):
-        if self.action in ("list", "export"):
+        if self.action in ("list", "export", "last_active_supervision"):
             return serializers.SupervisionListSerializer
         elif self.action == "retrieve":
             return serializers.SupervisionSerializer
@@ -112,7 +112,7 @@ class SupervisionViewSet(
     def get_queryset(self):
         qs = self.queryset
 
-        if self.action == "list":
+        if self.action in ("list", "export", "last_active_supervision"):
             activity_count_subquery = ActivityStatistics.objects.filter(
                 supervision=OuterRef('pk')
             ).annotate(
@@ -211,7 +211,7 @@ class SupervisionViewSet(
     def last_active_supervision(self, request):
         supervision = SupervisionService().get_user_last_active_supervision(request.user)
         if supervision:
-            serializer = self.serializer_class(supervision)
+            serializer = self.get_serializer(supervision)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

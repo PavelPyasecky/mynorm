@@ -28,8 +28,6 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("neste_admin/", include("nested_admin.urls")),
-    # path('api/auth/', include('dj_rest_auth.urls')),
-    # path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
     path(
         "api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"
     ),
