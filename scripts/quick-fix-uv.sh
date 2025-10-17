@@ -21,7 +21,7 @@ docker compose -f docker-compose.production.yml restart django
 # Wait and test
 sleep 10
 echo "🧪 Testing API endpoints..."
-curl -I https://dev-314.ru/api/health/ || echo "❌ Health check failed"
-curl -I https://dev-314.ru/api/docs/ || echo "❌ Docs endpoint failed"
+curl -I https://merame.ru/api/health/ || echo "❌ Health check failed"
+curl -I https://merame.ru/api/docs/ || echo "❌ Docs endpoint failed"
 
 echo "🎉 Quick fix completed!"
