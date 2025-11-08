@@ -1,0 +1,85 @@
+volumes:
+  stage_postgres_data: {}
+  stage_postgres_data_backups: {}
+  stage_traefik: {}
+  stage_django_media: {}
+  stage_django_venv: {}
+  stage_redis_data: {}
+
+
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/stage/django/Dockerfile
+
+    image: mynorm_stage_django
+    volumes:
+      - stage_django_media:/app/media
+      - stage_django_venv:/venv
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.stage/.django
+      - ./.envs/.stage/.postgres
+      - ./.envs/.stage/.redis
+    command: /start
+    ports:
+      - '5000:5000'
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/stage/postgres/Dockerfile
+    image: mynorm_stage_postgres
+    volumes:
+      - stage_postgres_data:/var/lib/postgresql/data
+      - stage_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.stage/.postgres
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - stage_redis_data:/data
+    command: redis-server --appendonly yes
+    ports:
+      - '6379:6379'
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/stage/traefik/Dockerfile
+    image: mynorm_stage_traefik
+    depends_on:
+      - django
+      - nginx
+    volumes:
+      - stage_traefik:/etc/traefik/acme
+    ports:
+      - '80:80'
+      - '443:443'
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/stage/nginx/Dockerfile
+    image: mynorm_stage_nginx
+    depends_on:
+      - django
+    volumes:
+      - stage_django_media:/usr/share/nginx/media:ro
+    ports:
+      - '8080:8080'
+
+  front:
+    build:
+      context: ../mera/
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+

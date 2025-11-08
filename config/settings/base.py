@@ -293,7 +293,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://127.0.0.1:8080",
     "http://127.0.0.1",
-    "https://dev-314.ru",
+    "https://merame.ru",
     "https://merame.ru",
 ]
 
@@ -319,6 +319,17 @@ CORS_ALLOW_HEADERS = [
 ]
 
 REDIS_URL = env("REDIS_URL", default="redis://redis:6379/0")
+
+# Cache configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 
 LOGGING = {
