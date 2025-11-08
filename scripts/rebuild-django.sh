@@ -41,7 +41,7 @@ except ImportError as e:
 
 # Test API endpoints
 echo "🌐 Testing API endpoints..."
-curl -I https://dev-314.ru/api/health/ || echo "❌ Health check failed"
-curl -I https://dev-314.ru/api/docs/ || echo "❌ Docs endpoint failed"
+curl -I https://merame.ru/api/health/ || echo "❌ Health check failed"
+curl -I https://merame.ru/api/docs/ || echo "❌ Docs endpoint failed"
 
 echo "✅ Rebuild completed!"
