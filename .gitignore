@@ -15,6 +15,17 @@ docs/docs/site/
 .coverage
 
 .env
+.envs/.production/
+.envs/.local/
 .python-version
 samurai/static/
 firebase_local_folders
+
+# Deployment
+*.pem
+*.key
+id_rsa*
+github_actions_deploy*
+
+# Docker
+requirements.txt
