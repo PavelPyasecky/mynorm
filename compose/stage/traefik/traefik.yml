@@ -1,0 +1,106 @@
+log:
+  level: INFO
+
+entryPoints:
+  web:
+    address: ':80'
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ':443'
+
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: pavel.piasetski.web@gmail.com
+      storage: /etc/traefik/acme/acme.json
+      httpChallenge:
+        entryPoint: web
+
+
+http:
+  routers:
+    web-media-router:
+      rule: 'Host(`dev-314.ru`) && PathPrefix(`/media/`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - csrf
+      service: django-media
+      tls:
+        certResolver: letsencrypt
+
+    web-fe-router:
+      rule: 'Host(`dev-314.ru`)  && !PathPrefix(`/api/`)  && !PathPrefix(`/media/`) && !PathPrefix(`/admin/`) && !PathPrefix(`/static/`)'
+      entryPoints:
+        - websecure
+      service: front
+      tls:
+        certResolver: letsencrypt
+
+    web-be-router:
+      rule: 'Host(`dev-314.ru`) && !PathPrefix(`/media/`) && (PathPrefix(`/api/`) || PathPrefix(`/admin/`) || PathPrefix(`/static/`))'
+      entryPoints:
+        - websecure
+      middlewares:
+        - csrf
+      service: django
+      tls:
+        certResolver: letsencrypt
+
+    # API Documentation routes
+    api-docs-router:
+      rule: 'Host(`dev-314.ru`) && (PathPrefix(`/api/docs/`) || PathPrefix(`/api/redoc/`) || PathPrefix(`/api/schema/`))'
+      entryPoints:
+        - websecure
+      middlewares:
+        - api-docs-headers
+      service: django
+      tls:
+        certResolver: letsencrypt
+
+
+  middlewares:
+    csrf:
+      # https://doc.traefik.io/traefik/master/middlewares/http/headers/#hostsproxyheaders
+      # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
+      headers:
+        hostsProxyHeaders: ['X-CSRFToken']
+    
+    api-docs-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+        customResponseHeaders:
+          X-Frame-Options: "SAMEORIGIN"
+          X-Content-Type-Options: "nosniff"
+          Cache-Control: "no-cache, no-store, must-revalidate"
+          Pragma: "no-cache"
+          Expires: "0"
+
+  services:
+    django:
+      loadBalancer:
+        servers:
+          - url: http://django:5000
+
+    front:
+      loadBalancer:
+        servers:
+          - url: http://front:3000
+
+    django-media:
+      loadBalancer:
+        servers:
+          - url: http://nginx:8080
+
+providers:
+  # https://doc.traefik.io/traefik/master/providers/file/
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true
