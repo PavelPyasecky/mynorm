@@ -314,7 +314,7 @@ class SupervisionViewSet(
         if supervision:
             serializer = self.get_serializer(supervision)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
-        return Response({"details": _("No active supervision.")}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"details": _("No active supervision.")}, status=status.HTTP_200_OK)
 
     @extend_schema(
         summary="Export supervisions",
