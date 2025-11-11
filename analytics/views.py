@@ -39,6 +39,7 @@ from core import paginators
 from core.permissions import CustomDjangoModelPermissions
 from core.utils import localize_datetime, timedelta_to_str
 from users.signals import ConstantGroups
+from django.utils.translation import gettext_lazy as _
 
 
 class AnalyticsListView(ListModelMixin, GenericViewSet):
@@ -313,7 +314,7 @@ class SupervisionViewSet(
         if supervision:
             serializer = self.get_serializer(supervision)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"details": _("No active supervision.")}, status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(
         summary="Export supervisions",
