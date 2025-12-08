@@ -1,19 +1,22 @@
+version: '3.8'
+
 volumes:
-  stage_postgres_data: {}
+  stage_postgres_data:
+    external: true
+    name: mynorm_production_postgres_data
   stage_postgres_data_backups: {}
   stage_traefik: {}
-  stage_django_media: {}
+  stage_django_media:
+    external: true
+    name: mynorm_production_django_media
   stage_django_venv: {}
   stage_redis_data: {}
-
-
 
 services:
   django:
     build:
       context: .
       dockerfile: ./compose/stage/django/Dockerfile
-
     image: mynorm_stage_django
     volumes:
       - stage_django_media:/app/media
@@ -22,8 +25,8 @@ services:
       - postgres
       - redis
     env_file:
-      - ./.envs/.stage/.django
-      - ./.envs/.stage/.postgres
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
       - ./.envs/.stage/.redis
     command: /start
     ports:
