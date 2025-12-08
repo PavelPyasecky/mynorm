@@ -25,7 +25,7 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/",
-        views.SupervisionViewSet.as_view({"get": "retrieve", "patch": "update"}),
+        views.SupervisionViewSet.as_view({"get": "retrieve", "patch": "update", "delete": "destroy"}),
         name="supervision_detail",
     ),
     path(

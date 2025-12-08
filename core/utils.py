@@ -1,8 +1,10 @@
 from datetime import time, datetime, timedelta
-from typing import Union
+from typing import Union, Optional, Any
 
 from django.conf import settings
 from django.utils import timezone
+from rest_framework import status
+from rest_framework.response import Response
 
 
 def timedelta_to_str(td):
@@ -29,3 +31,22 @@ def time_difference(start_time, end_time):
         end_dt += timedelta(days=1)
 
     return end_dt - start_dt
+
+
+def success_response(data: Optional[Any] = None, status_code: int = status.HTTP_200_OK) -> Response:
+    """
+    Args:
+        data: Optional response data. If None or empty, will use {"details": "Success."}
+        status_code: HTTP status code (default: 200)
+    
+    Returns:
+        Response: DRF Response object with appropriate data and status code
+    
+    Example:
+        >>> success_response()  # Returns {"details": "Success."}
+        >>> success_response({"id": 1})  # Returns {"id": 1}
+    """
+    if data is None or (isinstance(data, dict) and not data):
+        data = {"details": "Success."}
+    
+    return Response(data=data, status=status_code)

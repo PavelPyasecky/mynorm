@@ -13,7 +13,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
     ListModelMixin,
     CreateModelMixin,
-    RetrieveModelMixin, UpdateModelMixin,
+    RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin,
 )
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,6 +23,7 @@ from drf_spectacular.types import OpenApiTypes
 
 from analytics import serializers, exceptions
 from analytics.exceptions import AnalyticsDoesNotExistException
+from analytics.filters import SupervisionDateFilter
 from analytics.models import (
     ActivityStatistics,
     Supervision,
@@ -37,7 +38,7 @@ from analytics.services import (
 )
 from core import paginators
 from core.permissions import CustomDjangoModelPermissions
-from core.utils import localize_datetime, timedelta_to_str
+from core.utils import localize_datetime, timedelta_to_str, success_response
 from users.signals import ConstantGroups
 from django.utils.translation import gettext_lazy as _
 
@@ -121,6 +122,18 @@ class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
                 type=OpenApiTypes.STR,
                 location=OpenApiParameter.QUERY,
                 description="Order results by field (prefix with - for descending)"
+            ),
+            OpenApiParameter(
+                name="start_date",
+                type=OpenApiTypes.DATE,
+                location=OpenApiParameter.QUERY,
+                description="Filter by start date (YYYY-MM-DD). When both start_date and end_date are provided and different, filters supervisions where both their start_date and end_date fall within the range. When both dates are the same, shows supervisions active on that date."
+            ),
+            OpenApiParameter(
+                name="end_date",
+                type=OpenApiTypes.DATE,
+                location=OpenApiParameter.QUERY,
+                description="Filter by end date (YYYY-MM-DD). When both start_date and end_date are provided and different, filters supervisions where both their start_date and end_date fall within the range. When both dates are the same, shows supervisions active on that date."
             )
         ],
         responses={
@@ -172,10 +185,20 @@ class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
             404: {"description": "Supervision not found"},
             403: {"description": "Permission denied"}
         }
+    ),
+    destroy=extend_schema(
+        summary="Delete supervision",
+        description="Delete a supervision session by ID.",
+        tags=["Analytics"],
+        responses={
+            204: {"description": "Supervision deleted successfully"},
+            404: {"description": "Supervision not found"},
+            403: {"description": "Permission denied"}
+        }
     )
 )
 class SupervisionViewSet(
-    RetrieveModelMixin, CreateModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet
+    RetrieveModelMixin, CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet
 ):
     """
     ViewSet for managing supervision sessions.
@@ -185,7 +208,7 @@ class SupervisionViewSet(
     serializer_class = serializers.SupervisionSerializer
     queryset = Supervision.objects.all()
     pagination_class = paginators.CustomPagination
-    filter_backends = (filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter)
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend, SupervisionDateFilter, filters.OrderingFilter)
     filterset_fields = ('id', 'organization', 'worker', 'user', 'verified')
     search_fields = (
         'id',
@@ -242,14 +265,6 @@ class SupervisionViewSet(
                                 created_by__groups__name=ConstantGroups.SUPERVISOR
                             )
                         ),
-                        Prefetch(
-                            "comments",
-                            queryset=Comment.objects.select_related("created_by").prefetch_related(
-                                "created_by__groups").filter(
-                                created_by__groups__name=ConstantGroups.ADMIN
-                            ),
-                            to_attr="admin_comments"
-                        ),
                     )
                 ),
             ).annotate(
@@ -283,26 +298,132 @@ class SupervisionViewSet(
 
         return super().create(request, *args, **kwargs)
 
+    @extend_schema(
+        summary="Finish supervision",
+        description="Mark a supervision session as finished.",
+        tags=["Analytics"],
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "details": {"type": "string", "example": "Success."}
+                }
+            },
+            404: {"description": "Supervision not found"},
+            403: {"description": "Permission denied"}
+        }
+    )
     def finish(self, request: Request, pk: int):
         supervision = get_object_or_404(Supervision.objects, pk=pk)
         SupervisionService().finish_supervision(supervision)
 
-        return Response(status=status.HTTP_200_OK)
+        return success_response()
 
+    @extend_schema(
+        summary="Verify supervision",
+        description="Mark a supervision session as verified.",
+        tags=["Analytics"],
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "details": {"type": "string", "example": "Success."}
+                }
+            },
+            404: {"description": "Supervision not found"},
+            403: {"description": "Permission denied"}
+        }
+    )
     def verify(self, request: Request, pk: int):
         supervision = get_object_or_404(Supervision.objects, pk=pk)
         SupervisionService().verify(supervision)
 
-        return Response(status=status.HTTP_200_OK)
+        return success_response()
 
+    @extend_schema(
+        summary="Clear supervision verification",
+        description="Clear the verification status of a supervision session.",
+        tags=["Analytics"],
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "details": {"type": "string", "example": "Success."}
+                }
+            },
+            404: {"description": "Supervision not found"},
+            403: {"description": "Permission denied"}
+        }
+    )
     def clear_verification(self, request: Request, pk: int):
         supervision = get_object_or_404(Supervision.objects, pk=pk)
         SupervisionService().clear_verification(supervision)
 
-        return Response(status=status.HTTP_200_OK)
+        return success_response()
 
+    @extend_schema(
+        summary="Delete not verified supervisions",
+        description="Delete supervisions that are not verified. Supports filtering, searching, and ordering via query parameters.",
+        tags=["Analytics"],
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Search supervisions by ID, organization name, worker name, or user name"
+            ),
+            OpenApiParameter(
+                name="organization",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="Filter by organization ID"
+            ),
+            OpenApiParameter(
+                name="worker",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="Filter by worker ID"
+            ),
+            OpenApiParameter(
+                name="user",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="Filter by user ID"
+            ),
+            OpenApiParameter(
+                name="verified",
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.QUERY,
+                description="Filter by verification status"
+            ),
+            OpenApiParameter(
+                name="ordering",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Order results by field (prefix with - for descending)"
+            )
+        ],
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "deleted_entities_count": {"type": "integer", "example": 5},
+                    "deleted_entities": {
+                        "type": "object",
+                        "example": {"analytics.Supervision": 5}
+                    }
+                }
+            },
+            403: {"description": "Permission denied"}
+        }
+    )
     def delete_not_verified(self, request):
-        deleted_entities_count, deleted_entities_dict = SupervisionService().delete_not_verified_supervisions()
+        # Apply the same filtering, searching, and ordering as list method
+        queryset = self.filter_queryset(self.get_queryset())
+        # Filter only not verified supervisions
+        queryset = queryset.filter(verified=False)
+        
+        deleted_entities_count, deleted_entities_dict = queryset.delete()
         data = {
             "deleted_entities_count": deleted_entities_count,
             "deleted_entities": deleted_entities_dict,
@@ -547,14 +668,44 @@ class AnalyticsDetailsView(RetrieveModelMixin, UpdateModelMixin, GenericViewSet)
         elif self.action in ("partial_update", "update"):
             return serializers.AnalyticsUpdateSerializer
 
+    @extend_schema(
+        summary="Verify activity statistics",
+        description="Mark activity statistics as verified.",
+        tags=["Analytics"],
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "details": {"type": "string", "example": "Success."}
+                }
+            },
+            404: {"description": "Activity statistics not found"},
+            403: {"description": "Permission denied"}
+        }
+    )
     def verify(self, request: Request, pk: int):
         activity_statistics = get_object_or_404(ActivityStatistics.objects, pk=pk)
         ActivityStatisticsService().verify(activity_statistics)
 
-        return Response(status=status.HTTP_200_OK)
+        return success_response()
 
+    @extend_schema(
+        summary="Clear activity statistics verification",
+        description="Clear the verification status of activity statistics.",
+        tags=["Analytics"],
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "details": {"type": "string", "example": "Success."}
+                }
+            },
+            404: {"description": "Activity statistics not found"},
+            403: {"description": "Permission denied"}
+        }
+    )
     def clear_verification(self, request: Request, pk: int):
         activity_statistics = get_object_or_404(ActivityStatistics.objects, pk=pk)
         ActivityStatisticsService().clear_verification(activity_statistics)
 
-        return Response(status=status.HTTP_200_OK)
+        return success_response()

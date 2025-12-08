@@ -30,6 +30,12 @@ class Supervision(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin, Planned
         related_name="user_supervisions",
     )
     validity = models.BooleanField(verbose_name=_("validity"), default=True)
+    admin_comment = models.TextField(
+        verbose_name=_("admin comment"),
+        blank=True,
+        null=True,
+        help_text=_("Admin comment for this supervision")
+    )
 
     class Meta:
         verbose_name = _("Supervision")
@@ -95,6 +101,12 @@ class ActivityStatistics(CreatedUpdatedMixin, StartEndDateMixin, VerifiedMixin):
         null=True,
         on_delete=models.CASCADE,
         related_name="statistics",
+    )
+    admin_comment = models.TextField(
+        verbose_name=_("admin comment"),
+        blank=True,
+        null=True,
+        help_text=_("Admin comment for this activity statistics")
     )
 
     class Meta:
