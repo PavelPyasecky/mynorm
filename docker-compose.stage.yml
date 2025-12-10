@@ -2,7 +2,9 @@ version: '3.8'
 
 volumes:
   stage_traefik: {}
-  stage_django_media: {}
+  stage_django_media:
+    external: true
+    name: mynorm_production_django_media
   stage_redis_data: {}
 
 services:
