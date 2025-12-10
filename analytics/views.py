@@ -637,6 +637,15 @@ class AnalyticsDetailsView(RetrieveModelMixin, UpdateModelMixin, GenericViewSet)
 
         elif self.action in ("partial_update", "update"):
             return serializers.AnalyticsUpdateSerializer
+        
+        return super().get_serializer_class()
+
+    def update(self, request, *args, **kwargs):
+        super().update(request, *args, **kwargs)
+
+        instance = self.get_object()
+        serializer = serializers.AnalyticsDetailsSerializer(instance=instance)
+        return Response(serializer.data)
 
     @extend_schema(
         summary="Verify activity statistics",
