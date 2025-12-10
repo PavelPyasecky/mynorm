@@ -130,6 +130,7 @@ class SupervisionSerializer(serializers.ModelSerializer):
             "start_date",
             "end_date",
             "delta",
+            "admin_comment",
         )
         extra_kwargs = {
             "start_date": {"read_only": True},
@@ -188,10 +189,12 @@ class SupervisionUpdateSerializer(serializers.ModelSerializer):
             "user",
             "start_date",
             "end_date",
+            "admin_comment",
         )
         extra_kwargs = {
             "worker": {"required": False},
             "user": {"required": False},
+            "admin_comment": {"required": False, "allow_blank": True},
         }
 
 
@@ -206,9 +209,11 @@ class AnalyticsUpdateSerializer(serializers.ModelSerializer):
             "start_date",
             "end_date",
             "delta",
+            "admin_comment",
         )
         extra_kwargs = {
             "delta": {"read_only": True},
+            "admin_comment": {"required": False, "allow_blank": True},
         }
 
 
@@ -255,7 +260,6 @@ class AnalyticsDetailsSerializer(serializers.ModelSerializer):
     failure = FailureSerializer(read_only=True)
     delta = serializers.CharField(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
-    admin_comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = ActivityStatistics
@@ -265,7 +269,7 @@ class AnalyticsDetailsSerializer(serializers.ModelSerializer):
             "supervision",
             "failure",
             "comments",
-            "admin_comments",
+            "admin_comment",
             "start_date",
             "end_date",
             "delta",
@@ -288,7 +292,6 @@ class SupervisionListSerializer(serializers.ModelSerializer):
     analytics = AnalyticsDetailsLiteSerializer(source="statistics", many=True, read_only=True)
     display_total_failure_delta = serializers.CharField(read_only=True)
     overtime_activities_count = serializers.IntegerField(read_only=True)
-    admin_comments = CommentSerializer(source="comments", many=True, read_only=True)
 
     class Meta:
         model = Supervision
@@ -308,7 +311,7 @@ class SupervisionListSerializer(serializers.ModelSerializer):
             "validity",
             "verified",
             "verification_date",
-            "admin_comments",
+            "admin_comment",
             "analytics",
         )
         extra_kwargs = {

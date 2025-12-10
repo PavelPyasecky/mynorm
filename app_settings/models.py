@@ -19,6 +19,7 @@ class AppSetting(models.Model):
     )
     
     class Meta:
+        app_label = 'app_settings'
         verbose_name = _("Application Settings")
         verbose_name_plural = _("Application Settings")
     

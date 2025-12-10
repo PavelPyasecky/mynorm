@@ -1471,6 +1471,17 @@ files = [
 ]
 
 [[package]]
+name = "spatialite"
+version = "0.0.3"
+description = "Wrapper of sqlite3 module which adds SpatiaLite support."
+optional = false
+python-versions = "*"
+files = [
+    {file = "spatialite-0.0.3-py3-none-any.whl", hash = "sha256:3124f643688c8ba4e2ff200ef401cf7b57caa44db666cb78519784f98f662982"},
+    {file = "spatialite-0.0.3.tar.gz", hash = "sha256:a0761f239a52f326b14ce41ba61b6614dfcc808b978a0bec4a37c1de9ad9071e"},
+]
+
+[[package]]
 name = "sqlparse"
 version = "0.5.3"
 description = "A non-validating SQL parser."
@@ -1569,4 +1580,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "e4e5abc28a78c611ad99b4140c96eef19f6ba4b61407d0055dd9d06eb9d6d88f"
+content-hash = "1e79a523afa28baf62d7859b8f8dc14868e6e5d043df70db4f9f1f7f05944b4c"
