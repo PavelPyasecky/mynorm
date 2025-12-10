@@ -242,7 +242,7 @@ class ActivitySerializer(serializers.ModelSerializer):
 
 
 class AnalyticsDetailsSerializer(serializers.ModelSerializer):
-    activity = ActivitySerializer(read_only=True)
+    activity = ActivitySerializer()
     supervision = SupervisionSerializer(read_only=True)
     failure = FailureSerializer(read_only=True)
     delta = serializers.CharField(read_only=True)
