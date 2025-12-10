@@ -39,7 +39,7 @@ services:
       - django
       - nginx
     volumes:
-      - ./compose/production/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./compose/shared/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - production_traefik:/etc/traefik/acme
     ports:
       - '80:80'
