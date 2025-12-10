@@ -37,7 +37,6 @@ ENV PATH="${APP_HOME}/.venv/bin:$PATH"
 # Install dependencies using Poetry directly into the virtual environment
 RUN .venv/bin/pip install --upgrade pip
 RUN poetry config virtualenvs.create false
-RUN poetry config virtualenvs.prefer-active-python true
 RUN poetry env use .venv/bin/python
 RUN poetry install --no-interaction --no-ansi --no-root
 
