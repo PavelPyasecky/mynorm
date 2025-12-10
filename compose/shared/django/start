@@ -10,3 +10,4 @@ python manage.py migrate
 python /app/create_superuser.py
 
 exec gunicorn config.wsgi --bind 0.0.0.0:5000 --chdir=/app
+
