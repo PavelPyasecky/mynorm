@@ -37,7 +37,9 @@ ENV PATH="${APP_HOME}/.venv/bin:$PATH"
 # Install dependencies using Poetry directly into the virtual environment
 RUN .venv/bin/pip install --upgrade pip
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-interaction --no-ansi
+RUN poetry config virtualenvs.prefer-active-python true
+RUN poetry env use .venv/bin/python
+RUN poetry install --no-interaction --no-ansi --no-root
 
 # Verify installation in build stage
 RUN .venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular installed, version:', drf_spectacular.__version__)"
