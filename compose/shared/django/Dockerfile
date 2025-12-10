@@ -23,21 +23,24 @@ WORKDIR ${APP_HOME}
 
 COPY pyproject.toml poetry.lock ./
 
-# Install Poetry with the export plugin
-RUN pip install --no-cache-dir poetry poetry-plugin-export
+# Install Poetry
+RUN pip install --no-cache-dir poetry
 
-# Create virtual environment
-RUN python -m venv /venv
+# Create virtual environment in app directory
+RUN python -m venv .venv
 
-# Export requirements using Poetry with export plugin
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+# Configure Poetry to use the existing virtual environment
+ENV POETRY_NO_INTERACTION=1
+ENV POETRY_VIRTUALENVS_CREATE=false
+ENV PATH="${APP_HOME}/.venv/bin:$PATH"
 
-# Install dependencies into virtual environment
-RUN /venv/bin/pip install --upgrade pip
-RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
+# Install dependencies using Poetry directly into the virtual environment
+RUN .venv/bin/pip install --upgrade pip
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-interaction --no-ansi
 
 # Verify installation in build stage
-RUN /venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular installed, version:', drf_spectacular.__version__)"
+RUN .venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular installed, version:', drf_spectacular.__version__)"
 
 # Python 'run' stage
 FROM python AS python-run-stage
@@ -48,8 +51,8 @@ ARG APP_HOME=/app
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV BUILD_ENV=${BUILD_ENVIRONMENT}
-ENV VIRTUAL_ENV=/venv
-ENV PATH="/venv/bin:$PATH"
+ENV VIRTUAL_ENV=${APP_HOME}/.venv
+ENV PATH="${APP_HOME}/.venv/bin:$PATH"
 
 WORKDIR ${APP_HOME}
 
@@ -70,18 +73,18 @@ ENV GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
 ENV GEOS_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgeos_c.so
 
 # Copy virtual environment from build stage
-COPY --from=python-build-stage /venv /venv
+COPY --from=python-build-stage /app/.venv ${APP_HOME}/.venv
 
 # Create django user
 RUN addgroup --system django \
   && adduser --system --ingroup django django
 
 # Copy entrypoint scripts
-COPY --chown=django:django ./compose/production/django/entrypoint /entrypoint
+COPY --chown=django:django ./compose/shared/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 
-COPY --chown=django:django ./compose/production/django/start /start
+COPY --chown=django:django ./compose/shared/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
@@ -93,6 +96,7 @@ RUN chown -R django:django ${APP_HOME}
 
 # Final verification as django user
 USER django
-RUN /venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)"
+RUN .venv/bin/python -c "import drf_spectacular; print('✅ drf_spectacular is accessible, version:', drf_spectacular.__version__)"
 
 ENTRYPOINT ["/entrypoint"]
+

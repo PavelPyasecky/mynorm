@@ -1,9 +1,6 @@
 volumes:
-  production_postgres_data: {}
-  production_postgres_data_backups: {}
   production_traefik: {}
   production_django_media: {}
-  production_django_venv: {}
   production_redis_data: {}
 
 
@@ -12,33 +9,18 @@ services:
   django:
     build:
       context: .
-      dockerfile: ./compose/production/django/Dockerfile
+      dockerfile: ./compose/shared/django/Dockerfile
 
     image: mynorm_production_django
     volumes:
       - production_django_media:/app/media
-      - production_django_venv:/venv
     depends_on:
-      - postgres
       - redis
     env_file:
       - .env.production
     command: /start
     ports:
       - '5000:5000'
-
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: mynorm_production_postgres
-    volumes:
-      - production_postgres_data:/var/lib/postgresql/data
-      - production_postgres_data_backups:/backups
-    env_file:
-      - .env.production
-    ports:
-      - '5432:5432'
 
   redis:
     image: redis:7-alpine
@@ -51,12 +33,13 @@ services:
   traefik:
     build:
       context: .
-      dockerfile: ./compose/production/traefik/Dockerfile
+      dockerfile: ./compose/shared/traefik/Dockerfile
     image: mynorm_production_traefik
     depends_on:
       - django
       - nginx
     volumes:
+      - ./compose/production/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - production_traefik:/etc/traefik/acme
     ports:
       - '80:80'
@@ -65,7 +48,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: ./compose/production/nginx/Dockerfile
+      dockerfile: ./compose/shared/nginx/Dockerfile
     image: mynorm_production_nginx
     depends_on:
       - django

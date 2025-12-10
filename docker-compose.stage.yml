@@ -1,47 +1,26 @@
 version: '3.8'
 
 volumes:
-  stage_postgres_data:
-    external: true
-    name: mynorm_production_postgres_data
-  stage_postgres_data_backups: {}
   stage_traefik: {}
-  stage_django_media:
-    external: true
-    name: mynorm_production_django_media
-  stage_django_venv: {}
+  stage_django_media: {}
   stage_redis_data: {}
 
 services:
   django:
     build:
       context: .
-      dockerfile: ./compose/stage/django/Dockerfile
+      dockerfile: ./compose/shared/django/Dockerfile
+
     image: mynorm_stage_django
     volumes:
       - stage_django_media:/app/media
-      - stage_django_venv:/venv
     depends_on:
-      - postgres
       - redis
     env_file:
       - .env.stage
     command: /start
     ports:
       - '5000:5000'
-
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/stage/postgres/Dockerfile
-    image: mynorm_stage_postgres
-    volumes:
-      - stage_postgres_data:/var/lib/postgresql/data
-      - stage_postgres_data_backups:/backups
-    env_file:
-      - .env.stage
-    ports:
-      - '5432:5432'
 
   redis:
     image: redis:7-alpine
@@ -54,12 +33,13 @@ services:
   traefik:
     build:
       context: .
-      dockerfile: ./compose/stage/traefik/Dockerfile
+      dockerfile: ./compose/shared/traefik/Dockerfile
     image: mynorm_stage_traefik
     depends_on:
       - django
       - nginx
     volumes:
+      - ./compose/stage/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - stage_traefik:/etc/traefik/acme
     ports:
       - '80:80'
@@ -68,7 +48,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: ./compose/stage/nginx/Dockerfile
+      dockerfile: ./compose/shared/nginx/Dockerfile
     image: mynorm_stage_nginx
     depends_on:
       - django
