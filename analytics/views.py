@@ -257,14 +257,7 @@ class SupervisionViewSet(
             qs = (self.queryset.select_related("organization", "worker", "user").prefetch_related(
                 Prefetch(
                     "statistics",
-                    queryset=ActivityStatistics.objects.select_related("failure", "activity").prefetch_related(
-                        Prefetch(
-                            "comments",
-                            queryset=Comment.objects.select_related("created_by").prefetch_related("created_by__groups").filter(
-                                created_by__groups__name=ConstantGroups.SUPERVISOR
-                            )
-                        ),
-                    )
+                    queryset=ActivityStatistics.objects.select_related("failure", "activity").prefetch_related("comments")
                 ),
             ).annotate(
                 total_failure_delta=Sum(
