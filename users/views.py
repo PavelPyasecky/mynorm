@@ -34,6 +34,25 @@ from users.models import User
                 type=OpenApiTypes.INT,
                 location=OpenApiParameter.QUERY,
                 description="Filter by classifier ID"
+            ),
+            OpenApiParameter(
+                name="role",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Filter by user role. Accepted values: 'supervisor', 'worker', 'administrator' (or 'admin')",
+                enum=["supervisor", "worker", "administrator", "admin"]
+            ),
+            OpenApiParameter(
+                name="only_workers",
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.QUERY,
+                description="Filter only workers (backward compatibility, use role=worker instead)"
+            ),
+            OpenApiParameter(
+                name="only_supervisors",
+                type=OpenApiTypes.BOOL,
+                location=OpenApiParameter.QUERY,
+                description="Filter only supervisors (backward compatibility, use role=supervisor instead)"
             )
         ],
         responses={

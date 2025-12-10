@@ -126,13 +126,13 @@ class AnalyticsCreateViewSet(CreateModelMixin, GenericViewSet):
                 name="start_date",
                 type=OpenApiTypes.DATE,
                 location=OpenApiParameter.QUERY,
-                description="Filter by start date (YYYY-MM-DD). When both start_date and end_date are provided and different, filters supervisions where both their start_date and end_date fall within the range. When both dates are the same, shows supervisions active on that date."
+                description="Filter by start date (YYYY-MM-DD). Filters supervisions where their start_date is greater than or equal to this date."
             ),
             OpenApiParameter(
                 name="end_date",
                 type=OpenApiTypes.DATE,
                 location=OpenApiParameter.QUERY,
-                description="Filter by end date (YYYY-MM-DD). When both start_date and end_date are provided and different, filters supervisions where both their start_date and end_date fall within the range. When both dates are the same, shows supervisions active on that date."
+                description="Filter by end date (YYYY-MM-DD). Filters supervisions where their start_date is less than or equal to this date. When both start_date and end_date are provided, filters supervisions where start_date falls within the range."
             )
         ],
         responses={
