@@ -22,9 +22,7 @@ services:
       - postgres
       - redis
     env_file:
-      - ./.envs/.production/.django
-      - ./.envs/.production/.postgres
-      - ./.envs/.production/.redis
+      - .env.production
     command: /start
     ports:
       - '5000:5000'
@@ -38,7 +36,7 @@ services:
       - production_postgres_data:/var/lib/postgresql/data
       - production_postgres_data_backups:/backups
     env_file:
-      - ./.envs/.production/.postgres
+      - .env.production
     ports:
       - '5432:5432'
 
