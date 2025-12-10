@@ -11,7 +11,6 @@ from analytics.models import (
     ActivityStatistics,
     Supervision,
     Comment,
-    CommentImage,
     CommentFiles,
     Failure, SupervisionComment,
 )
@@ -54,23 +53,17 @@ class ActivityStatisticsSupervisionFilter(admin.SimpleListFilter):
         return queryset
 
 
-class CommentImageInline(NestedTabularInline):
-    model = CommentImage
-    extra = 0
-    fields = ("image",) + admin_mixins.ImagePreviewAdminMixin.fields
-    readonly_fields = admin_mixins.ImagePreviewAdminMixin.readonly_fields
-
-    def image_preview(self, obj):
-        if obj.image:
-            return mark_safe(f'<img src="{obj.image.url}" height="100">')
-
-        return "[no image]"
-
-
 class CommentFileInline(NestedTabularInline):
     model = CommentFiles
     extra = 0
-    fields = ("file",)
+    fields = ("file", "image_preview")
+    readonly_fields = ("image_preview",)
+
+    def image_preview(self, obj):
+        if obj.file and obj.is_image:
+            return mark_safe(f'<img src="{obj.file.url}" height="100">')
+        
+        return ""
 
 
 class CommentsAdminInline(NestedTabularInline):
@@ -86,7 +79,7 @@ class CommentsAdminInline(NestedTabularInline):
         })},
     }
     extra = 0
-    inlines = (CommentImageInline, CommentFileInline)
+    inlines = (CommentFileInline,)
     fields = ("text", "created_date", "created_by", "coordinates")
     readonly_fields = (
         "created_date",

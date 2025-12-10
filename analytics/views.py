@@ -28,13 +28,12 @@ from analytics.models import (
     ActivityStatistics,
     Supervision,
     Comment,
-    CommentFiles,
-    CommentImage,
 )
 from analytics.services import (
     SupervisionService,
     FailureService,
     ActivityStatisticsService,
+    CommentService,
 )
 from core import paginators
 from core.permissions import CustomDjangoModelPermissions
@@ -580,35 +579,13 @@ class AnalyticsCommentView(CreateModelMixin, UpdateModelMixin, GenericViewSet):
         if not activity_statistics:
             raise AnalyticsDoesNotExistException()
 
-        text = serializer.validated_data.get("text")
-        images = serializer.validated_data.get("images")
-        files = serializer.validated_data.get("files")
-        coordinates = serializer.validated_data.get("coordinates")
-
-        if text or images or files:
-            comment = Comment.objects.create(
-                activity_statistics_id=activity_statistics_id,
-                text=text,
-                coordinates=coordinates,
-                created_by=self.request.user,
-                updated_by=self.request.user,
-            )
-
-            if images:
-                image_objects = []
-                for image in images:
-                    comment_image = CommentImage(comment=comment, image=image)
-                    image_objects.append(comment_image)
-
-                CommentImage.objects.bulk_create(image_objects)
-
-            if files:
-                file_objects = []
-                for file in files:
-                    comment_file = CommentFiles(comment=comment, file=file)
-                    file_objects.append(comment_file)
-
-                CommentFiles.objects.bulk_create(file_objects)
+        CommentService.create_comment(
+            activity_statistics_id=activity_statistics_id,
+            user=self.request.user,
+            text=serializer.validated_data.get("text"),
+            coordinates=serializer.validated_data.get("coordinates"),
+            files=serializer.validated_data.get("files")
+        )
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)

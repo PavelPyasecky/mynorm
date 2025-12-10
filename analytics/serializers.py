@@ -9,7 +9,6 @@ from analytics.models import (
     ActivityStatistics,
     Supervision,
     Comment,
-    CommentImage,
     CommentFiles,
     Failure,
 )
@@ -33,12 +32,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "first_name", "last_name", "email", "classifier")
 
 
-class CommentImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CommentImage
-        fields = ("id", "image")
-
-
 class CommentFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentFiles
@@ -46,14 +39,13 @@ class CommentFileSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(GeoModelSerializer):
-    images = CommentImageSerializer(many=True, read_only=True)
     files = CommentFileSerializer(many=True, read_only=True)
     coordinates = GeometryField(required=False)
 
     class Meta:
         model = Comment
         geo_field = 'coordinates'
-        fields = ("id", "text", "coordinates", "map_url", "images", "files")
+        fields = ("id", "text", "coordinates", "map_url", "files")
 
     def to_representation(self, instance):
         """
@@ -76,11 +68,6 @@ class CommentSerializer(GeoModelSerializer):
 
 
 class CommentCreateSerializer(CommentSerializer):
-    images = serializers.ListField(
-        child=serializers.ImageField(required=False),
-        allow_empty=True,
-        required=False,
-    )
     files = serializers.ListField(
         child=serializers.FileField(required=False),
         allow_empty=True,
@@ -91,7 +78,7 @@ class CommentCreateSerializer(CommentSerializer):
     class Meta:
         model = Comment
         geo_field = 'coordinates'
-        fields = ("id", "text", "coordinates", "images", "files")
+        fields = ("id", "text", "coordinates", "files")
         extra_kwargs = {
             "text": {"default": "", "allow_null": False},
         }

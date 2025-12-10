@@ -1,7 +1,13 @@
 from django.utils import timezone
 
 from analytics import exceptions
-from analytics.models import Supervision, ActivityStatistics, Failure
+from analytics.models import (
+    Supervision,
+    ActivityStatistics,
+    Failure,
+    Comment,
+    CommentFiles
+)
 from core.model_mixins import VerifiedMixin
 from layouts.models import Activity
 from users.models import User
@@ -118,3 +124,32 @@ class SupervisionService(VerifyMixin):
     @staticmethod
     def get_user_last_active_supervision(user: User) -> Supervision:
         return Supervision.objects.filter(user=user, end_date__isnull=True).order_by("id").last()
+
+
+class CommentService:
+    @staticmethod
+    def create_comment(
+        activity_statistics_id: int,
+        user: User,
+        text: str = None,
+        coordinates: dict = None,
+        files: list = None
+    ) -> Comment:
+        if not (text or files):
+            return None
+
+        comment = Comment.objects.create(
+            activity_statistics_id=activity_statistics_id,
+            text=text,
+            coordinates=coordinates,
+            created_by=user,
+            updated_by=user,
+        )
+
+        if files:
+            file_objects = [
+                CommentFiles(comment=comment, file=file) for file in files
+            ]
+            CommentFiles.objects.bulk_create(file_objects)
+
+        return comment

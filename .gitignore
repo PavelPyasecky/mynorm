@@ -15,7 +15,9 @@ docs/docs/site/
 .coverage
 
 .env
-.envs/.production/
+.env.production
+.env.stage
+.envs/
 .envs/.local/
 .python-version
 samurai/static/

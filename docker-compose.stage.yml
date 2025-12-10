@@ -25,9 +25,7 @@ services:
       - postgres
       - redis
     env_file:
-      - ./.envs/.production/.django
-      - ./.envs/.production/.postgres
-      - ./.envs/.stage/.redis
+      - .env.stage
     command: /start
     ports:
       - '5000:5000'
@@ -41,7 +39,7 @@ services:
       - stage_postgres_data:/var/lib/postgresql/data
       - stage_postgres_data_backups:/backups
     env_file:
-      - ./.envs/.stage/.postgres
+      - .env.stage
     ports:
       - '5432:5432'
 

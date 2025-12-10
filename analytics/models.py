@@ -161,20 +161,6 @@ class Comment(CreatedUpdatedMixin):
         verbose_name_plural = _("Comments")
 
 
-class CommentImage(CreatedUpdatedMixin):
-    image = models.ImageField(verbose_name=_("image"), upload_to="images/")
-    comment = models.ForeignKey(
-        Comment,
-        verbose_name=_("comment"),
-        on_delete=models.CASCADE,
-        related_name="images",
-    )
-
-    class Meta:
-        verbose_name = _("Comment Image")
-        verbose_name_plural = _("Comment Images")
-
-
 class CommentFiles(CreatedUpdatedMixin):
     file = models.FileField(verbose_name=_("file"), upload_to="files/")
     comment = models.ForeignKey(
@@ -187,6 +173,12 @@ class CommentFiles(CreatedUpdatedMixin):
     class Meta:
         verbose_name = _("Comment File")
         verbose_name_plural = _("Comment Files")
+
+    @property
+    def is_image(self):
+        name = self.file.name.lower()
+        return name.endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp'))
+
 
 
 class Failure(model_mixins.StartEndDateMixin):

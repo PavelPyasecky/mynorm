@@ -1,7 +1,0 @@
-# Redis Configuration
-REDIS_HOST=redis
-REDIS_PORT=6379
-REDIS_DB=0
-REDIS_PASSWORD=
-REDIS_URL=redis://redis:6379/0
-
